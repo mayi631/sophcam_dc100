@@ -58,32 +58,15 @@ extern const char *effect_style_small[];//特效图片数组
 static lv_obj_t *img_effect_s = NULL;  //特效图标
 // i是否返回photo页面
 static bool is_photo_back = true;
-extern bool ai_custom_is_confire;
-
-//AI处理相关变量
-static lv_obj_t *ai_process_cont_s = NULL; // AI处理容器
-static lv_timer_t *get_aiprocess_result_timer = NULL;  ;//获取结果定时器
-static lv_timer_t *rtt_get_text_timer = NULL;  ;//获取结果定时器
-static pthread_t aiprocess_thread = 0;                 //AI处理任务线程
-static bool is_processing = false; // 限制重复点击AI处理
-//是否是AI处理页面进入
-static bool is_aiprocess_entry_aiset_back = false;
-
-// static const char *photo_EV_s[] = {
-//     "ev3.png", "EV2.png", "EV1.png", "EV00.png", "EV11.png", "EV22.png", "EV33.png",
-// };
 
 const char *batter_image_big[] = {"充电.png", "电池1.png", "电池2.png", "电池满.png"};
 char *red_light_image_level[] = {"IR  1.png", "IR 2.png", "IR 3.png", "IR 4.png","IR 5.png", "IR 6.png", "IR 7.png"};
-void ai_takephoto_process_res_create(lv_obj_t *parent);
 // 资源释放函数声明
 static void release_HomePhoto_resources(lv_ui_t *ui);
-static void aiprocessing_ui_update(lv_timer_t *timer);
 
 static void photo_zoom_event_cb(lv_event_t* e);
 
 void photo_process_ai_beauty(void); //美颜处理
-static void ai_select_event_cb(lv_event_t *e);//选择事件
 static void photoScroll_del_cb(void);//删除浮窗
 
 static void zoomin_key_cb(void);//t按键回调
@@ -91,16 +74,8 @@ static void zoomout_key_cb(void);//w按键回调
 void hide_all_widgets(lv_obj_t *parent);
 void restore_all_widgets(void);
 void register_all_key(void);                                     // 注册按键
-static void aiprocess_key_callback(int key_code, int key_value); // 结果界面key回调
-void start_aiprocess(const int index);                           // 开始处理
-
-static void ai_result_delete_after_cb(void);
-
-static void delete_ai_result_cb(lv_event_t *e);
-static void wifi_return_to_home_photo(void *user_data);
 
 static void photoEffect_Select_event_cb(lv_event_t *e);
-static void rtt_get_text_timer_cb(lv_timer_t *timer);
 void continue_take_photo(void);
 
 bool get_is_photo_back(void)
@@ -193,49 +168,6 @@ static void photo_var_dynamic_update(lv_timer_t *timer)
     } else {
         show_image(ui->page_photo.img_sdonline, "icon_card_offline.png");
     }
-}
-
-
-void aiprocess_result_get_img(void)
-{
-    if(ai_process_cont_s == NULL || !lv_obj_is_valid(ai_process_cont_s)) {
-        MLOG_ERR("ai_process_cont_s is invalid");
-        return;
-    }
-
-    // 获取容器中的图片和标签对象
-    lv_obj_t *img     = lv_obj_get_child(ai_process_cont_s, 0);
-    lv_obj_t *label   = lv_obj_get_child(ai_process_cont_s, 1);
-    lv_obj_t *spinner = lv_obj_get_child(ai_process_cont_s, 2);
-    if(img == NULL || label == NULL) {
-        MLOG_ERR("Failed to get child objects");
-        return;
-    }
-
-    // 获取AI处理结果图片数据
-    const char *result_img = get_ai_process_result_img_data(0);
-    MLOG_DBG("result_img pic: %s\n", result_img);
-
-    if(result_img != NULL) {
-        lv_image_set_src(img, result_img);
-        lv_obj_add_flag(label, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_add_flag(spinner, LV_OBJ_FLAG_HIDDEN);
-    } else {
-        lv_obj_remove_flag(label, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_remove_flag(spinner, LV_OBJ_FLAG_HIDDEN);
-    }
-}
-
-// 动画完成回调
-void aiprocess_result_get_img_complete(lv_anim_t *a)
-{
-    // 使用正确的API显示容器
-    if(!lv_obj_has_flag(ai_process_cont_s, LV_OBJ_FLAG_HIDDEN)) {
-        lv_obj_add_flag(ai_process_cont_s, LV_OBJ_FLAG_HIDDEN);
-        register_all_key();
-    }
-    // 删除
-    lv_anim_del(a, a->exec_cb);
 }
 
 // 拍照完成
@@ -391,58 +323,6 @@ static void key_takephoto_callback(void)
     lv_async_call(key_takephoto_callback_exec, NULL);
 }
 
-static void ai_select_event_cb(lv_event_t* e)
-{
-    lv_event_code_t code = lv_event_get_code(e);
-    lv_obj_t *btn        = lv_obj_get_child(get_aiselete_scroll_handl(), 0);
-    lv_obj_t *label      = lv_obj_get_child(btn, 1);
-    switch(code) {
-        case LV_EVENT_PRESSED: // 获取语音自定义的输入语言
-        {
-            if(AIModeSelect_GetMode() == AI_VOICE_CUSTOM) {
-                lv_label_set_text(label, str_language_listening[get_curr_language()]);
-                // 创建语音输入弹框
-                create_voice_input_popup();
-                // 开始录音
-                rtt_start();
-                // 启动定时器获取文本
-                if(rtt_get_text_timer == NULL) {
-                    rtt_get_text_timer = lv_timer_create(rtt_get_text_timer_cb, 300, NULL);
-                    lv_timer_ready(rtt_get_text_timer);
-                }
-                return;
-            }
-        }; break;
-        case LV_EVENT_CLICKED:
-        {
-            if(AIModeSelect_GetMode() == AI_VOICE_CUSTOM) {//语言输入中
-               return;
-            }
-            lv_obj_t *btn_clicked = lv_event_get_target(e);
-            lv_obj_t *parent      = lv_obj_get_parent(btn_clicked); //获取发生点击事件的父控件，列表
-
-            for(uint8_t i = 0; i < lv_obj_get_child_cnt(parent); i++) {
-                if(btn_clicked == lv_obj_get_child(parent, i)) {
-                    set_currIndex_focus(i);
-                    start_aiprocess(i);
-                }
-            }
-        }; break;
-        case LV_EVENT_RELEASED:
-        case LV_EVENT_CANCEL://播放
-        {
-            if(AIModeSelect_GetMode() == AI_VOICE_CUSTOM) {
-                // 停止录音
-                rtt_stop();
-                lv_label_set_text(label, str_language_hold_to_speak[get_curr_language()]);
-                // destroy_voice_input_popup();
-                voice_display_button();
-            }
-        }; break;
-        default: break;
-    }
-}
-
 // 删除浮窗
 static void photoScroll_del_cb(void)
 {
@@ -471,7 +351,6 @@ static void buttonPhoto_All_event_handler(lv_event_t* e)
         switch(Click_index) {
             case 0: // 跳转系统菜单
                 release_HomePhoto_resources(ui);
-                is_aiprocess_entry_aiset_back = false;
                 ui_load_scr_animation(&g_ui, &g_ui.page_photoMenu_Setting.menuscr, g_ui.screenPhotoMenuSetting_del,
                                       &g_ui.screenHomePhoto_del, photoMenu_Setting, LV_SCR_LOAD_ANIM_NONE, 0, 0, false,
                                       true);
@@ -489,7 +368,6 @@ static void buttonPhoto_All_event_handler(lv_event_t* e)
                 // 关闭对焦
                 disable_focus();
                 is_video_mode = true;
-                is_aiprocess_entry_aiset_back = false;
                 ui_load_scr_animation(&g_ui, &obj_vedio_s, 1, &g_ui.screenHomePhoto_del, Home_Vedio,
                                       LV_SCR_LOAD_ANIM_NONE, 0, 0, false, true);
                 break;
@@ -509,7 +387,6 @@ static void buttonPhoto_All_event_handler(lv_event_t* e)
                 // 复位缩放
                 set_zoom_level(1);
                 release_HomePhoto_resources(ui);
-                is_aiprocess_entry_aiset_back = false;
                 ui_load_scr_animation(&g_ui, &obj_home_s, 1, NULL, setup_scr_home1, LV_SCR_LOAD_ANIM_NONE, 0, 0, false,
                                       true);
                 break;
@@ -551,10 +428,6 @@ static void release_HomePhoto_resources(lv_ui_t *ui)
     wifi_check_dialog_close(); // wifi是否开启检查对话框销毁
     delete_batter_tips_mbox(); // 低电量不允许开wifi弹窗销毁
     destroy_voice_input_popup(); // ai语音自定义弹窗销毁
-    if(ai_process_cont_s != NULL && lv_obj_is_valid(ai_process_cont_s)) {
-        lv_obj_del(ai_process_cont_s);
-        ai_process_cont_s = NULL;
-    }
 
     if(date_timer_s != NULL) {
         lv_timer_del(date_timer_s);
@@ -568,18 +441,6 @@ static void release_HomePhoto_resources(lv_ui_t *ui)
 
     // 释放缩放相关资源
     delete_zoombar_timer_handler();
-    // 删除获取结果定时器
-    if(get_aiprocess_result_timer != NULL) {
-        lv_timer_del(get_aiprocess_result_timer);
-        get_aiprocess_result_timer = NULL;
-    }
-    // 销毁AI处理线程
-    if(aiprocess_thread) {
-        pthread_cancel(aiprocess_thread);
-        pthread_join(aiprocess_thread, NULL);
-        aiprocess_thread = 0;
-    }
-
     // 删除当前页面按键处理回调
     takephoto_unregister_all_callback();
     FACEP_SERVICE_Unregister_Smile_Pre_Callback();
@@ -590,26 +451,11 @@ static void release_HomePhoto_resources(lv_ui_t *ui)
 // 菜单按键处理回调函数
 static void photo_menu_callback(void)
 {
-    //m没有在ai处理中
-    if(!is_processing) {
-        if(!lv_obj_has_flag(ai_process_cont_s, LV_OBJ_FLAG_HIDDEN)) {
-            lv_obj_add_flag(ai_process_cont_s, LV_OBJ_FLAG_HIDDEN);
-            register_all_key();
-        } else {
-
-            if (wifi_check_dialog_close() == 1)
-                return;
-            MLOG_DBG("进入拍照模式设置页面\n");
-            release_HomePhoto_resources(&g_ui);
-            is_aiprocess_entry_aiset_back = false;
-            ui_load_scr_animation(&g_ui, &g_ui.page_photoMenu_Setting.menuscr, g_ui.screenPhotoMenuSetting_del,
-                                  &g_ui.screenHomePhoto_del, photoMenu_Setting, LV_SCR_LOAD_ANIM_NONE, 0, 0, false,
-                                  true);
-        }
-    } else {
-        lv_obj_t *label = lv_obj_get_child(ai_process_cont_s, 1);
-        lv_label_set_text(label, str_language_processing_please_do_not_leave[get_curr_language()]);
-    }
+    MLOG_DBG("进入拍照模式设置页面\n");
+    release_HomePhoto_resources(&g_ui);
+    ui_load_scr_animation(&g_ui, &g_ui.page_photoMenu_Setting.menuscr, g_ui.screenPhotoMenuSetting_del,
+        &g_ui.screenHomePhoto_del, photoMenu_Setting, LV_SCR_LOAD_ANIM_NONE, 0, 0, false,
+        true);
 }
 
 // UP按键处理回调函数
@@ -622,131 +468,25 @@ static void photo_redlight_callback(void)
     }
 }
 
-// left按键处理回调函数
-static void photo_left_callback(void)
-{
-
-}
-
-// right按键处理回调函数
-static void photo_right_callback(void)
-{
-}
-
-//快捷删除按键处理回调函数
-static void photo_key_down_callback(void)
-{
-    //没有在ai处理中
-    if(!is_processing) {
-        if(!lv_obj_has_flag(ai_process_cont_s, LV_OBJ_FLAG_HIDDEN)) {
-            lv_obj_t *delete_btn = lv_obj_get_child(ai_process_cont_s, 5);
-            lv_obj_send_event(delete_btn, LV_EVENT_CLICKED, NULL);
-        } else {
-            create_simple_delete_dialog(NULL); // 创建确认浮窗
-        }
-    } else {
-        lv_obj_t *label = lv_obj_get_child(ai_process_cont_s, 1);
-        lv_label_set_text(label, str_language_processing_please_do_not_leave[get_curr_language()]);
-    }
-}
-
 // 模式切换按键处理回调函数
 static void photo_mode_callback(void)
 {
-    if(!is_processing) {
-        if(!lv_obj_has_flag(ai_process_cont_s, LV_OBJ_FLAG_HIDDEN)) {
-            is_aiprocess_entry_aiset_back = true;
-            release_HomePhoto_resources(&g_ui);
-            ui_load_scr_animation(&g_ui, &obj_Photo_AiMode_s, 1, NULL, photoMenu_AIMode, LV_SCR_LOAD_ANIM_NONE, 0, 0,
-                                  false, true);
-        } else {
-            MLOG_DBG("AI按键,进入AI模式切换页面\n");
-            MLOG_DBG("模式切换，进入视频模式\n");
-            MESSAGE_S Msg = {0};
-            release_HomePhoto_resources(&g_ui);
-            homeMode_Set(VEDIO_MODE);
-            // 进入录像模式
-            Msg.topic = EVENT_MODEMNG_MODESWITCH;
-            Msg.arg1  = WORK_MODE_MOVIE;
-            MODEMNG_SendMessage(&Msg);
-            // 复位缩放
-            set_zoom_level(1);
-            // 关闭对焦
-            disable_focus();
-            is_video_mode = true;
-            ui_load_scr_animation(&g_ui, &obj_vedio_s, 1, &g_ui.screenHomePhoto_del, Home_Vedio, LV_SCR_LOAD_ANIM_NONE,
-                                  0, 0, false, true);
-            is_aiprocess_entry_aiset_back = false;
-        }
-    } else {
-        lv_obj_t *label = lv_obj_get_child(ai_process_cont_s, 1);
-        lv_label_set_text(label, str_language_processing_please_do_not_leave[get_curr_language()]);
-    }
-}
-
-// ok按键处理回调函数
-static void photo_ok_callback(void)
-{
-    if(!is_processing) {
-        if(get_is_effect_exist() == false) {
-            MLOG_DBG("ok按键, 切换前后摄像头\n");
-            MESSAGE_S Msg = {0};
-            Msg.topic     = EVENT_MODEMNG_SETTING;
-            Msg.arg1      = PARAM_MENU_SENSOR_SWITCH;
-            MODEMNG_SendMessage(&Msg);
-
-            disable_touch_events();//延时倒计时，禁用触摸
-            disable_hardware_input_device(0);
-            disable_hardware_input_device(1);
-
-            completed_register_cb(photo_sesor_switch_completed_callback);
-            // 复位缩放
-            set_zoom_level(1);
-        } else {
-            set_effect_ok();
-        }
-    }
-}
-
-// 长按菜单按键处理回调函数
-static void photo_long_menu_callback(void)
-{
-    if(!is_processing) {
-        MLOG_DBG("长按菜单按键，返回主页\n");
-        MESSAGE_S Msg = {0};
-        takephoto_cancel_focus();
-        // 通知mode关闭时要关闭sensor
-        Msg.topic     = EVENT_MODEMNG_SENSOR_STATE;
-        Msg.arg1      = 1;
-        MODEMNG_SendMessage(&Msg);
-        memset(&Msg, 0, sizeof(MESSAGE_S));
-        // 进入BOOT模式
-        Msg.topic     = EVENT_MODEMNG_MODESWITCH;
-        Msg.arg1      = WORK_MODE_BOOT;
-        MODEMNG_SendMessage(&Msg);
-        // 复位缩放
-        set_zoom_level(1);
-        release_HomePhoto_resources(&g_ui);
-        is_aiprocess_entry_aiset_back = false;
-        ui_load_scr_animation(&g_ui, &obj_home_s, 1, NULL, setup_scr_home1, LV_SCR_LOAD_ANIM_NONE, 0, 0, false, true);
-    } else {
-        lv_obj_t *label = lv_obj_get_child(ai_process_cont_s, 1);
-        lv_label_set_text(label, str_language_processing_please_do_not_leave[get_curr_language()]);
-    }
-}
-
-// 长按模式按键处理回调函数
-static void photo_long_mode_callback(void)
-{
-    if(!is_processing) {
-        MLOG_DBG("长按模式按键，切换前后摄像头\n");
-        MESSAGE_S Msg = {0};
-        Msg.topic     = EVENT_MODEMNG_SETTING;
-        Msg.arg1      = PARAM_MENU_SENSOR_SWITCH;
-        MODEMNG_SendMessage(&Msg);
-        // 复位缩放
-        set_zoom_level(1);
-    }
+    MLOG_DBG("AI按键,进入AI模式切换页面\n");
+    MLOG_DBG("模式切换，进入视频模式\n");
+    MESSAGE_S Msg = {0};
+    release_HomePhoto_resources(&g_ui);
+    homeMode_Set(VEDIO_MODE);
+    // 进入录像模式
+    Msg.topic = EVENT_MODEMNG_MODESWITCH;
+    Msg.arg1  = WORK_MODE_MOVIE;
+    MODEMNG_SendMessage(&Msg);
+    // 复位缩放
+    set_zoom_level(1);
+    // 关闭对焦
+    disable_focus();
+    is_video_mode = true;
+    ui_load_scr_animation(&g_ui, &obj_vedio_s, 1, &g_ui.screenHomePhoto_del, Home_Vedio, LV_SCR_LOAD_ANIM_NONE,
+                            0, 0, false, true);
 }
 
 // AI按键处理回调函数
@@ -779,7 +519,6 @@ static void gesture_event_handler(lv_event_t *e)
                         // 复位缩放
                         set_zoom_level(1);
                         release_HomePhoto_resources(&g_ui);
-                        is_aiprocess_entry_aiset_back = false;
                         ui_load_scr_animation(&g_ui, &obj_home_s, 1, NULL, setup_scr_home1, LV_SCR_LOAD_ANIM_NONE, 0, 0,
                                               false, true);
 
@@ -989,173 +728,6 @@ void Home_Photo(lv_ui_t *ui)
     events_init_HomePhoto(ui);
 }
 
-void ai_takephoto_process_res_create(lv_obj_t *parent)
-{
-
-    if(parent == NULL) {
-        MLOG_ERR("Parent is NULL in ai_takephoto_process_res_create\n");
-        return;
-    }
-
-    // 创建AI处理容器
-    ai_process_cont_s = lv_obj_create(parent);
-    if(ai_process_cont_s == NULL) {
-        MLOG_ERR("Failed to create AI process container\n");
-        return;
-    }
-
-    lv_obj_set_size(ai_process_cont_s, H_RES, V_RES);
-    lv_obj_set_scrollbar_mode(ai_process_cont_s, LV_SCROLLBAR_MODE_OFF);
-    lv_obj_set_style_bg_opa(ai_process_cont_s, LV_OPA_COVER, 0);
-    lv_obj_set_style_bg_color(ai_process_cont_s, lv_color_hex(0x000000), 0);
-    lv_obj_clear_flag(ai_process_cont_s, LV_OBJ_FLAG_SCROLLABLE);
-    lv_obj_set_style_border_width(ai_process_cont_s, 0, 0);
-    lv_obj_set_style_pad_all(ai_process_cont_s, 0, 0);
-    lv_obj_set_style_shadow_width(ai_process_cont_s, 0, 0);
-
-    // 创建结果图片
-    lv_obj_t *ai_process_result_img = lv_img_create(ai_process_cont_s);
-    if(ai_process_result_img == NULL) {
-        MLOG_ERR("Failed to create result image\n");
-        return;
-    }
-
-    lv_obj_set_size(ai_process_result_img, H_RES, V_RES); // 留出底部空间
-    lv_obj_align(ai_process_result_img, LV_ALIGN_TOP_MID, 0, 0);
-    lv_obj_add_flag(ai_process_result_img, LV_OBJ_FLAG_CLICKABLE);
-    lv_obj_set_style_bg_color(ai_process_result_img, lv_color_hex(0x000000), 0);
-    // 初始隐藏处理容器
-    if(!is_aiprocess_entry_aiset_back || AIModeSelect_GetMode() == AI_NONE) {
-        lv_obj_add_flag(ai_process_cont_s, LV_OBJ_FLAG_HIDDEN);
-        register_all_key();
-    } else {
-        const char *result_img = get_ai_process_result_img_data(0);
-        lv_image_set_src(ai_process_result_img, result_img);
-        set_current_page_handler(NULL);
-        set_current_page_handler(aiprocess_key_callback);
-    }
-    // 绑定点击事件
-    // lv_obj_add_event_cb(ai_process_result_img, full_screen_img_event_cb, LV_EVENT_CLICKED, NULL);
-
-    // 创建处理中标签
-    lv_obj_t *label_processing = lv_label_create(ai_process_cont_s);
-    if(label_processing == NULL) {
-        MLOG_ERR("Failed to create processing label\n");
-        return;
-    }
-
-    lv_label_set_text(label_processing, "处理中...");
-    lv_obj_set_style_text_font(label_processing, get_usr_fonts(ALI_PUHUITI_FONTPATH, 24), 0);
-    lv_obj_set_style_text_color(label_processing, lv_color_hex(0xFFFFFF), 0);
-    lv_obj_align(label_processing, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_add_flag(label_processing, LV_OBJ_FLAG_HIDDEN);
-
-    // 创建进度指示器
-    lv_obj_t *spinner = lv_spinner_create(ai_process_cont_s);
-    if(spinner) {
-        lv_obj_set_size(spinner, 60, 60);
-        lv_obj_set_style_arc_width(spinner, 6, 0);
-        lv_obj_set_style_arc_color(spinner, lv_color_hex(0x0080FF), 0);
-        lv_obj_align(spinner, LV_ALIGN_CENTER, 0, 60);
-        lv_obj_add_flag(spinner, LV_OBJ_FLAG_HIDDEN);
-    }
-
-    // AI按钮
-    lv_obj_t *ai_btn = lv_imagebutton_create(ai_process_cont_s);
-    lv_obj_align(ai_btn, LV_ALIGN_TOP_LEFT, 0, 0);
-    lv_obj_set_size(ai_btn, 58, 58);
-    // lv_obj_add_event_cb(ai_btn, ai_process_select_event_handler, LV_EVENT_CLICKED, NULL);
-    const char *mode_icon[] = {"aimoshi.png", "风格_1.png", "AI背景替换_1.png","美颜_1.png","语音_自定义_1.png"};
-    show_image(ai_btn, mode_icon[AIModeSelect_GetMode()]);
-    if(AIModeSelect_GetMode() == AI_NONE) {
-        lv_obj_add_flag(ai_btn, LV_OBJ_FLAG_HIDDEN);
-    }
-
-    // 文本模式按钮
-    lv_obj_t *text_mode_btn = lv_btn_create(ai_process_cont_s);
-    lv_obj_set_size(text_mode_btn, 58, 58);
-    lv_obj_align(text_mode_btn, LV_ALIGN_TOP_RIGHT, 0, 0);
-    lv_obj_set_style_radius(text_mode_btn, lv_obj_get_style_radius(ai_btn, 0), 0);
-    lv_obj_set_style_bg_color(text_mode_btn, lv_obj_get_style_bg_color(ai_btn, 0), 0);
-    lv_obj_set_style_bg_opa(text_mode_btn, lv_obj_get_style_bg_opa(ai_btn, 0), 0);
-    lv_obj_set_style_border_width(text_mode_btn, lv_obj_get_style_border_width(ai_btn, 0), 0);
-    lv_obj_set_style_shadow_width(text_mode_btn, lv_obj_get_style_shadow_width(ai_btn, 0), 0);
-    lv_obj_set_style_pad_all(text_mode_btn, 0, 0);
-
-    // 创建标签并设置字体图标
-    lv_obj_t *label = lv_label_create(text_mode_btn);
-    if(label != NULL) {
-        lv_label_set_text(label, LV_SYMBOL_LIST);
-        lv_obj_center(label);
-        lv_obj_set_style_text_font(label, &lv_font_montserrat_42, 0);
-        lv_obj_set_style_text_color(label, lv_color_hex(0x1296db), 0);
-    }
-    lv_obj_add_event_cb(text_mode_btn, buttonPhoto_All_event_handler, LV_EVENT_CLICKED, (void *)(intptr_t)2);
-
-    // 如果AI按钮隐藏，文本模式按钮也隐藏
-    if(lv_obj_has_flag(ai_btn, LV_OBJ_FLAG_HIDDEN)) {
-        lv_obj_add_flag(text_mode_btn, LV_OBJ_FLAG_HIDDEN);
-    }
-
-    // === 新增：创建删除按钮（右下角）===
-    lv_obj_t *delete_btn = lv_btn_create(ai_process_cont_s);
-    lv_obj_set_size(delete_btn, 64, 60);
-    lv_obj_align(delete_btn, LV_ALIGN_BOTTOM_RIGHT, -10, -10); // 右下角位置
-    lv_obj_set_style_radius(delete_btn, 5, 0); // 圆形按钮
-    lv_obj_set_style_bg_color(delete_btn, lv_color_hex(0x171717), 0); // 红色背景
-    lv_obj_set_style_bg_opa(delete_btn, LV_OPA_0, 0);
-    lv_obj_set_style_shadow_width(delete_btn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    // 添加删除图标
-    lv_obj_t *delete_label = lv_label_create(delete_btn);
-    lv_label_set_text(delete_label, LV_SYMBOL_TRASH);
-    lv_obj_center(delete_label);
-    lv_obj_set_style_text_font(delete_label, &lv_font_montserrat_42, 0);
-    lv_obj_set_style_text_color(delete_label, lv_color_white(), 0);
-
-    // 添加点击事件
-    lv_obj_add_event_cb(delete_btn, delete_ai_result_cb, LV_EVENT_CLICKED, delete_btn);
-
-    // === 删除按钮创建结束 ===
-
-    if(is_aiprocess_entry_aiset_back) {
-        if(AIModeSelect_GetMode() == AI_BEAUTY) {
-            photo_process_ai_beauty();
-        } else {
-            if(get_aiselete_scroll_handl() == NULL) {
-                if(AI_NONE != AIModeSelect_GetMode()) {
-                    photoAISelect_listCreat(ai_process_cont_s, ai_select_event_cb);
-                }
-            } else {
-                photoScroll_del_cb();
-            }
-        }
-    }
-
-    if(AIModeSelect_GetMode() == AI_VOICE_CUSTOM) {
-        rtt_init();
-    } else {
-        rtt_deinit();
-    }
-}
-
-void photo_process_ai_beauty(void)
-{
-    set_defalt_retval();
-    if (!check_battery_for_wifi(g_ui.page_photo.photoscr)) {
-        return;
-    }
-    if(get_aiprocess_result_timer == NULL) {
-        get_aiprocess_result_timer = lv_timer_create(aiprocessing_ui_update, 100, NULL);
-        lv_timer_ready(get_aiprocess_result_timer);
-    }
-    if(!is_processing) {
-        ai_process_state_set(AI_PROCESS_START);
-        is_processing = true;
-    } else {
-        MLOG_DBG("重复点击处理，此次点击忽略");
-    }
-}
 
 // 放大按键事件处理
 static void zoomin_key_cb(void)
@@ -1183,78 +755,6 @@ static void zoomout_key_cb(void)
     MODEMNG_SendMessage(&Msg);
     // 更新UI
     update_zoom_bar(new_level);
-}
-
-static void aiprocessing_ui_update(lv_timer_t *timer)
-{
-    // 获取容器中的各个对象
-    lv_obj_t *img = lv_obj_get_child(ai_process_cont_s, 0);
-    lv_obj_t *label = lv_obj_get_child(ai_process_cont_s, 1);
-    lv_obj_t *spinner = lv_obj_get_child(ai_process_cont_s, 2);
-
-
-    if(lv_obj_has_flag(label, LV_OBJ_FLAG_HIDDEN)) {
-        lv_obj_clear_flag(label, LV_OBJ_FLAG_HIDDEN);
-    }
-    if(lv_obj_has_flag(spinner, LV_OBJ_FLAG_HIDDEN)) {
-        lv_obj_clear_flag(spinner, LV_OBJ_FLAG_HIDDEN);
-    }
-
-    static uint8_t tips_tim = 0;
-
-    // 处理结果成功或失败
-    if(get_retval() != 0 && get_retval() != DEFALT_RETVAL) {
-        tips_tim++;
-        lv_obj_set_style_text_color(label, lv_color_hex(0xFF0000), LV_PART_MAIN | LV_STATE_DEFAULT);
-        if (get_retval() == -2) {
-            lv_label_set_text_fmt(label, "%s %s",
-                str_language_network_not_connected[get_curr_language()],
-                str_language_please_try_again[get_curr_language()]);
-        } else if(AIModeSelect_GetMode() == AI_BEAUTY && (get_retval() == -7 || get_retval() == -3)) {
-            lv_label_set_text(label, str_language_no_face_detected[get_curr_language()]);
-        } else {
-            lv_label_set_text_fmt(label, "处理失败,错误码：%d 请重试", get_retval());
-        }
-        lv_obj_add_flag(spinner, LV_OBJ_FLAG_HIDDEN);
-        // 清除处理结果路径
-        aiprocess_clean_cache();
-        is_processing = false;
-        if (tips_tim >= 20) {
-            lv_obj_add_flag(label, LV_OBJ_FLAG_HIDDEN);
-            tips_tim = 0;
-            if(get_aiprocess_result_timer != NULL) {
-                lv_timer_del(get_aiprocess_result_timer);
-                get_aiprocess_result_timer = NULL;
-            }
-        }
-    } else if (get_retval() == 0) {
-        char display_path[256];
-        snprintf(display_path, sizeof(display_path), "%s", process_result_get_thumbnail());
-        lv_image_set_src(img, display_path);
-        lv_obj_add_flag(label, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_add_flag(spinner, LV_OBJ_FLAG_HIDDEN);
-
-        is_processing = false;
-        if(get_aiprocess_result_timer != NULL) {
-            lv_timer_del(get_aiprocess_result_timer);
-            get_aiprocess_result_timer = NULL;
-        }
-    } else {
-        tips_tim = 0;
-        static uint8_t leave_tips = 0;
-        const char *text = lv_label_get_text(label);
-        lv_obj_set_style_text_color(label, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
-
-        if(strcmp(text, str_language_processing_please_do_not_leave[get_curr_language()]) == 0) {
-            leave_tips++;
-            if(leave_tips >= 10) {
-                lv_label_set_text(label, "处理中...");
-                leave_tips = 0;
-            }
-        } else {
-            lv_label_set_text(label, "处理中...");
-        }
-    }
 }
 
 // 隐藏所有控件并保存状态
@@ -1320,132 +820,6 @@ void restore_all_widgets(void)
     g_widget_count = 0;
     g_max_widgets = 0;
 }
-// 删除按钮点击事件处理函数
-static void delete_ai_result_cb(lv_event_t *e)
-{
-    lv_event_code_t code = lv_event_get_code(e);
-
-    if(code == LV_EVENT_CLICKED) {
-        MLOG_DBG("用户点击删除AI处理结果按钮, get_retval():%d  is_processing:%d\n", get_retval(), is_processing);
-        // 获取AI处理结果图片路径
-        char *result_path = NULL;
-        if(get_retval() == 0) {
-            result_path = process_result_get();
-            create_simple_delete_dialog(result_path); // 创建确认浮窗
-            goto DISPLAY;
-        } else if(get_retval() != 0 && is_processing == false) {
-            result_path = pic_filepath;
-        } else if(is_processing == true) {
-            lv_obj_t *label = lv_obj_get_child(ai_process_cont_s, 1);
-            lv_label_set_text(label, str_language_processing_please_do_not_leave[get_curr_language()]);
-            return;
-        }
-        if(result_path == NULL || strlen(result_path) == 0) {
-            MLOG_DBG("无AI处理结果可删除\n");
-            return;
-        }
-
-        // 规范化路径，移除多余的斜杠
-        normalize_path(result_path);
-        MLOG_DBG("规范化后的路径: %s\n", result_path);
-
-        // 检查文件是否存在
-        char *real_path = strchr(result_path, '/');
-        if(real_path == NULL) {
-            real_path = result_path;
-        }
-
-        // 提取文件名
-        char *filename = strrchr(real_path, '/');
-        if(filename == NULL) {
-            filename = (char *)real_path;
-        } else {
-            filename++; // 跳过 '/'
-        }
-
-        MLOG_DBG("待删除的主文件: %s\n", real_path);
-        MLOG_DBG("文件名: %s\n", filename);
-
-        // 构建缩略图路径
-        char thumbnail_path_small[100] = {0};
-        char thumbnail_path_large[100] = {0};
-
-        // 小缩略图路径
-        get_thumbnail_path(filename, thumbnail_path_small, sizeof(thumbnail_path_small), PHOTO_SMALL_PATH);
-        // 大缩略图路径
-        get_thumbnail_path(filename, thumbnail_path_large, sizeof(thumbnail_path_large), PHOTO_LARGE_PATH);
-
-        // 处理真实路径（移除"A:"前缀）
-        char *real_path_small = strchr(thumbnail_path_small, '/');
-        char *real_path_large = strchr(thumbnail_path_large, '/');
-
-        if(real_path_small == NULL) real_path_small = thumbnail_path_small;
-        if(real_path_large == NULL) real_path_large = thumbnail_path_large;
-
-        // 删除所有相关文件
-        char cmd[512]    = {0};
-        int delete_count = 0;
-        int total_files  = 0;
-
-        // 检查并删除小缩略图
-        if(access(real_path_small, F_OK) == 0) {
-            total_files++;
-            snprintf(cmd, sizeof(cmd), "rm -f \"%s\"", real_path_small);
-            MLOG_DBG("执行删除命令: %s\n", cmd);
-            if(system(cmd) == 0) {
-                MLOG_DBG("成功删除小缩略图: %s\n", real_path_small);
-                delete_count++;
-            } else {
-                MLOG_ERR("删除小缩略图失败: %s\n", real_path_small);
-            }
-        } else {
-            MLOG_DBG("小缩略图不存在: %s\n", real_path_small);
-        }
-
-        // 检查并删除大缩略图
-        if(access(real_path_large, F_OK) == 0) {
-            total_files++;
-            snprintf(cmd, sizeof(cmd), "rm -f \"%s\"", real_path_large);
-            MLOG_DBG("执行删除命令: %s\n", cmd);
-            if(system(cmd) == 0) {
-                MLOG_DBG("成功删除大缩略图: %s\n", real_path_large);
-                delete_count++;
-            } else {
-                MLOG_ERR("删除大缩略图失败: %s\n", real_path_large);
-            }
-        } else {
-            MLOG_DBG("大缩略图不存在: %s\n", real_path_large);
-        }
-
-        // 检查并删除主文件
-        if(access(real_path, F_OK) == 0) {
-            total_files++;
-            snprintf(cmd, sizeof(cmd), "rm -f \"%s\"", real_path);
-            MLOG_DBG("执行删除命令: %s\n", cmd);
-            if(system(cmd) == 0) {
-                MLOG_DBG("成功删除主文件: %s\n", real_path);
-                delete_count++;
-            } else {
-                MLOG_ERR("删除主文件失败: %s\n", real_path);
-            }
-
-            // 从文件管理器中移除文件记录
-            FILEMNG_DelFile(0, real_path);
-        } else {
-            MLOG_DBG("主文件不存在: %s\n", real_path);
-        }
-        MLOG_DBG("总共尝试删除 %d 个文件，成功删除 %d 个\n", total_files, delete_count);
-
-    DISPLAY:
-        if(get_retval() == 0) {
-            sure_delete_register_callback(ai_result_delete_after_cb);
-        } else if(ai_process_cont_s != NULL && lv_obj_is_valid(ai_process_cont_s)) {
-            is_aiprocess_entry_aiset_back = false;
-            lv_obj_add_flag(ai_process_cont_s, LV_OBJ_FLAG_HIDDEN);
-            register_all_key();
-        }
-    }
-}
 
 static void wifi_return_to_home_photo(void *user_data)
 {
@@ -1483,160 +857,15 @@ void register_all_key(void)
     takephoto_register_callback(key_takephoto_callback);
     takephoto_register_menu_callback(photo_menu_callback);
     takephoto_register_mode_callback(photo_mode_callback);
-    takephoto_register_ok_callback(photo_ok_callback);
-    takephoto_register_long_menu_callback(photo_long_menu_callback);
     takephoto_register_play_callback(photo_play_callback);
     takephoto_register_up_callback(photo_redlight_callback);
     takephoto_register_down_callback(photo_redlight_callback);
     takephoto_register_zoomin_callback(zoomin_key_cb);
     takephoto_register_zoomout_callback(zoomout_key_cb);
-    takephoto_register_left_callback(photo_left_callback);
-    takephoto_register_right_callback(photo_right_callback);
     takephoto_register_before_callback(key_takephoto_before_callback);
     takephoto_power_callback(key_takephoto_power_callback);
 }
 
-static void aiprocess_key_callback(int key_code, int key_value)
-{
-    if(key_code == KEY_MENU && key_value == 1) {
-        photo_menu_callback();
-    } else if(key_code == KEY_PLAY && key_value == 1) {
-        photo_play_callback();
-    } else if((key_code == KEY_LEFT || key_code == KEY_RIGHT) && key_value == 1) {
-        if(key_code == KEY_RIGHT) {
-            AISelect_next();
-        } else {
-            AISelect_prev();
-        }
-    } else if(key_code == KEY_DOWN && key_value == 1) {
-        photo_key_down_callback();
-    } else if(key_code == KEY_OK && key_value == 1) {
-        extern int g_current_selected_index;
-        start_aiprocess(g_current_selected_index);
-    } else if (key_code == KEY_CAMERA && key_value == 1) {
-        if (!lv_obj_has_flag(ai_process_cont_s, LV_OBJ_FLAG_HIDDEN)) {
-            if (!is_processing) {
-                lv_obj_add_flag(ai_process_cont_s, LV_OBJ_FLAG_HIDDEN);
-                register_all_key();
-            } else {
-                lv_obj_t* label = lv_obj_get_child(ai_process_cont_s, 1);
-                lv_label_set_text(label, str_language_processing_please_do_not_leave[get_curr_language()]);
-            }
-        }
-    }
-}
-
-// 风格提示词数组，与scene_btn_labels顺序对应
-const char* style_prompts[] = {
-    "将这张照片重绘成 3D 风格",
-    "将这张照片重绘成 写实风 风格",
-    "将这张照片重绘成 天使风 风格",
-    "将这张照片重绘成 动漫风 风格",
-    "将这张照片重绘成 日漫风 风格",
-    "将这张照片重绘成 公主风 风格",
-    "将这张照片重绘成 梦幻风 风格",
-    "将这张照片重绘成 水墨风 风格",
-    "将这张照片重绘成 新莫奈花园风 风格",
-    "将这张照片重绘成 水彩风 风格",
-    "将这张照片重绘成 莫奈花园风 风格",
-    "将这张照片重绘成 精致美漫 风格",
-    "将这张照片重绘成 赛博机械 风格",
-    "将这张照片重绘成 精致韩漫 风格",
-    "将这张照片重绘成 国风-水墨 风格",
-    "将这张照片重绘成 浪漫光影 风格",
-    "将这张照片重绘成 瓷娃娃 风格",
-    "将这张照片重绘成 中国红 风格",
-    "将这张照片重绘成 丑萌粘土 风格",
-    "将这张照片重绘成 可爱玩偶 风格",
-    "将这张照片重绘成 3D游戏Z世代风 风格",
-    "将这张照片重绘成 动画电影 风格",
-    "将这张照片重绘成 玩偶 风格",
-    "将这张照片重绘成 青年15岁 风格，年轻，稚嫩",
-    "将这张照片重绘成 中年35岁 风格，成熟，稳重",
-    "将这张照片重绘成 老年80岁 风格，白发，皱纹",
-};
-
-// 背景提示词数组，与scene_btn_labels顺序对应
-const char* bg_prompts[] = {
-    "保证图片的主体不变 将这张照片的背景换成 长城落日",
-    "保证图片的主体不变 将这张照片的背景换成 山谷",
-    "保证图片的主体不变 将这张照片的背景换成 秋季落叶",
-    "保证图片的主体不变 将这张照片的背景换成 冬季雪景",
-    "保证图片的主体不变 将这张照片的背景换成 操场",
-    "保证图片的主体不变 将这张照片的背景换成 沙滩",
-};
-
-void start_aiprocess(const int index)
-{
-    if (!check_battery_for_wifi(g_ui.page_photo.photoscr)) {
-        return;
-    }
-    // 获取容器中的图片和标签对象
-    lv_obj_t *img          = lv_obj_get_child(ai_process_cont_s, 0);
-    lv_obj_t *label        = lv_obj_get_child(ai_process_cont_s, 1);
-    lv_obj_t *spinner      = lv_obj_get_child(ai_process_cont_s, 2);
-    const char *result_img = get_ai_process_result_img_data(0);
-
-    lv_image_set_src(img, result_img); // 每次点击，都需要先显示一下原图
-    lv_obj_remove_flag(label, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_remove_flag(spinner, LV_OBJ_FLAG_HIDDEN);
-    set_defalt_retval();
-    if (AIModeSelect_GetMode() == AI_SCENE_CHANGE) {
-        MLOG_DBG("开始处理图像风格转换，提示词: %s\n", style_prompts[index]);
-        aiprocess_set_prompt(style_prompts[index]);
-    } else if (AIModeSelect_GetMode() == AI_BG_CHANGE) {
-        MLOG_DBG("开始处理图像背景替换，提示词: %s\n", bg_prompts[index]);
-        aiprocess_set_prompt(bg_prompts[index]);
-    }
-
-    if (get_aiprocess_result_timer == NULL) {
-        get_aiprocess_result_timer = lv_timer_create(aiprocessing_ui_update, 100, NULL);
-        lv_timer_ready(get_aiprocess_result_timer);
-    }
-    if(!is_processing) {
-        ai_process_state_set(AI_PROCESS_START);
-        is_processing = true;
-    } else {
-        MLOG_DBG("重复点击处理，此次点击忽略");
-    }
-}
-
-static void album_start_ai_custom_process(const char* text)
-{
-    if(text == NULL) {
-        return;
-    }
-    if (!check_battery_for_wifi(g_ui.page_photo.photoscr)) {
-        return;
-    }
-
-    // 获取容器中的图片和标签对象
-    lv_obj_t *img          = lv_obj_get_child(ai_process_cont_s, 0);
-    lv_obj_t *label        = lv_obj_get_child(ai_process_cont_s, 1);
-    lv_obj_t *spinner      = lv_obj_get_child(ai_process_cont_s, 2);
-    const char *result_img = get_ai_process_result_img_data(0);
-
-    lv_image_set_src(img, result_img); // 每次点击，都需要先显示一下原图
-    lv_obj_remove_flag(label, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_remove_flag(spinner, LV_OBJ_FLAG_HIDDEN);
-    set_defalt_retval();
-
-    if ((AIModeSelect_GetMode() == AI_VOICE_CUSTOM)) {
-        MLOG_DBG("自定义提示词: %s\n", text);
-        aiprocess_set_prompt(text);
-    }
-
-    if (get_aiprocess_result_timer == NULL) {
-        get_aiprocess_result_timer = lv_timer_create(aiprocessing_ui_update, 100, NULL);
-        lv_timer_ready(get_aiprocess_result_timer);
-    }
-    if(!is_processing) {
-        ai_process_state_set(AI_PROCESS_START);
-        is_processing = true;
-    } else {
-        MLOG_DBG("重复点击处理，此次点击忽略");
-    }
-}
 
 // 渐隐动画完成回调
 void photoanimCompleted_objDel_cb(lv_anim_t *a)
@@ -1666,77 +895,6 @@ static void photoEffect_Select_event_cb(lv_event_t *e)
             }
             // Update current screen layout.
             lv_obj_update_layout(g_ui.page_photo.photoscr);
-        } break;
-        default: break;
-    }
-}
-
-static void ai_result_delete_after_cb(void)
-{
-    // 获取UI对象
-    lv_obj_t *img = lv_obj_get_child(ai_process_cont_s, 0);
-    // 更新UI
-    if(img != NULL && lv_obj_is_valid(img)) {
-        // 切换到原图显示
-        const char *original_img = get_ai_process_result_img_data(0);
-        lv_image_set_src(img, original_img);
-        MLOG_DBG("已切换到原图显示\n");
-    }
-    // 清除处理结果路径
-    aiprocess_clean_cache();
-    // 重置处理状态
-    is_processing = false;
-    set_defalt_retval();
-}
-
-static void rtt_get_text_timer_cb(lv_timer_t *timer)
-{
-    char* custom_voice_text = NULL;
-    int32_t ret = 0;
-    ret = rtt_get_text(&custom_voice_text);
-    if(ret != RTT_SUCCESS) {
-        MLOG_INFO("text: %s\n", custom_voice_text);
-        if(rtt_get_text_timer) {
-            lv_timer_del(rtt_get_text_timer);
-            rtt_get_text_timer = NULL;
-        }
-        rtt_reset();
-        return;
-    }
-
-    if(custom_voice_text != NULL) {
-        MLOG_INFO("text: %s\n", custom_voice_text);
-        if(strlen(custom_voice_text) > 0) {
-            voice_text_set(custom_voice_text);
-        }
-    }
-
-    if((rtt_is_finial() && ai_custom_is_confire)) {
-        if(rtt_get_text_timer) {
-            lv_timer_del(rtt_get_text_timer);
-            rtt_get_text_timer = NULL;
-        }
-        album_start_ai_custom_process(custom_voice_text);
-    } else {
-        lv_timer_reset(timer);
-    }
-}
-
-static void ai_process_float_back_cb(lv_event_t *e)
-{
-    lv_event_code_t code = lv_event_get_code(e);
-    MLOG_DBG("event: %s\n", lv_event_code_get_name(code));
-    switch(code) {
-        case LV_EVENT_CLICKED: {
-            if(!lv_obj_has_flag(ai_process_cont_s, LV_OBJ_FLAG_HIDDEN)) {
-                if(!is_processing) {
-                    lv_obj_add_flag(ai_process_cont_s, LV_OBJ_FLAG_HIDDEN);
-                    register_all_key();
-                } else {
-                    lv_obj_t *label = lv_obj_get_child(ai_process_cont_s, 1);
-                    lv_label_set_text(label, str_language_processing_please_do_not_leave[get_curr_language()]);
-                }
-            }
         } break;
         default: break;
     }
