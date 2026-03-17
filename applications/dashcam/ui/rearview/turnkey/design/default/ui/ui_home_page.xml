@@ -1,0 +1,37 @@
+<window name="ui_home_page" style:normal:bg_color="#00000000">
+  <view name="top_view" x="10" y="0" w="1300" h="64">
+    <image name="home_record" x="126" y="0" w="64" h="64" draw_type="default" image="home_record_normal" visible="false"/>
+    <slider name="slider" x="801" y="13" w="300" h="28" style:normal:round_radius="10" slide_with_bar="true" dragger_adapt_to_icon="true" style:pressed:icon="rounded_n" style:pressed:round_radius="10" style:over:icon="rounded_n" style:over:round_radius="10" style:disable:round_radius="10" style:focused:round_radius="10" style:focused:icon="rounded_n" bar_size="0" vertical="false" dragger_size="28" style:normal:fg_color="#00B0F0" style:normal:bg_color="#FFFFFF" style:pressed:fg_color="#00B0F0" style:pressed:bg_color="#FFFFFF" value="50"/>
+  </view>
+  <view name="time_view" x="1510" y="230" w="400" h="200">
+    <digit_clock name="digit_clock_year" x="36" y="119" w="320" h="48" format="Y-MM-DD" style:normal:font_size="50" style:normal:text_color="#FFFFFF"/>
+    <digit_clock name="digit_clock_hour" x="36" y="10" w="320" h="99" format="hh:mm" style:normal:font_size="100" style:normal:text_color="#FFFFFF"/>
+  </view>
+  <view name="home_setup_view" x="638" y="360" w="730" h="70">
+    <button name="home_sos_button" x="10" y="0" w="64" h="64" style:normal:icon="" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" feedback="true" style:pressed:border_color="#00000000" style:pressed:text_color="#00000000" style:pressed:bg_color="#00000000" style:pressed:icon="" text="">
+      <image name="sos_image" x="0" y="0" w="64" h="64" draw_type="default" image="lock_black"/>
+    </button>
+    <button name="home_photo_button" x="101" y="0" w="64" h="64" style:normal:icon="photo_black" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" feedback="true" style:pressed:bg_color="#00000000" style:pressed:border_color="#00000000" style:pressed:icon="photo_blue" text=""/>
+    <button name="home_videochange_button" x="188" y="0" w="64" h="64" style:normal:icon="change_black" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" feedback="true" style:pressed:border_color="#00000000" style:pressed:bg_color="#00000000" style:pressed:icon="change_blue" text=""/>
+    <button name="home_startrec_button" x="280" y="0" w="64" h="64" style:normal:icon="rec_black" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" feedback="true" style:pressed:border_color="#00000000" style:pressed:bg_color="#00000000" style:pressed:icon="rec_blue" text=""/>
+    <button name="home_setup_button" x="375" y="0" w="64" h="64" style:normal:icon="sys_black" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" feedback="true" style:focused:icon="" style:pressed:border_color="#00000000" style:pressed:bg_color="#00000000" style:pressed:icon="sys_blue" text=""/>
+    <button name="home_playback_button" x="464" y="0" w="64" h="64" style:normal:icon="dec_black" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" feedback="true" style:pressed:border_color="#00000000" style:pressed:bg_color="#00000000" style:pressed:icon="dec_blue" text=""/>
+    <button name="home_audio_button" x="548" y="0" w="64" h="64" style:normal:icon="mic_black" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" feedback="true" style:focused:border_color="#00000000" style:focused:icon="" focusable="false" with_focus_state="false" style:normal:bg_image="" visible="true" style:focused:bg_color="#00000000" style:pressed:border_color="#00000000" style:pressed:bg_color="#00000000" style:pressed:icon="mic_blue" style:focused:bg_image="" text="">
+      <image name="audio_image" x="0" y="0" w="64" h="64" draw_type="default" visible="true"/>
+    </button>
+    <button name="home_wifi_button" x="628" y="0" w="64" h="64" style:normal:icon="wifi_black" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" feedback="true" style:focused:border_color="#00000000" style:focused:icon="" focusable="false" with_focus_state="false" style:normal:bg_image="" visible="true" style:focused:bg_color="#00000000" style:pressed:border_color="#00000000" style:pressed:bg_color="#00000000" style:pressed:icon="wifi_blue" style:focused:bg_image="" text="">
+      <image name="wifi_image" x="0" y="0" w="64" h="64" draw_type="default" visible="true"/>
+    </button>
+    <button name="home_speech_button" x="718" y="0" w="64" h="64" style:normal:icon="speech_black" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" feedback="true" style:focused:border_color="#00000000" style:focused:icon="" focusable="false" with_focus_state="false" style:normal:bg_image="" visible="false" style:focused:bg_color="#00000000" style:pressed:border_color="#00000000" style:pressed:bg_color="#00000000" style:pressed:icon="speech_blue" style:focused:bg_image="" text="">
+        <image name="speech_image" x="0" y="0" w="64" h="64" draw_type="default" visible="false"/>
+    </button>
+  </view>
+  <view name="buttom_view" x="1215" y="10" w="500" h="64">
+    <progress_bar name="progress_bar" x="518" y="0" w="31" h="64" show_text="true" vertical="true" value="40"/>
+    <image name="audio_btm_image" x="438" y="0" w="64" h="64" draw_type="default" style:normal:icon="" image="audio_mic"/>
+    <image name="wifi_btm_image" x="374" y="0" w="64" h="64" draw_type="default" image="wifi_on"/>
+    <image name="res_image" x="250" y="0" w="124" h="64" draw_type="default" image="1080P"/>
+    <image name="loop_image" x="105" y="0" w="124" h="64" draw_type="default" image="one_min"/>
+    <image name="speech_btm_image" x="0" y="0" w="80" h="80" draw_type="default" style:normal:icon="" image="speech_white" visible="false"/>
+  </view>
+</window>

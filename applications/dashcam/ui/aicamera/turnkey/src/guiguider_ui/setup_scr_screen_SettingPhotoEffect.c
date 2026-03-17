@@ -1,0 +1,228 @@
+/*
+ * Copyright 2025 NXP
+ * NXP Proprietary. This software is owned or controlled by NXP and may only be used strictly in
+ * accordance with the applicable license terms. By expressly accepting such terms or by downloading, installing,
+ * activating and/or otherwise using the software, you are agreeing that you have read, and that you agree to
+ * comply with and are bound by, such license terms.  If you do not agree to be bound by the applicable license
+ * terms, then you may not retain, install, activate or otherwise use the software.
+ */
+
+#include "lvgl.h"
+#include <stdio.h>
+#include "gui_guider.h"
+#include "events_init.h"
+#include "ui_common.h"
+
+#include "custom.h"
+extern char g_button_labelPho[32];
+extern lv_style_t ttf_font_22;
+
+/* 创建功能按钮 */
+const char *g_btn_labels[] = {"普通", "黑白", "胶片", "鲜艳", "绿色",   "日落",  "暖色",
+        "冷色", "过曝", "红外线", "二值", "高饱和", "低饱和"};
+
+// 添加按钮事件处理函数
+static void screen_SettingPhotoEffect_btn_event_handler(lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    MESSAGE_S event = {0};
+    int32_t i = 0;
+    uint32_t mode = WORK_MODE_BUTT;
+    switch(code) {
+        case LV_EVENT_CLICKED: {
+            lv_obj_t *btn_clicked = lv_event_get_target(e);
+            lv_obj_t *cont        = lv_event_get_user_data(e); // 获取容器对象
+            if(!cont) return;                                  // 如果容器为空则返回
+
+            lv_obj_t *child;
+            for(child = lv_obj_get_child(cont, 0); child != NULL;
+                child = lv_obj_get_child(cont, lv_obj_get_index(child) + 1)) {
+                if(lv_obj_check_type(child, &lv_button_class)) {
+                    if(child == btn_clicked) {
+                        // 获取按钮标签文本
+                        lv_obj_t *label = lv_obj_get_child(child, 0);
+                        if(label && lv_obj_check_type(label, &lv_label_class)) {
+                            const char *txt = lv_label_get_text(label);
+                            if(txt) strncpy(g_button_labelPho, txt, sizeof(g_button_labelPho) - 1);
+
+                            MLOG_DBG("switch to %s\n", g_button_labelPho);
+                            event.topic = EVENT_MODEMNG_SETTING;
+                            MODEMNG_GetCurMode(&mode);
+                            if(mode == WORK_MODE_MOVIE) {
+                                event.arg1 = PARAM_MENU_VIDEO_EFFECT;
+                            } else if(mode == WORK_MODE_PHOTO) {
+                                event.arg1 = PARAM_MENU_PHOTO_EFFECT;
+                            } else {
+                                MLOG_ERR("mode(%d) is not support\n", mode);
+                                continue;
+                            }
+                            for (i = 0; i < MAPI_VCAP_EFFECT_BUTT; i++) {
+                                if (strcmp(g_button_labelPho, g_btn_labels[i]) == 0) {
+                                    event.arg2 = i;
+                                    break;
+                                }
+                            }
+                            if (i == MAPI_VCAP_EFFECT_BUTT) {
+                                MLOG_ERR("don't support %s\n", g_button_labelPho);
+                            } else {
+                                MODEMNG_SendMessage(&event);
+                            }
+                        }
+                        lv_obj_add_state(child, LV_STATE_PRESSED);
+                        lv_obj_set_style_border_color(child, lv_color_hex(0xFF0000), LV_PART_MAIN);
+                    } else {
+                        lv_obj_clear_state(child, LV_STATE_PRESSED);
+                        lv_obj_set_style_border_color(child, lv_color_hex(0xCCCCCC), LV_PART_MAIN);
+                    }
+                }
+            }
+            break;
+        }
+        default: break;
+    }
+}
+
+void setup_scr_screen_SettingPhotoEffect(lv_ui_t *ui)
+{
+    // Write codes screen_SettingPhotoEffect
+    ui->screen_SettingPhotoEffect = lv_obj_create(NULL);
+    lv_obj_set_size(ui->screen_SettingPhotoEffect, 640, 480);
+    lv_obj_set_scrollbar_mode(ui->screen_SettingPhotoEffect, LV_SCROLLBAR_MODE_OFF);
+    lv_obj_set_style_pad_all(ui->screen_SettingPhotoEffect, 0, 0);
+
+    // Write style for screen_SettingPhotoEffect, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
+    lv_obj_set_style_bg_opa(ui->screen_SettingPhotoEffect, LV_OPA_TRANSP, LV_PART_MAIN);
+    lv_obj_set_style_bg_opa(lv_layer_bottom(), LV_OPA_TRANSP, LV_PART_MAIN);
+    lv_obj_set_style_bg_opa(ui->screen_SettingPhotoEffect, LV_OPA_0, LV_PART_MAIN);
+
+    // Write codes screen_SettingPhotoEffect_cont_top (顶部栏)
+    ui->screen_SettingPhotoEffect_cont_top = lv_obj_create(ui->screen_SettingPhotoEffect);
+    lv_obj_set_pos(ui->screen_SettingPhotoEffect_cont_top, 0, 0);
+    lv_obj_set_size(ui->screen_SettingPhotoEffect_cont_top, 640, 60);
+    lv_obj_set_scrollbar_mode(ui->screen_SettingPhotoEffect_cont_top, LV_SCROLLBAR_MODE_OFF);
+
+    // Write style for screen_SettingPhotoEffect_cont_top, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
+    lv_obj_set_style_border_width(ui->screen_SettingPhotoEffect_cont_top, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->screen_SettingPhotoEffect_cont_top, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui->screen_SettingPhotoEffect_cont_top, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->screen_SettingPhotoEffect_cont_top, lv_color_hex(0x2A2A2A),
+                              LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_dir(ui->screen_SettingPhotoEffect_cont_top, LV_GRAD_DIR_NONE,
+                                 LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(ui->screen_SettingPhotoEffect_cont_top, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_bottom(ui->screen_SettingPhotoEffect_cont_top, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_left(ui->screen_SettingPhotoEffect_cont_top, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_right(ui->screen_SettingPhotoEffect_cont_top, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(ui->screen_SettingPhotoEffect_cont_top, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // Write codes screen_SettingPhotoEffect_btn_back (返回按钮)
+    ui->screen_SettingPhotoEffect_btn_back = lv_button_create(ui->screen_SettingPhotoEffect_cont_top);
+    lv_obj_set_pos(ui->screen_SettingPhotoEffect_btn_back, 4, 4);
+    lv_obj_set_size(ui->screen_SettingPhotoEffect_btn_back, 60, 52);
+    ui->screen_SettingPhotoEffect_btn_back_label = lv_label_create(ui->screen_SettingPhotoEffect_btn_back);
+    lv_label_set_text(ui->screen_SettingPhotoEffect_btn_back_label, "" LV_SYMBOL_LEFT " ");
+    lv_label_set_long_mode(ui->screen_SettingPhotoEffect_btn_back_label, LV_LABEL_LONG_WRAP);
+    lv_obj_align(ui->screen_SettingPhotoEffect_btn_back_label, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_style_pad_all(ui->screen_SettingPhotoEffect_btn_back, 0, LV_STATE_DEFAULT);
+    lv_obj_set_width(ui->screen_SettingPhotoEffect_btn_back_label, LV_PCT(100));
+
+    // Write style for screen_SettingPhotoEffect_btn_back, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
+    lv_obj_set_style_bg_opa(ui->screen_SettingPhotoEffect_btn_back, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->screen_SettingPhotoEffect_btn_back, lv_color_hex(0xFFD600),
+                              LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(ui->screen_SettingPhotoEffect_btn_back, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->screen_SettingPhotoEffect_btn_back, 20, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(ui->screen_SettingPhotoEffect_btn_back, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(ui->screen_SettingPhotoEffect_btn_back, lv_color_hex(0x1A1A1A),
+                                LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->screen_SettingPhotoEffect_btn_back, &lv_font_montserratMedium_13,
+                               LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(ui->screen_SettingPhotoEffect_btn_back, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(ui->screen_SettingPhotoEffect_btn_back, LV_TEXT_ALIGN_CENTER,
+                                LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // Write codes screen_SettingPhotoEffect_label_title (标题)
+    ui->screen_SettingPhotoEffect_label_title = lv_label_create(ui->screen_SettingPhotoEffect_cont_top);
+    lv_label_set_text(ui->screen_SettingPhotoEffect_label_title, "摄影效果");
+    lv_label_set_long_mode(ui->screen_SettingPhotoEffect_label_title, LV_LABEL_LONG_WRAP);
+    font_setting(ui->screen_SettingPhotoEffect_label_title, FONT_SC16,
+                 (font_size_config_t){.mode = FONT_SIZE_MODE_CUSTOM, .size = FONT_SIZE_24}, 0xFFFFFF, 280, 20);
+    // lv_obj_align(ui->screen_SettingPhotoEffect_label_title, LV_ALIGN_TOP_MID, 0, 20);
+
+    // Write codes screen_SettingPhotoEffect_cont_settings (设置选项容器)
+    ui->screen_SettingPhotoEffect_cont_settings = lv_obj_create(ui->screen_SettingPhotoEffect);
+    lv_obj_set_size(ui->screen_SettingPhotoEffect_cont_settings, 600, 320);
+    lv_obj_align(ui->screen_SettingPhotoEffect_cont_settings, LV_ALIGN_TOP_MID, 0, 80);
+    lv_obj_set_style_bg_opa(ui->screen_SettingPhotoEffect_cont_settings, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(ui->screen_SettingPhotoEffect_cont_settings, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_flex_flow(ui->screen_SettingPhotoEffect_cont_settings, LV_FLEX_FLOW_COLUMN);
+    lv_obj_set_flex_align(ui->screen_SettingPhotoEffect_cont_settings, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER,
+                          LV_FLEX_ALIGN_CENTER);
+    lv_obj_set_style_pad_all(ui->screen_SettingPhotoEffect_cont_settings, 10, 0);
+
+    for(int i = 0; i < 13; i++) {
+        lv_obj_t *btn = lv_button_create(ui->screen_SettingPhotoEffect_cont_settings);
+        if(!btn) continue; // 如果按钮创建失败则跳过
+
+        lv_obj_set_size(btn, 560, 40);
+        lv_obj_set_style_bg_opa(btn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_border_width(btn, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_border_color(btn, lv_color_hex(0xCCCCCC), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_radius(btn, 5, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+        lv_obj_t *label = lv_label_create(btn);
+        if(!label) continue; // 如果标签创建失败则跳过
+
+        lv_label_set_text(label, g_btn_labels[i]);
+        // font_setting(label, FONT_SC16, (font_size_config_t){.mode = FONT_SIZE_MODE_CUSTOM, .size = FONT_SIZE_22},
+        //              0xFFFFFF, 0, 0);
+        lv_obj_add_style(label, &ttf_font_22, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_align(label, LV_ALIGN_CENTER, 0, 0);
+
+        // 添加事件处理器，传入容器对象作为用户数据
+        lv_obj_add_event_cb(btn, screen_SettingPhotoEffect_btn_event_handler, LV_EVENT_ALL,
+                            ui->screen_SettingPhotoEffect_cont_settings);
+    }
+
+    // Write codes screen_SettingPhotoEffect_cont_bottom (底部栏)
+    ui->screen_SettingPhotoEffect_cont_bottom = lv_obj_create(ui->screen_SettingPhotoEffect);
+    lv_obj_set_pos(ui->screen_SettingPhotoEffect_cont_bottom, 0, 420);
+    lv_obj_set_size(ui->screen_SettingPhotoEffect_cont_bottom, 640, 60);
+    lv_obj_set_style_bg_color(ui->screen_SettingPhotoEffect_cont_bottom, lv_color_hex(0x2A2A2A),
+                              LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui->screen_SettingPhotoEffect_cont_bottom, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(ui->screen_SettingPhotoEffect_cont_bottom, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->screen_SettingPhotoEffect_cont_bottom, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // The custom code of screen_SettingPhotoEffect.
+    lv_obj_t *child;
+    for(child = lv_obj_get_child(ui->screen_SettingPhotoEffect_cont_settings, 0); child != NULL;
+        child = lv_obj_get_child(ui->screen_SettingPhotoEffect_cont_settings, lv_obj_get_index(child) + 1)) {
+        if(lv_obj_check_type(child, &lv_button_class)) {
+            // 获取按钮标签文本
+            lv_obj_t *label = lv_obj_get_child(child, 0);
+            if(label && lv_obj_check_type(label, &lv_label_class)) {
+                const char *txt = lv_label_get_text(label);
+
+                // 检查是否匹配目标标签
+                if(txt && strcmp(txt, g_button_labelPho) == 0) {
+                    // 设置匹配按钮的样式和状态
+                    lv_obj_set_style_border_color(child, lv_color_hex(0xFF0000), LV_PART_MAIN);
+                    lv_obj_add_state(child, LV_STATE_PRESSED);
+                } else {
+                    // 清除其他按钮的PRESSED状态
+                    if(lv_obj_has_state(child, LV_STATE_PRESSED)) {
+                        lv_obj_clear_state(child, LV_STATE_PRESSED);
+                        lv_obj_set_style_border_color(child, lv_color_hex(0xCCCCCC), LV_PART_MAIN);
+                    }
+                }
+            }
+        }
+    }
+
+    // Update current screen layout.
+    lv_obj_update_layout(ui->screen_SettingPhotoEffect);
+
+    // Init events for screen.
+    events_init_screen_SettingPhotoEffect(ui);
+}

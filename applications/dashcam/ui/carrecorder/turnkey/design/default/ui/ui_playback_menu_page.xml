@@ -1,0 +1,15 @@
+<?xml ruler_x="833" ruler_y="326"?>
+<window name="ui_playback_menu_page" style:normal:bg_color="#000000">
+  <scroll_view name="scroll_view" x="120" y="30" w="560" h="272" yslidable="true" snap_to_page="false" move_to_page="false">
+    <button name="delete_button" x="22" y="22" w="88" h="106" style:normal:border_color="#00000000" style:normal:text_color="#FFFFFF" style:normal:text_align_v="bottom" style:normal:bg_color="#00000000" style:normal:icon_at="top" style:normal:icon="ICON_DELETE" style:focused:border_color="#00000000" style:focused:text_color="#FFFFFF" style:focused:bg_color="#00000000" style:focused:icon_at="top" style:focused:icon="ICON_DELETE_M" focusable="true" tr_text="STRID_DELETE_CURFILE"/>
+    <button name="delete_all_button" x="170" y="22" w="88" h="106" style:normal:border_color="#00000000" style:normal:text_color="#FFFFFF" style:normal:icon_at="top" style:normal:icon="ICON_DELETE_ALL" style:normal:bg_color="#00000000" style:focused:border_color="#00000000" style:focused:text_color="#FFFFFF" style:focused:bg_color="#00000000" style:focused:icon_at="top" style:focused:icon="ICON_DELETE_ALL_M" focusable="true" tr_text="STRID_DELETE_ALLFILE"/>
+  </scroll_view>
+  <view name="set_leftkey" x="0" y="0" w="50" h="320" style:normal:bg_color="#00000000" style:normal:round_radius_top_left="30" style:normal:round_radius_top_right="30" style:normal:round_radius_bottom_left="30" style:normal:round_radius_bottom_right="30">
+    <image name="keypower_image" x="0" y="40" w="50" h="50" draw_type="default" image="ICON_TIP_BACK"/>
+  </view>
+  <view name="set_rightkey" x="770" y="0" w="50" h="320" style:normal:bg_color="#25252596" style:normal:round_radius_top_left="30" style:normal:round_radius_top_right="30" style:normal:round_radius_bottom_left="30" style:normal:round_radius_bottom_right="30">
+    <image name="keyup_image" x="0" y="40" w="50" h="50" draw_type="default" image="ICON_ZZZZ_TIP_UP"/>
+    <image name="keymid_image" x="0" y="145" w="50" h="50" draw_type="default" image="ICON_ZZZZ_TIP_OK"/>
+    <image name="keydown_image" x="0" y="240" w="50" h="50" draw_type="default" image="ICON_ZZZZ_TIP_DOWN"/>
+  </view>
+</window>

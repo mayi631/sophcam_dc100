@@ -1,0 +1,27 @@
+<window name="ui_format_page">
+  <view name="view" x="640" y="0" w="640" h="75" style:normal:bg_color="#00B0F0">
+    <label name="title" x="230" y="22" w="200" h="32" style:normal:font_size="32" style:normal:text_align_h="left" tr_text="STRID_FORMAT_SD"/>
+    <button name="back_button" x="553" y="6" w="64" h="64" style:focused:bg_color="#00000000" style:normal:bg_color="#00000000" style:pressed:bg_color="#00000000" style:pressed:border_color="#00000000" style:pressed:icon="">
+      <property name="style:normal:border_color">
+        <![CDATA[#00000000]]>
+      </property>
+      <property name="style:normal:icon">
+        <![CDATA[settup_back]]>
+      </property>
+      <property name="style:over:bg_color">
+        <![CDATA[#00000000]]>
+      </property>
+      <property name="style:over:border_color">
+        <![CDATA[#00000000]]>
+      </property>
+      <property name="style:focused:border_color">
+        <![CDATA[#00000000]]>
+      </property>
+    </button>
+  </view>
+  <view name="foramt_view" x="640" y="75" w="640" h="365">
+    <label name="label" x="95" y="24" w="455" h="240" tr_text="STRID_FORMAT_SD_AT_ONCE"/>
+    <button name="confirm" x="95" y="308" w="100" h="36" style:normal:bg_color="#FFFFFF" tr_text="STRID_CONFIRM"/>
+    <button name="cancel" x="450" y="308" w="100" h="36" style:normal:bg_color="#FFFFFF" tr_text="STRID_CANCEL"/>
+  </view>
+</window>

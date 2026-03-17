@@ -1,0 +1,79 @@
+mainmenu "CViTek MediaSDK Configuration"
+
+source "applications/Kconfig"
+source "components/Kconfig"
+source "app_services/Kconfig"
+
+menu "OSS Configuration"
+config OSS_AWTKCODE
+	bool "OSS Awtkcode"
+	help
+		Say Y if you want to use OSS Awtkcode.
+
+config OSS_FFMPEG
+	bool "OSS FFMPEG"
+	help
+		Say Y if you want to use OSS FFMPEG.
+
+config OSS_THTTPD
+	bool "OSS THTTPD"
+	help
+		Say Y if you want to use OSS THTTPD.
+
+config OSS_LVGL
+	bool "OSS LVGL"
+	help
+		Say Y if you want to use OSS LVGL.
+
+endmenu
+
+menu "Compiler Configuration"
+
+menu "Chip Type"
+	config CV184X
+		bool "cv184X"
+	config CV181X
+		bool "cv181X"
+endmenu
+
+config CROSS_COMPILE
+	string
+	default "arm-none-linux-musleabihf-"
+	prompt "Cross compile toolchain prefix for application"
+
+config STATIC
+	bool "Build static binary (no shared libs)"
+	default n
+	help
+		If you want to build a static binary, which does not use
+		or require any shared libraries, enable this option.
+		Static binaries are larger, but do not require functioning
+		dynamic libraries to be present, which is important if used
+		as a system rescue tool.
+
+endmenu
+
+menu "CViTek Platform Configuration"
+config CVI_PLATFORM_DIR
+	string
+	default "${SRCTREE}/.."
+	prompt "Platform Path"
+config CVI_BUILD_DIRNAME
+	string
+	default "cv1842hp_cardv_spinor"
+	prompt "Platform Build DirName"
+config KOMOD_PATH
+	string
+	default "/system/ko"
+	prompt "Platform Ko Ptah"
+endmenu
+
+menu "Release Configuration"
+config RELEASE_DEFCONFIG_FILE
+	string
+	default "cv1842cp_sm3_81_dc309_defconfig"
+	prompt "Release defconfig file name"
+	help
+	  Specify the defconfig file name for release builds.
+	  This file should be located in the configs/ directory.
+endmenu

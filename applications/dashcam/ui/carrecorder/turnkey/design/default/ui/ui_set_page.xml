@@ -1,0 +1,494 @@
+<?xml ruler_x="68"?>
+<window name="ui_set_page" style:normal:bg_color="#000000">
+  <view name="set_leftkey" x="0" y="0" w="50" h="320" style:normal:bg_color="#00000000" style:normal:round_radius_top_left="30" style:normal:round_radius_top_right="30" style:normal:round_radius_bottom_left="30" style:normal:round_radius_bottom_right="30">
+    <image name="keypower_image" x="0" y="25" w="50" h="50" draw_type="default" image="ICON_TIP_BACK"/>
+    <label name="page_label" x="0" y="251" w="50" h="50" style:normal:font_size="24" style:normal:text_align_h="center" style:normal:text_color="#FFFFFF" text="1/3"/>
+  </view>
+  <view name="set_rightkey" x="765" y="0" w="50" h="320" style:normal:bg_color="#25252596" style:normal:round_radius_top_left="30" style:normal:round_radius_top_right="30" style:normal:round_radius_bottom_left="30" style:normal:round_radius_bottom_right="30">
+    <image name="keyup_image" x="0" y="40" w="50" h="50" draw_type="default" image="ICON_ZZZZ_TIP_UP"/>
+    <image name="keymid_image" x="0" y="145" w="50" h="50" draw_type="default" image="ICON_ZZZZ_TIP_OK"/>
+    <image name="keydown_image" x="0" y="240" w="50" h="50" draw_type="default" image="ICON_ZZZZ_TIP_DOWN"/>
+  </view>
+  <scroll_view name="scroll_view" x="120" y="0" w="560" h="320" yslidable="true" snap_to_page="false" move_to_page="false">
+    <button name="resolution_button" x="22" y="36" w="88" h="106" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" style:normal:bg_image="" style:normal:icon_at="top" style:normal:text_align_v="bottom" style:normal:icon="ICON_MOVIESIZE_SETUP_M" style:focused:border_color="#00000000" style:focused:text_color="#FFFFFF" style:focused:text_align_v="bottom" style:focused:bg_color="#00000000" style:focused:icon_at="top" style:focused:icon="ICON_MOVIESIZE_SETUP_M_FOCUS" style:pressed:border_color="#00000000" style:pressed:text_align_v="bottom" style:pressed:bg_color="#00000000" style:pressed:icon_at="top" style:pressed:icon="ICON_MOVIESIZE_SETUP_M_FOCUS" style:normal:text_color="#FFFFFF" style:over:border_color="#00000000">
+      <property name="style:over:bg_color">
+        <![CDATA[#00000000]]>
+      </property>
+      <property name="style:over:icon_at">
+        <![CDATA[top]]>
+      </property>
+      <property name="style:over:icon">
+        <![CDATA[ICON_MOVIESIZE_SETUP_M_FOCUS]]>
+      </property>
+      <property name="style:over:text_align_v">
+        <![CDATA[bottom]]>
+      </property>
+      <property name="focusable">
+        <![CDATA[true]]>
+      </property>
+      <property name="tr_text">
+        <![CDATA[STRID_RESOLUTION]]>
+      </property>
+    </button>
+    <button name="audio_button" x="170" y="36" w="88" h="106" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" style:normal:bg_image="" style:normal:icon_at="top" style:normal:text_align_v="bottom" style:normal:icon="ICON_AUDIO_SETUP_M" style:focused:border_color="#00000000" style:focused:text_color="#FFFFFF" style:focused:text_align_v="bottom" style:focused:bg_color="#00000000" style:focused:icon_at="top" style:focused:icon="ICON_AUDIO_SETUP_M_FOCUS" style:pressed:border_color="#00000000" style:pressed:text_align_v="bottom" style:pressed:bg_color="#00000000" style:pressed:icon_at="top" style:pressed:icon="ICON_AUDIO_SETUP_M_FOCUS" style:normal:text_color="#FFFFFF" style:over:border_color="#00000000">
+      <property name="style:over:bg_color">
+        <![CDATA[#00000000]]>
+      </property>
+      <property name="style:over:icon_at">
+        <![CDATA[top]]>
+      </property>
+      <property name="style:over:icon">
+        <![CDATA[ICON_AUDIO_SETUP_M_FOCUS]]>
+      </property>
+      <property name="style:over:text_align_v">
+        <![CDATA[bottom]]>
+      </property>
+      <property name="focusable">
+        <![CDATA[true]]>
+      </property>
+      <property name="tr_text">
+        <![CDATA[STRID_AUDIO]]>
+      </property>
+    </button>
+    <button name="date_button" x="318" y="36" w="88" h="106" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" style:normal:bg_image="" style:normal:icon_at="top" style:normal:text_align_v="bottom" style:normal:icon="ICON_DATESTAMP_SETUP_M" style:focused:border_color="#00000000" style:focused:text_color="#FFFFFF" style:focused:text_align_v="bottom" style:focused:bg_color="#00000000" style:focused:icon_at="top" style:focused:icon="ICON_DATESTAMP_SETUP_M_FOCUS" style:pressed:border_color="#00000000" style:pressed:text_align_v="bottom" style:pressed:bg_color="#00000000" style:pressed:icon_at="top" style:pressed:icon="ICON_DATESTAMP_SETUP_M_FOCUS" style:normal:text_color="#FFFFFF" style:over:border_color="#00000000">
+      <property name="style:over:bg_color">
+        <![CDATA[#00000000]]>
+      </property>
+      <property name="style:over:icon_at">
+        <![CDATA[top]]>
+      </property>
+      <property name="style:over:icon">
+        <![CDATA[ICON_DATESTAMP_SETUP_M_FOCUS]]>
+      </property>
+      <property name="style:over:text_align_v">
+        <![CDATA[bottom]]>
+      </property>
+      <property name="focusable">
+        <![CDATA[true]]>
+      </property>
+      <property name="tr_text">
+        <![CDATA[STRID_DATE_STAMP]]>
+      </property>
+    </button>
+    <button name="looprecording_button" x="466" y="36" w="88" h="106" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" style:normal:bg_image="" style:normal:icon_at="top" style:normal:text_align_v="bottom" style:normal:icon="ICON_LOOPRECORD_SETUP_M" style:focused:border_color="#00000000" style:focused:text_color="#FFFFFF" style:focused:text_align_v="bottom" style:focused:bg_color="#00000000" style:focused:icon_at="top" style:focused:icon="ICON_LOOPRECORD_SETUP_M_FOCUS" style:pressed:border_color="#00000000" style:pressed:text_align_v="bottom" style:pressed:bg_color="#00000000" style:pressed:icon_at="top" style:pressed:icon="ICON_LOOPRECORD_SETUP_M_FOCUS" style:normal:text_color="#FFFFFF" style:over:border_color="#00000000">
+      <property name="style:over:bg_color">
+        <![CDATA[#00000000]]>
+      </property>
+      <property name="style:over:icon_at">
+        <![CDATA[top]]>
+      </property>
+      <property name="style:over:icon">
+        <![CDATA[ICON_LOOPRECORD_SETUP_M_FOCUS]]>
+      </property>
+      <property name="style:over:text_align_v">
+        <![CDATA[bottom]]>
+      </property>
+      <property name="focusable">
+        <![CDATA[true]]>
+      </property>
+      <property name="tr_text">
+        <![CDATA[STRID_SPLITTIME]]>
+      </property>
+    </button>
+    <button name="gsensor_button" x="22" y="178" w="88" h="106" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" style:normal:bg_image="" style:normal:icon_at="top" style:normal:text_align_v="bottom" style:normal:icon="ICON_GSENSOR_SETUP_M" style:focused:border_color="#00000000" style:focused:text_color="#FFFFFF" style:focused:text_align_v="bottom" style:focused:bg_color="#00000000" style:focused:icon_at="top" style:focused:icon="ICON_GSENSOR_SETUP_M_FOCUS" style:pressed:border_color="#00000000" style:pressed:text_align_v="bottom" style:pressed:bg_color="#00000000" style:pressed:icon_at="top" style:pressed:icon="ICON_GSENSOR_SETUP_M_FOCUS" style:normal:text_color="#FFFFFF" style:over:border_color="#00000000">
+      <property name="style:over:bg_color">
+        <![CDATA[#00000000]]>
+      </property>
+      <property name="style:over:icon_at">
+        <![CDATA[top]]>
+      </property>
+      <property name="style:over:icon">
+        <![CDATA[ICON_GSENSOR_SETUP_M_FOCUS]]>
+      </property>
+      <property name="style:over:text_align_v">
+        <![CDATA[bottom]]>
+      </property>
+      <property name="focusable">
+        <![CDATA[true]]>
+      </property>
+      <property name="tr_text">
+        <![CDATA[STRID_GSENSOR_SENSITIVITY]]>
+      </property>
+    </button>
+    <button name="fatiguedriving_button" x="170" y="178" w="88" h="106" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" style:normal:bg_image="" style:normal:icon_at="top" style:normal:text_align_v="bottom" style:normal:icon="ICON_FATIGUE_SETUP_M" style:focused:border_color="#00000000" style:focused:text_color="#FFFFFF" style:focused:text_align_v="bottom" style:focused:bg_color="#00000000" style:focused:icon_at="top" style:focused:icon="ICON_FATIGUE_SETUP_M_FOCUS" style:pressed:border_color="#00000000" style:pressed:text_align_v="bottom" style:pressed:bg_color="#00000000" style:pressed:icon_at="top" style:pressed:icon="ICON_FATIGUE_SETUP_M_FOCUS" style:normal:text_color="#FFFFFF" style:over:border_color="#00000000">
+      <property name="style:over:bg_color">
+        <![CDATA[#00000000]]>
+      </property>
+      <property name="style:over:icon_at">
+        <![CDATA[top]]>
+      </property>
+      <property name="style:over:icon">
+        <![CDATA[ICON_FATIGUE_SETUP_M_FOCUS]]>
+      </property>
+      <property name="style:over:text_align_v">
+        <![CDATA[bottom]]>
+      </property>
+      <property name="focusable">
+        <![CDATA[true]]>
+      </property>
+      <property name="tr_text">
+        <![CDATA[STRID_FATIGUE_DRIVING]]>
+      </property>
+    </button>
+    <button name="speed_button" x="318" y="178" w="88" h="106" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" style:normal:bg_image="" style:normal:icon_at="top" style:normal:text_align_v="bottom" style:normal:icon="ICON_SPEEDSTAMP_SETUP_M" style:focused:border_color="#00000000" style:focused:text_color="#FFFFFF" style:focused:text_align_v="bottom" style:focused:bg_color="#00000000" style:focused:icon_at="top" style:focused:icon="ICON_SPEEDSTAMP_SETUP_M_FOCUS" style:pressed:border_color="#00000000" style:pressed:text_align_v="bottom" style:pressed:bg_color="#00000000" style:pressed:icon_at="top" style:pressed:icon="ICON_SPEEDSTAMP_SETUP_M_FOCUS" style:normal:text_color="#FFFFFF" style:over:border_color="#00000000">
+      <property name="style:over:bg_color">
+        <![CDATA[#00000000]]>
+      </property>
+      <property name="style:over:icon_at">
+        <![CDATA[top]]>
+      </property>
+      <property name="style:over:icon">
+        <![CDATA[ICON_SPEEDSTAMP_SETUP_M_FOCUS]]>
+      </property>
+      <property name="style:over:text_align_v">
+        <![CDATA[bottom]]>
+      </property>
+      <property name="focusable">
+        <![CDATA[true]]>
+      </property>
+      <property name="tr_text">
+        <![CDATA[STRID_SPED_STAMP]]>
+      </property>
+    </button>
+    <button name="gps_button" x="466" y="178" w="88" h="106" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" style:normal:bg_image="" style:normal:icon_at="top" style:normal:text_align_v="bottom" style:normal:icon="ICON_GPS_SETUP_M" style:focused:border_color="#00000000" style:focused:text_color="#FFFFFF" style:focused:text_align_v="bottom" style:focused:bg_color="#00000000" style:focused:icon_at="top" style:focused:icon="ICON_GPS_SETUP_M_FOCUS" style:pressed:border_color="#00000000" style:pressed:text_align_v="bottom" style:pressed:bg_color="#00000000" style:pressed:icon_at="top" style:pressed:icon="ICON_GPS_SETUP_M_FOCUS" style:normal:text_color="#FFFFFF" style:over:border_color="#00000000">
+      <property name="style:over:bg_color">
+        <![CDATA[#00000000]]>
+      </property>
+      <property name="style:over:icon_at">
+        <![CDATA[top]]>
+      </property>
+      <property name="style:over:icon">
+        <![CDATA[ICON_GPS_SETUP_M_FOCUS]]>
+      </property>
+      <property name="style:over:text_align_v">
+        <![CDATA[bottom]]>
+      </property>
+      <property name="focusable">
+        <![CDATA[true]]>
+      </property>
+      <property name="tr_text">
+        <![CDATA[STRID_GPS_STAMP]]>
+      </property>
+    </button>
+    <button name="speedunit_button" x="22" y="356" w="88" h="106" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" style:normal:bg_image="" style:normal:icon_at="top" style:normal:text_align_v="bottom" style:normal:icon="ICON_SPEEDUNIT_SETUP_M" style:focused:border_color="#00000000" style:focused:text_color="#FFFFFF" style:focused:text_align_v="bottom" style:focused:bg_color="#00000000" style:focused:icon_at="top" style:focused:icon="ICON_SPEEDUNIT_SETUP_M_FOCUS" style:pressed:border_color="#00000000" style:pressed:text_align_v="bottom" style:pressed:bg_color="#00000000" style:pressed:icon_at="top" style:pressed:icon="ICON_SPEEDUNIT_SETUP_M_FOCUS" style:normal:text_color="#FFFFFF" style:over:border_color="#00000000">
+      <property name="style:over:bg_color">
+        <![CDATA[#00000000]]>
+      </property>
+      <property name="style:over:icon_at">
+        <![CDATA[top]]>
+      </property>
+      <property name="style:over:icon">
+        <![CDATA[ICON_SPEEDUNIT_SETUP_M_FOCUS]]>
+      </property>
+      <property name="style:over:text_align_v">
+        <![CDATA[bottom]]>
+      </property>
+      <property name="focusable">
+        <![CDATA[true]]>
+      </property>
+      <property name="tr_text">
+        <![CDATA[STRID_SPEED_UNIT]]>
+      </property>
+    </button>
+    <button name="gpsinfo_button" x="170" y="356" w="88" h="106" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" style:normal:bg_image="" style:normal:icon_at="top" style:normal:text_align_v="bottom" style:normal:icon="ICON_MENU_GPS_INFO" style:focused:border_color="#00000000" style:focused:text_color="#FFFFFF" style:focused:text_align_v="bottom" style:focused:bg_color="#00000000" style:focused:icon_at="top" style:focused:icon="ICON_MENU_GPS_INFO_FOCUS" style:pressed:border_color="#00000000" style:pressed:text_align_v="bottom" style:pressed:bg_color="#00000000" style:pressed:icon_at="top" style:pressed:icon="ICON_MENU_GPS_INFO_FOCUS" style:normal:text_color="#FFFFFF" style:over:border_color="#00000000">
+      <property name="style:over:bg_color">
+        <![CDATA[#00000000]]>
+      </property>
+      <property name="style:over:icon_at">
+        <![CDATA[top]]>
+      </property>
+      <property name="style:over:icon">
+        <![CDATA[ICON_MENU_GPS_INFO_FOCUS]]>
+      </property>
+      <property name="style:over:text_align_v">
+        <![CDATA[bottom]]>
+      </property>
+      <property name="focusable">
+        <![CDATA[true]]>
+      </property>
+      <property name="tr_text">
+        <![CDATA[STRID_GPS_INFO]]>
+      </property>
+    </button>
+    <button name="rearcamfilp_button" x="318" y="356" w="88" h="106" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" style:normal:bg_image="" style:normal:icon_at="top" style:normal:text_align_v="bottom" style:normal:icon="ICON_BEHIND_FLIP_SETUP_M" style:focused:border_color="#00000000" style:focused:text_color="#FFFFFF" style:focused:text_align_v="bottom" style:focused:bg_color="#00000000" style:focused:icon_at="top" style:focused:icon="ICON_BEHIND_FLIP_SETUP_M_FOCUS" style:pressed:border_color="#00000000" style:pressed:text_align_v="bottom" style:pressed:bg_color="#00000000" style:pressed:icon_at="top" style:pressed:icon="ICON_BEHIND_FLIP_SETUP_M_FOCUS" style:normal:text_color="#FFFFFF" style:over:border_color="#00000000">
+      <property name="style:over:bg_color">
+        <![CDATA[#00000000]]>
+      </property>
+      <property name="style:over:icon_at">
+        <![CDATA[top]]>
+      </property>
+      <property name="style:over:icon">
+        <![CDATA[ICON_BEHIND_FLIP_SETUP_M_FOCUS]]>
+      </property>
+      <property name="style:over:text_align_v">
+        <![CDATA[bottom]]>
+      </property>
+      <property name="focusable">
+        <![CDATA[true]]>
+      </property>
+      <property name="tr_text">
+        <![CDATA[STRID_REARCAM_FLIP]]>
+      </property>
+    </button>
+    <button name="app_button" x="466" y="356" w="88" h="106" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" style:normal:bg_image="" style:normal:icon_at="top" style:normal:text_align_v="bottom" style:normal:icon="ICON_MENU_APP" style:focused:border_color="#00000000" style:focused:text_color="#FFFFFF" style:focused:text_align_v="bottom" style:focused:bg_color="#00000000" style:focused:icon_at="top" style:focused:icon="ICON_MENU_APP_FOCUS" style:pressed:border_color="#00000000" style:pressed:text_align_v="bottom" style:pressed:bg_color="#00000000" style:pressed:icon_at="top" style:pressed:icon="ICON_MENU_APP_FOCUS" style:normal:text_color="#FFFFFF" style:over:border_color="#00000000">
+      <property name="style:over:bg_color">
+        <![CDATA[#00000000]]>
+      </property>
+      <property name="style:over:icon_at">
+        <![CDATA[top]]>
+      </property>
+      <property name="style:over:icon">
+        <![CDATA[ICON_MENU_APP_FOCUS]]>
+      </property>
+      <property name="style:over:text_align_v">
+        <![CDATA[bottom]]>
+      </property>
+      <property name="focusable">
+        <![CDATA[true]]>
+      </property>
+      <property name="tr_text">
+        <![CDATA[STRID_APP]]>
+      </property>
+    </button>
+    <button name="wifi_button" x="22" y="498" w="88" h="106" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" style:normal:bg_image="" style:normal:icon_at="top" style:normal:text_align_v="bottom" style:normal:icon="ICON_WIFI_SETUP_M" style:focused:border_color="#00000000" style:focused:text_color="#FFFFFF" style:focused:text_align_v="bottom" style:focused:bg_color="#00000000" style:focused:icon_at="top" style:focused:icon="ICON_WIFI_SETUP_M_FOCUS" style:pressed:border_color="#00000000" style:pressed:text_align_v="bottom" style:pressed:bg_color="#00000000" style:pressed:icon_at="top" style:pressed:icon="ICON_WIFI_SETUP_M_FOCUS" style:normal:text_color="#FFFFFF" style:over:border_color="#00000000">
+      <property name="style:over:bg_color">
+        <![CDATA[#00000000]]>
+      </property>
+      <property name="style:over:icon_at">
+        <![CDATA[top]]>
+      </property>
+      <property name="style:over:icon">
+        <![CDATA[ICON_WIFI_SETUP_M_FOCUS]]>
+      </property>
+      <property name="style:over:text_align_v">
+        <![CDATA[bottom]]>
+      </property>
+      <property name="focusable">
+        <![CDATA[true]]>
+      </property>
+      <property name="tr_text">
+        <![CDATA[STRID_WIFI]]>
+      </property>
+    </button>
+    <button name="language_button" x="170" y="498" w="88" h="106" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" style:normal:bg_image="" style:normal:icon_at="top" style:normal:text_align_v="bottom" style:normal:icon="ICON_LANGUAGE_SETUP_M" style:focused:border_color="#00000000" style:focused:text_color="#FFFFFF" style:focused:text_align_v="bottom" style:focused:bg_color="#00000000" style:focused:icon_at="top" style:focused:icon="ICON_LANGUAGE_SETUP_M_FOCUS" style:pressed:border_color="#00000000" style:pressed:text_align_v="bottom" style:pressed:bg_color="#00000000" style:pressed:icon_at="top" style:pressed:icon="ICON_LANGUAGE_SETUP_M_FOCUS" style:normal:text_color="#FFFFFF" style:over:border_color="#00000000">
+      <property name="style:over:bg_color">
+        <![CDATA[#00000000]]>
+      </property>
+      <property name="style:over:icon_at">
+        <![CDATA[top]]>
+      </property>
+      <property name="style:over:icon">
+        <![CDATA[ICON_LANGUAGE_SETUP_M_FOCUS]]>
+      </property>
+      <property name="style:over:text_align_v">
+        <![CDATA[bottom]]>
+      </property>
+      <property name="focusable">
+        <![CDATA[true]]>
+      </property>
+      <property name="tr_text">
+        <![CDATA[STRID_LANGUAGE]]>
+      </property>
+    </button>
+    <button name="timefomat_button" x="318" y="498" w="88" h="106" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" style:normal:bg_image="" style:normal:icon_at="top" style:normal:text_align_v="bottom" style:normal:icon="ICON_TIME_FORMAT" style:focused:border_color="#00000000" style:focused:text_color="#FFFFFF" style:focused:text_align_v="bottom" style:focused:bg_color="#00000000" style:focused:icon_at="top" style:focused:icon="ICON_TIME_FORMAT_FOCUS" style:pressed:border_color="#00000000" style:pressed:text_align_v="bottom" style:pressed:bg_color="#00000000" style:pressed:icon_at="top" style:pressed:icon="ICON_TIME_FORMAT_FOCUS" style:normal:text_color="#FFFFFF" style:over:border_color="#00000000">
+      <property name="style:over:bg_color">
+        <![CDATA[#00000000]]>
+      </property>
+      <property name="style:over:icon_at">
+        <![CDATA[top]]>
+      </property>
+      <property name="style:over:icon">
+        <![CDATA[ICON_TIME_FORMAT_FOCUS]]>
+      </property>
+      <property name="style:over:text_align_v">
+        <![CDATA[bottom]]>
+      </property>
+      <property name="focusable">
+        <![CDATA[true]]>
+      </property>
+      <property name="tr_text">
+        <![CDATA[STRID_TIME_FORMAT]]>
+      </property>
+    </button>
+    <button name="datetime_button" x="466" y="498" w="88" h="106" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" style:normal:bg_image="" style:normal:icon_at="top" style:normal:text_align_v="bottom" style:normal:icon="ICON_DATETIME_SETUP_M" style:focused:border_color="#00000000" style:focused:text_color="#FFFFFF" style:focused:text_align_v="bottom" style:focused:bg_color="#00000000" style:focused:icon_at="top" style:focused:icon="ICON_DATETIME_SETUP_M_FOCUS" style:pressed:border_color="#00000000" style:pressed:text_align_v="bottom" style:pressed:bg_color="#00000000" style:pressed:icon_at="top" style:pressed:icon="ICON_DATETIME_SETUP_M_FOCUS" style:normal:text_color="#FFFFFF" style:over:border_color="#00000000">
+      <property name="style:over:bg_color">
+        <![CDATA[#00000000]]>
+      </property>
+      <property name="style:over:icon_at">
+        <![CDATA[top]]>
+      </property>
+      <property name="style:over:icon">
+        <![CDATA[ICON_DATETIME_SETUP_M_FOCUS]]>
+      </property>
+      <property name="style:over:text_align_v">
+        <![CDATA[bottom]]>
+      </property>
+      <property name="focusable">
+        <![CDATA[true]]>
+      </property>
+      <property name="tr_text">
+        <![CDATA[STRID_TIME_SET]]>
+      </property>
+    </button>
+    <button name="timezone_button" x="22" y="676" w="88" h="106" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" style:normal:bg_image="" style:normal:icon_at="top" style:normal:text_align_v="bottom" style:normal:icon="ICON_TIMEZONE_SETUP_M" style:focused:border_color="#00000000" style:focused:text_color="#FFFFFF" style:focused:text_align_v="bottom" style:focused:bg_color="#00000000" style:focused:icon_at="top" style:focused:icon="ICON_TIMEZONE_SETUP_M__FOCUS" style:pressed:border_color="#00000000" style:pressed:text_align_v="bottom" style:pressed:bg_color="#00000000" style:pressed:icon_at="top" style:pressed:icon="ICON_TIMEZONE_SETUP_M__FOCUS" style:normal:text_color="#FFFFFF" style:over:border_color="#00000000">
+      <property name="style:over:bg_color">
+        <![CDATA[#00000000]]>
+      </property>
+      <property name="style:over:icon_at">
+        <![CDATA[top]]>
+      </property>
+      <property name="style:over:icon">
+        <![CDATA[ICON_TIMEZONE_SETUP_M__FOCUS]]>
+      </property>
+      <property name="style:over:text_align_v">
+        <![CDATA[bottom]]>
+      </property>
+      <property name="focusable">
+        <![CDATA[true]]>
+      </property>
+      <property name="tr_text">
+        <![CDATA[STRID_TIME_ZONE]]>
+      </property>
+    </button>
+    <button name="frequency_button" x="170" y="676" w="88" h="106" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" style:normal:bg_image="" style:normal:icon_at="top" style:normal:text_align_v="bottom" style:normal:icon="ICON_FREQ_SETUP_M" style:focused:border_color="#00000000" style:focused:text_color="#FFFFFF" style:focused:text_align_v="bottom" style:focused:bg_color="#00000000" style:focused:icon_at="top" style:focused:icon="ICON_FREQ_SETUP_M_FOCUS" style:pressed:border_color="#00000000" style:pressed:text_align_v="bottom" style:pressed:bg_color="#00000000" style:pressed:icon_at="top" style:pressed:icon="ICON_FREQ_SETUP_M_FOCUS" style:normal:text_color="#FFFFFF" style:over:border_color="#00000000">
+      <property name="style:over:bg_color">
+        <![CDATA[#00000000]]>
+      </property>
+      <property name="style:over:icon_at">
+        <![CDATA[top]]>
+      </property>
+      <property name="style:over:icon">
+        <![CDATA[ICON_FREQ_SETUP_M_FOCUS]]>
+      </property>
+      <property name="style:over:text_align_v">
+        <![CDATA[bottom]]>
+      </property>
+      <property name="focusable">
+        <![CDATA[true]]>
+      </property>
+      <property name="tr_text">
+        <![CDATA[STRID_FREQUENCY]]>
+      </property>
+    </button>
+    <button name="clicktone_button" x="318" y="676" w="88" h="106" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" style:normal:bg_image="" style:normal:icon_at="top" style:normal:text_align_v="bottom" style:normal:icon="ICON_BEEPSOUND_SETUP_M" style:focused:border_color="#00000000" style:focused:text_color="#FFFFFF" style:focused:text_align_v="bottom" style:focused:bg_color="#00000000" style:focused:icon_at="top" style:focused:icon="ICON_BEEPSOUND_SETUP_M_FOCUS" style:pressed:border_color="#00000000" style:pressed:text_align_v="bottom" style:pressed:bg_color="#00000000" style:pressed:icon_at="top" style:pressed:icon="ICON_BEEPSOUND_SETUP_M_FOCUS" style:normal:text_color="#FFFFFF" style:over:border_color="#00000000">
+      <property name="style:over:bg_color">
+        <![CDATA[#00000000]]>
+      </property>
+      <property name="style:over:icon_at">
+        <![CDATA[top]]>
+      </property>
+      <property name="style:over:icon">
+        <![CDATA[ICON_BEEPSOUND_SETUP_M_FOCUS]]>
+      </property>
+      <property name="style:over:text_align_v">
+        <![CDATA[bottom]]>
+      </property>
+      <property name="focusable">
+        <![CDATA[true]]>
+      </property>
+      <property name="tr_text">
+        <![CDATA[STRID_KEYTONE]]>
+      </property>
+    </button>
+    <button name="screensaver_button" x="466" y="676" w="88" h="106" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" style:normal:bg_image="" style:normal:icon_at="top" style:normal:text_align_v="bottom" style:normal:icon="ICON_SCREENSAVE_SETUP_M" style:focused:border_color="#00000000" style:focused:text_color="#FFFFFF" style:focused:text_align_v="bottom" style:focused:bg_color="#00000000" style:focused:icon_at="top" style:focused:icon="ICON_SCREENSAVE_SETUP_M_FOCUS" style:pressed:border_color="#00000000" style:pressed:text_align_v="bottom" style:pressed:bg_color="#00000000" style:pressed:icon_at="top" style:pressed:icon="ICON_SCREENSAVE_SETUP_M_FOCUS" style:normal:text_color="#FFFFFF" style:over:border_color="#00000000">
+      <property name="style:over:bg_color">
+        <![CDATA[#00000000]]>
+      </property>
+      <property name="style:over:icon_at">
+        <![CDATA[top]]>
+      </property>
+      <property name="style:over:icon">
+        <![CDATA[ICON_SCREENSAVE_SETUP_M_FOCUS]]>
+      </property>
+      <property name="style:over:text_align_v">
+        <![CDATA[bottom]]>
+      </property>
+      <property name="focusable">
+        <![CDATA[true]]>
+      </property>
+      <property name="tr_text">
+        <![CDATA[STRID_SCREEN_DORMANT]]>
+      </property>
+    </button>
+    <button name="parking_button" x="22" y="818" w="88" h="106" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" style:normal:bg_image="" style:normal:icon_at="top" style:normal:text_align_v="bottom" style:normal:icon="ICON_PARKING_SETUP_M" style:focused:border_color="#00000000" style:focused:text_color="#FFFFFF" style:focused:text_align_v="bottom" style:focused:bg_color="#00000000" style:focused:icon_at="top" style:focused:icon="ICON_PARKING_SETUP_M_FOCUS" style:pressed:border_color="#00000000" style:pressed:text_align_v="bottom" style:pressed:bg_color="#00000000" style:pressed:icon_at="top" style:pressed:icon="ICON_PARKING_SETUP_M_FOCUS" style:normal:text_color="#FFFFFF" style:over:border_color="#00000000">
+      <property name="style:over:bg_color">
+        <![CDATA[#00000000]]>
+      </property>
+      <property name="style:over:icon_at">
+        <![CDATA[top]]>
+      </property>
+      <property name="style:over:icon">
+        <![CDATA[ICON_PARKING_SETUP_M_FOCUS]]>
+      </property>
+      <property name="style:over:text_align_v">
+        <![CDATA[bottom]]>
+      </property>
+      <property name="focusable">
+        <![CDATA[true]]>
+      </property>
+      <property name="tr_text">
+        <![CDATA[STRID_PARKING]]>
+      </property>
+    </button>
+    <button name="format_button" x="170" y="818" w="88" h="106" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" style:normal:bg_image="" style:normal:icon_at="top" style:normal:text_align_v="bottom" style:normal:icon="ICON_FORMATSD_SETUP_M" style:focused:border_color="#00000000" style:focused:text_color="#FFFFFF" style:focused:text_align_v="bottom" style:focused:bg_color="#00000000" style:focused:icon_at="top" style:focused:icon="ICON_FORMATSD_SETUP_M_FOCUS" style:pressed:border_color="#00000000" style:pressed:text_align_v="bottom" style:pressed:bg_color="#00000000" style:pressed:icon_at="top" style:pressed:icon="ICON_FORMATSD_SETUP_M_FOCUS" style:normal:text_color="#FFFFFF" style:over:border_color="#00000000">
+      <property name="style:over:bg_color">
+        <![CDATA[#00000000]]>
+      </property>
+      <property name="style:over:icon_at">
+        <![CDATA[top]]>
+      </property>
+      <property name="style:over:icon">
+        <![CDATA[ICON_FORMATSD_SETUP_M_FOCUS]]>
+      </property>
+      <property name="style:over:text_align_v">
+        <![CDATA[bottom]]>
+      </property>
+      <property name="focusable">
+        <![CDATA[true]]>
+      </property>
+      <property name="tr_text">
+        <![CDATA[STRID_FORMAT_SD]]>
+      </property>
+    </button>
+    <button name="default_button" x="318" y="818" w="88" h="106" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" style:normal:bg_image="" style:normal:icon_at="top" style:normal:text_align_v="bottom" style:normal:icon="ICON_RESTORE_SETUP_M" style:focused:border_color="#00000000" style:focused:text_color="#FFFFFF" style:focused:text_align_v="bottom" style:focused:bg_color="#00000000" style:focused:icon_at="top" style:focused:icon="ICON_RESTORE_SETUP_M_FOCUS" style:pressed:border_color="#00000000" style:pressed:text_align_v="bottom" style:pressed:bg_color="#00000000" style:pressed:icon_at="top" style:pressed:icon="ICON_RESTORE_SETUP_M_FOCUS" style:normal:text_color="#FFFFFF" style:over:border_color="#00000000">
+      <property name="style:over:bg_color">
+        <![CDATA[#00000000]]>
+      </property>
+      <property name="style:over:icon_at">
+        <![CDATA[top]]>
+      </property>
+      <property name="style:over:icon">
+        <![CDATA[ICON_RESTORE_SETUP_M_FOCUS]]>
+      </property>
+      <property name="style:over:text_align_v">
+        <![CDATA[bottom]]>
+      </property>
+      <property name="focusable">
+        <![CDATA[true]]>
+      </property>
+      <property name="tr_text">
+        <![CDATA[STRID_RESET_SYSTEM]]>
+      </property>
+    </button>
+    <button name="info_button" x="466" y="818" w="88" h="106" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" style:normal:bg_image="" style:normal:icon_at="top" style:normal:text_align_v="bottom" style:normal:icon="ICON_VERSION_SETUP_M" style:focused:border_color="#00000000" style:focused:text_color="#FFFFFF" style:focused:text_align_v="bottom" style:focused:bg_color="#00000000" style:focused:icon_at="top" style:focused:icon="ICON_VERSION_SETUP_M_FOCUS" style:pressed:border_color="#00000000" style:pressed:text_align_v="bottom" style:pressed:bg_color="#00000000" style:pressed:icon_at="top" style:pressed:icon="ICON_VERSION_SETUP_M_FOCUS" style:normal:text_color="#FFFFFF" style:over:border_color="#00000000">
+      <property name="style:over:bg_color">
+        <![CDATA[#00000000]]>
+      </property>
+      <property name="style:over:icon_at">
+        <![CDATA[top]]>
+      </property>
+      <property name="style:over:icon">
+        <![CDATA[ICON_VERSION_SETUP_M_FOCUS]]>
+      </property>
+      <property name="style:over:text_align_v">
+        <![CDATA[bottom]]>
+      </property>
+      <property name="focusable">
+        <![CDATA[true]]>
+      </property>
+      <property name="tr_text">
+        <![CDATA[STRID_ABOUT]]>
+      </property>
+    </button>
+  </scroll_view>
+</window>

@@ -1,0 +1,18 @@
+<window name="ui_settime_page" style:normal:bg_color="#FFFFFF">
+  <view name="title_view" x="640" y="0" w="640" h="75" style:normal:bg_color="#00B0F0">
+    <label name="label" x="224" y="7" w="200" h="60" style:normal:font_size="25" tr_text="STRID_TIME_SET"/>
+    <button name="ret_btm" x="552" y="4" w="78" h="67" style:normal:icon="settup_back" style:normal:border_color="#00000000" style:normal:bg_color="#00000000" text=""/>
+  </view>
+  <view name="set_time_view" x="640" y="78" w="640" h="352" style:normal:bg_color="#FFFFFF" focusable="false" style:normal:border_color="#00000000">
+    <tab_button name="year_button" x="30" y="32" w="166" h="81" style:normal:border_color="#FFFFFF" style:normal:bg_color="#FFFFFF" style:focused:border_color="#FFFFFF" style:focused:bg_color="#0070C0" focusable="true" with_focus_state="false" style:normal_of_active:bg_color="#0070C0" style:pressed_of_active:bg_color="#0070C0" style:focused_of_active:bg_color="#0070C0" style:focused:font_size="25" text="2020"/>
+    <tab_button name="month_button" x="269" y="32" w="105" h="81" style:normal:border_color="#FFFFFF" style:normal:bg_color="#FFFFFF" style:focused:border_color="#FFFFFF" style:focused:bg_color="#0070C0" focusable="true" with_focus_state="false" feedback="true" style:pressed:bg_color="#FFFFFF" style:normal_of_active:bg_color="#0070C0" style:pressed_of_active:bg_color="#0070C0" style:focused_of_active:bg_color="#0070C0" style:focused:font_size="25" text="01"/>
+    <tab_button name="day_button" x="462" y="32" w="125" h="81" style:normal:border_color="#FFFFFF" style:normal:bg_color="#FFFFFF" style:focused:border_color="#FFFFFF" style:focused:bg_color="#0070C0" focusable="true" with_focus_state="false" style:normal:border="all" style:focused_of_active:bg_color="#0070C0" style:pressed_of_active:text_color="#8EAAD7" style:pressed_of_active:bg_color="#0070C0" style:normal_of_active:bg_color="#0070C0" style:focused_of_active:border_color="#0070C0" style:focused:font_size="25" text="01"/>
+    <tab_button name="hour_button" x="52" y="140" w="123" h="68" style:normal:border_color="#FFFFFF" style:normal:bg_color="#FFFFFF" style:focused:border_color="#FFFFFF" style:focused:bg_color="#0070C0" focusable="true" with_focus_state="true" style:normal_of_active:bg_color="#0070C0" style:pressed_of_active:bg_color="#0070C0" style:focused_of_active:bg_color="#0070C0" style:focused:font_size="25" text="00"/>
+    <tab_button name="minute_button" x="269" y="140" w="105" h="69" style:normal:border_color="#FFFFFF" style:normal:bg_color="#FFFFFF" style:focused:border_color="#FFFFFF" style:focused:bg_color="#0070C0" focusable="true" with_focus_state="true" style:normal_of_active:bg_color="#0070C0" style:focused_of_active:bg_color="#0070C0" style:focused:font_size="25" text="00"/>
+    <tab_button name="second_button" x="462" y="140" w="125" h="69" style:normal:border_color="#FFFFFF" style:normal:bg_color="#FFFFFF" style:focused:border_color="#FFFFFF" style:focused:bg_color="#0070C0" focusable="true" with_focus_state="true" style:normal_of_active:bg_color="#0070C0" style:focused_of_active:bg_color="#0070C0" style:focused:font_size="25" text="00"/>
+  </view>
+  <view name="confirm_view" x="729" y="291" w="444" h="122">
+    <button name="up_btm" x="42" y="28" w="117" h="67" text="Up"/>
+    <button name="down_btm" x="282" y="28" w="120" h="65" text="Down"/>
+  </view>
+</window>

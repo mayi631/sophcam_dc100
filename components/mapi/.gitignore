@@ -1,0 +1,12 @@
+build
+samples/acap_demo/build
+samples/adec_demo/build
+samples/aenc_demo/build
+samples/aplay_demo/build
+samples/disp_demo/build
+samples/online_demo/build
+samples/osd_demo/build
+samples/vcap_demo/build
+samples/vdec_demo/build
+samples/venc_demo/build
+samples/vproc_demo/build

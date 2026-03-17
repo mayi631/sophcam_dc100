@@ -1,0 +1,174 @@
+###############################################################################
+##################################  Cvitek  #################################
+###############################################################################
+repo: build, branch: heads/v6.3.2
+b5f355a317e3c25f265180e3321d6f5ace8052f1 feat:(sensor): support gc4683 [affected]: [description ]: [root cause ]: NA [mantis id ]: NA [chip project]: NA [confirm test]: NA [side effects]: NA 777e109de351f3e8a864db612a626abfaf50b2a8 feat: add panel LY030BXMS
+
+repo: SensorSupportList, branch: master
+efba784885a0d7e63c4c699c74468d3a23e56a4c [feat](sensor): support gc4683 [affected]: [description ]: [root cause ]: NA [mantis id ]: NA [chip project]: NA [confirm test]: NA [side effects]: NA 207c2d59e5ee454efef3316b71999fa5669c19a8 [bugfix][186x][vi]: Fix the issue of exposure not taking effect
+
+repo: cnpy, branch: tpu
+05f09a5309b6ed7884af2d7274135d547ee9d84e v230 aarch64 musl 351f6a43543e83a3ca8558d261261df2449e8990 fix build warning
+
+repo: cvi_alios, branch: heads/v6.3.2
+845bb259f6104800208794c713a6142f46e2e04b feat: add panel LY030BXMS, ic:7701s 3ca5a683c9c7fc031c47cd925f07d1be70b59704 feat: add panel module bjx2836f0, ic:st7701s
+
+repo: cvi_mpi, branch: heads/v6.3.2
+43e5d86f8feebb1f901a07f0f9ddda7974a5db94 [fix][gdc]:Fix the OOM issue caused by glibc 077360ecb1e808cdeafd83959393b84d25b77d06 [fix][region]fix sample region format [root cause ]:NA [JIRA ID ]:CV184XSDK-845 [chip project]:NA [side effects]:NA [Affected *.ko]:NA
+
+repo: isp, branch: heads/v6.3.2
+0f11991649ecbf69b1a933a08e6ab312df136b43 [fix](isp): fix ispd2 get crop yuv frame error [description ]:NA [root cause]:NA [JIRA ID]:CV184XSDK-874 [chip project]:cv184x [side effects]:NA [Affected *.ko/*.so/*.a]:NA 397de4820339ae5517ca361186756a2f73b506d8 [fix](isp): update code_gen and ldci default value [description ]:NA [root cause]:NA [JIRA ID]:CV184XSDK-873 [chip project]:cv184x [side effects]:NA [Affected *.ko/*.so/*.a]:NA
+
+repo: cvi_rtsp, branch: heads/v6.3.2
+b95616f234a99c6f1d597eb46987106d254da3f2 [docs](cvi_rtsp):add LICENSE and README.md [description ]:NA [root cause]:NA [JIRA ID]:https://jira.sophgo.com/browse/CV184XSDK-593 [chip project]:cv184x [side effects]:NA [Affected *.ko/*.so/*.a] :NA 14fa4f7f7188f0769e38632fe215a5545d013854 [feat](rtsp): refine build flow [description ]:NA [root cause]:NA [JIRA ID]:NA [chip project]:NA [side effects]:NA [Affected *.ko/*.so/*.a] :NA
+
+repo: dc100_bsp, branch: v6.3.2-20251219
+ac0ca2a52a237a2c6603cebfef31c14a29af62a8 feat:disable af b73a49a4fa6b847f1b2e8e73f685e4316d382e89 feat:add tp pacthes
+
+repo: fsbl, branch: heads/v6.3.2
+b789b81a02b526cc1bbdf0c23dbe0f694cb91e4b [feat](ddr):Change the DDR recognition mode to automatic [description ]:NA [root cause]:NA [JIRA ID]:NA [chip project]:NA [side effects]:NA [Affected *.ko/*.so/*.a] :NA b296ba1a00a67d11e21447445bf6a6d49e490765 [fix](suspend):fix suspend fail in wdt reset [description ]:NA [root cause]:NA [JIRA ID]:https://jira.sophgo.com/browse/CV184XSDK-725 [chip project]:NA [side effects]:NA [Affected *.ko/*.so/*.a] :NA
+
+repo: host-tools, branch: master
+2405b251f6aa63248b6c537a1fddf64eb550e8eb [feat](toolchain): build with gdb [description ]:NA [root cause]:NA [JIRA ID]:NA [chip project]:NA [side effects]:NA [Affected *.ko/*.so/*.a] :NA d6ce22606e1882de5d38dd4cb7f2e3d2f7dd5ff7 [fix](toolchain): remove musl arm64 toolchain unnecessary bin and lib [description ]:NA [root cause]:NA [JIRA ID]:NA [chip project]:NA [side effects]:NA [Affected *.ko/*.so/*.a] :NA
+
+repo: isp, branch: heads/v6.3.2
+0f11991649ecbf69b1a933a08e6ab312df136b43 [fix](isp): fix ispd2 get crop yuv frame error [description ]:NA [root cause]:NA [JIRA ID]:CV184XSDK-874 [chip project]:cv184x [side effects]:NA [Affected *.ko/*.so/*.a]:NA 397de4820339ae5517ca361186756a2f73b506d8 [fix](isp): update code_gen and ldci default value [description ]:NA [root cause]:NA [JIRA ID]:CV184XSDK-873 [chip project]:cv184x [side effects]:NA [Affected *.ko/*.so/*.a]:NA
+
+repo: isp-tool-daemon, branch: heads/v6.3.2
+d4820b07318fe87e5c5c0e62bbbf7f72bcdeb69e [fix](isp-tool-daemon): update ldci default value [description ]:NA [root cause]:NA [JIRA ID]:CV184XSDK-873 [chip project]:cv184x [side effects]:NA [Affected *.ko/*.so/*.a]:NA 9b1bfd12f3e07677fc4ff1e9fa3b2350af1d8688 [feat](auto_test): update api test code [description ]:NA [root cause]:NA [JIRA ID]:CV184XSDK-649 [chip project]:cv184x [side effects]:NA [Affected *.ko/*.so/*.a] :NA
+
+repo: isp_tuning, branch: heads/v6.3.2
+b1c7f428127be9b40d77f174d01cd4c4937d37ba [fix](isp tuning): update pqjson and pqbin [description ]:NA [root cause]:NA [JIRA ID]:NA [chip project]:cv184x [side effects]:NA [Affected *.ko/*.so/*.a]:NA e54cba3c1a1e8de64defb075200a733ddcfa00f4 [feat](isp tuning):add scritp to convert json to ccode [description ]:NA [root cause]:NA [JIRA ID]:NA [chip project]:cv184x [side effects]:NA [Affected *.ko/*.so/*.a]:NA
+
+repo: ive, branch: heads/v6.3.2
+7e75ef64393db5613fd298e7965d56a72effed2b fix obtaining method of libtpu_kernel_module.so cd44433f9f1974b9e910ecc622282a462e4603b1 [docs](ive):add BSD 3-Clause LICENSE and README.md [description ]:NA [root cause]:NA [JIRA ID]:https://jira.sophgo.com/browse/CV184XSDK-593 [chip project]:cv184x [side effects]:NA [Affected *.ko/*.so/*.a] :NA
+
+repo: libsophon, branch: heads/v6.3.2
+79afb6186163a5c9ecafb534818fcf3ebc116085 [mars3] Add tpu-runtime as a submodule d11d641301e606312a5953878a9e86a51c3be67c feat: update runtime static build
+
+repo: linux_5.10, branch: heads/v6.3.2
+eae5e317cf04ab46e57de330ce3460423475ee0e fix:(tp)oops enable_irq before request a6a659b784b5e358e2f873e31cd1e5e811ac5ef7 feat: support touchscreen hyn_ts
+
+repo: mediapipe, branch: Mars3_dev
+3991467057eb0f1b40ee712611a372e40e168855 [fix](mediapipe): mediapipe add the load isp pqbin code [description ]:NA [root cause]:NA [JIRA ID]:NA [chip project]:cv184x [side effects]:NA [Affected *.ko/*.so/*.a]:NA a6e61eb9e53479a9f937a654cae0e81f78e8a2cf [feat](vo):add vo_pause_chn && vo_reseume_chn cmd
+
+repo: osal, branch: heads/v6.3.2
+f88ed5c0a61043fdc17ca3e6ce4db4a3db15a9bd [feat][debug]:support dual-OS selectable printk 0d22396a4de6bb8c6de3e8e92c783f5e547e4bd4 [docs](osal):add GPL-2.0 License and README.md [description ]:NA [root cause]:NA [JIRA ID]:https://jira.sophgo.com/browse/CV184XSDK-593 [chip project]:cv184x [side effects]:NA [Affected *.ko/*.so/*.a] :NA
+
+repo: osdrv, branch: heads/v6.3.2
+a73afc799000484986dc70e5b3d2972d96bd9945 feat: add panel LY030BXMS, ic:7701s 31630a3d1a8d15cfbdd79be4827326fc5f9f685e fix(wifi): openlog to resolve wlan0 node is missing, workaround
+
+repo: oss, branch: master
+f081db00868e7a85ac88ac4abaa9778df7ea70ff [feat](rootfs): add musl arm64 toolchain [description ]:NA [root cause]:NA [JIRA ID]:NA [chip project]:NA [side effects]:NA [Affected *.ko/*.so/*.a] :NA 4f0437b7d671962ec679a1f74ef40c079d3c8093 [fix](toolchain):change SDK_VER name [description ]:2. 64bit -> glibc_arm64 3. 32bit -> glibc_arm [root cause]:NA [JIRA ID]:NA [chip project]:cv184x [side effects]:NA [Affected *.ko/*.so/*.a] :NA
+
+repo: ramdisk, branch: heads/v6.3.2
+a67647283ba99941c92014e6401a211e2427cc47 Merge "[fix](busybox): syslogd not ignore syslogd.conf [description ]:NA [root cause]:NA [JIRA ID]:NA [chip project]:NA [side effects]:NA [Affected *.ko/*.so/*.a] :NA" into Mars3_dev 3dd743337519ecda0f4f7eb0dd25c49b8f6dedfc [fix](busybox): syslogd not ignore syslogd.conf [description ]:NA [root cause]:NA [JIRA ID]:NA [chip project]:NA [side effects]:NA [Affected *.ko/*.so/*.a] :NA
+
+repo: rt-thread, branch: heads/v6.3.2
+420bf9e6f54ee2c6b186847a0265d9972d03bda4 [fix](release):delete part of isp algorithm code [description ]:NA [root cause]:NA [JIRA ID]:NA [chip project]:cv184x [side effects]:NA [Affected *.ko/*.so/*.a] :NA 0f9afbe41b385cfd5b8f1a9497ced5272093bb9a [feat](console): add consol log debug buffer functions for debug and add backtrace.c from c906B. [description ]:we can dump the log buffer from the uboout or linux for debug and add backtrace.c from c906B. [root cause]:NA [JIRA ID]:CV184XSDK-772 [chip project]:NA [side effects]:NA [Affected *.ko/*.so/*.a] :NA
+
+repo: SensorSupportList, branch: master
+efba784885a0d7e63c4c699c74468d3a23e56a4c [feat](sensor): support gc4683 [affected]: [description ]: [root cause ]: NA [mantis id ]: NA [chip project]: NA [confirm test]: NA [side effects]: NA 207c2d59e5ee454efef3316b71999fa5669c19a8 [bugfix][186x][vi]: Fix the issue of exposure not taking effect
+
+repo: sophcam, branch: master
+ba6758b373220255442db13f325ec22107d3080b feat:add dc100 config and pipeline 62e9f4164d32366f3179510b7fd56b012abf65de feat:support lock focus when movie mode
+
+repo: tdl_sdk, branch: master
+7ff761d31f530116bb8f23a523fecf4ad750a584 fix regression config json 0ad699e0a4cc8664035f2502043b631905092936 [fix] change ION name which allocated by tdl
+
+repo: TPU1686, branch: master
+edf2273f0bdf5fb221fd1bf3c3497ad19d6e895c fix: lstm bf16 bug 8b641e3abca4edc5f64fe5e0a30131bdb3492a01 fix: binary_bcast
+
+repo: tracer, branch: master
+ca2cef2a7684d382bccc1c6ef43c569cc3e2ec97 [scripts] Add scripts 34e408b0d8990040f96171885692f39122498a65 [tracer] Change library name from libtracer to libcvitracer
+
+repo: u-boot-2021.10, branch: heads/v6.3.2
+78e97864e3b4c74b4a50f7f79a2c367c7c1d958a [fix](nand): fix spinand page size error [description ]:NA [root cause]:NA [JIRA ID]:CV184XSDK-878 [chip project]:NA [side effects]:NA [Affected *.ko/*.so/*.a] :NA de7acfec77b778138f0190e6f99e8f4cc41c9ac5 Merge "[feat](spinand): support new spinand flash 1.XT26G04D 2.TC58CVG2S0HRAIJ 3.F35SQB002G 4.XT26G12D-B [description ]:NA [root cause]:NA [JIRA ID]:CV184XSDK-878 [chip project]:NA [side effects]:NA [Affected *.ko/*.so/*.a] :NA" into v6.3.2
+
+###############################################################################
+##################################  MediaSDK  #################################
+###############################################################################
+repo: sophcam, branch: master
+ba6758b373220255442db13f325ec22107d3080b feat:add dc100 config and pipeline 62e9f4164d32366f3179510b7fd56b012abf65de feat:support lock focus when movie mode
+
+repo: common_files, branch: master
+4be0f1e27f22445c11be837dcfaf4be87b8389d8 [refactor] sync log level d19ca871f97e3aad6756aeb8a0e22e9a7335ba7f [feat] using syslog() to output
+
+repo: turnkey, branch: release_v9_2
+14e8f8f9774ee2f775152642776f621ca1a29147 [fix](file-dir):fix file dir [description ]:NA [root cause]:NA [JIRA ID]:CV184XSDK-760 [chip project]:NA [side effects]:NA [Affected *.ko/*.so/*.a] :NA 686e48308669b2f2819208dbc1fd7bd5c0d649e1 [feat] using syslog() to output
+
+repo: dc309, branch: cvitek
+6140decb7fe91cd8010d8c7b5928eb4994e1606a fix: 视频播放时阻止屏幕息屏 9f52dfc325ee6b41f11830823baf58d1607dd088 fix:refine iso
+
+repo: AIsdk, branch: master
+b2096279c16cee65ef521ea5e70a9018afee635d [feat] add sophnet interface and img2img support b4f77921ccab254a7260856a450e5d35426872ab [fix]speech to text
+
+repo: demuxer, branch: master
+e42b46b0bdff12c96a66cf7d1365a8f265b7256f [refactor] add FFmpeg include path 9e1ef1a92cbce900d580e316ebd6904dfecef52b [feat]add subvideo
+
+repo: dtcf, branch: master
+b3e546c19c24cb8b9a74e3047bd7ba2a282a51ea [fix]put the newest file on the head of list a2044e04616874900ed806013ac7e919ca6ba6b6 [fix] header file self-contained
+
+repo: exif, branch: master
+b099a5d3cdbcf2dfa2ae429fef473cefc1350ac6 [feat]add sample 0d3804cb4f232049dfd2cae58cece968437fac3c [fix]Remove rls_info.txt
+
+repo: file_recover, branch: master
+48a26c39b1a708d609f1373194d5731d0b0e8515 [fix]录像文件有多个缩略图，解析文件时不能只有一次 2a2064d7036adff6542c44f9bb98f22f1656ffb1 fix bug when the size of sps > 22
+
+repo: flash_tool, branch: master
+112c6e4f8873b05ff041fb7927343769a8770cb9 [fix]Remove rls_info.txt 75f1751a36462fbfa4d6f7393a50aaf0fb77a24e [feat]Add cmake build flow.
+
+repo: hal, branch: master
+6c6a7096a1a15764ab1a410379a43f18e0666ef0 [fix](adc) adapt cv184x && driver build-in case ebdb5846ae24549c7bc731f2003fa2b476044d80 [feat]add hal_backlight
+
+repo: ini, branch: master
+6c48b5dd95bcc3995cd9378ef1174303a7758405 [feat]add sample 7bf4683ad096c0ada39085a851c02635db1184c8 [feat]Add cmake build flow.
+
+repo: mapi, branch: master
+36809700ded96197bf482f30162aea104825eee3 [fix]chn enable 281a1f28c1bd2ccc96ab404a3312603df0a4c9b9 fix:set AI volum failed
+
+repo: muxer, branch: master
+2052088b5ec0c0c3a869f0188290cb44efd073b2 [refactor] add FFmpeg include path 8869d7099905853bdbed4ecb006e2ab8d3650dcd [feat]add subvideo func
+
+repo: osal, branch: master
+00f3bc3f666384f57fe2cfeb2212f885d5ff572f [fix](warning) build warning, size not match d78a9f40c8e0735d70ed7dbfbca5eb3879fc9104 [fix]for arm-none-linux-musleabihf-
+
+repo: perf, branch: master
+fe87dac5612ae918042b1b07ab02dbc6c16c13d5 [feat]Add cmake build flow. 305df3194a4e7d41c63263dd7d5c5b8cae492f29 Desensitization of component content and removal of CVI field content
+
+repo: player, branch: master
+11e642fa1ed83f71662de99a80dcf033af3fbbd7 [refactor] add FFmpeg include path 075cc649326be84a7ac996db715d5f0bea78e68a [fix]fix build error
+
+repo: recorder, branch: master
+0b615c5375acc9ce9841e5be4ec65f7e860e2802 fix:outcnt is error when enable_emrfile_from_normfile 6b374996169b2c8c282a58b8e7bf33ad034b2837 fix:rename RECORDER_RBUF_VIDEO
+
+repo: ringbuffer, branch: master
+c440e79e058d34b695898ebf6937eb5bdf0aad5c fix:add RBUF_Unused to log and some comments a573c69037a4e79b6f349e82df027b6679d32f2c [feat]add sample
+
+repo: rtsp, branch: master
+e1cad8952984c1140771bb1d383d3f1e4fcd7a7c [feat]Audio and video synchronization 8dec5bd4cdf6573b593d02a3f0038cadf02370d3 [fix](cvi_rtsp): increase RTSP_INSTANCE_NUM to 10
+
+repo: storage, branch: master
+d18f678d9ec074454d974e25412e784a66583e65 delete cvi 50542c87987acbbb4b51856e5b15d76f8941764c [feat]add sample
+
+repo: sysutils, branch: master
+b9c15115ff26cd0f05e2ab5645417a883be99e90 [refactor] using CVI_LOGX instead of printf 3e2e83c9a0d4bf45d54a810a1ab6800f42c850c1 [feat]add sample
+
+repo: thumbnail_extractor, branch: master
+0dca4dd7487aee20f80a754caa2823bb708ba991 [feat]support generate subpic from subvideo 6c9c54ac9265496dd5c19e62212679be84df5dfc [refactor] add FFmpeg include path
+
+repo: upgrade, branch: master
+c6e4f642c276898bcc4c349a528ba57af8a00713 [feat]Add cmake build flow. 6c41e46fb72eab0fd9108c77124f0d8986ed1a33 replace OSAL API
+
+repo: awtkcode, branch: framework
+4a49328ea559d672de0c79ab92d9718ad0ca3cb7 [feat]fb enable tde b59fd2639cccd11e6dcfa8d8174adf37db8ed476 awtk for mars3
+
+repo: ffmpeg, branch: framework
+a45854861fd10cda0df39c1d21c3f166ba9b2dd4 [feat] add flush moov box for mp4 files 87752578fa89fd70a3ca5d67f27efc1689f9e034 [feat] sync from cardv projec.
+
+repo: lvgl, branch: release/v9.3
+9f27e0a51e80430f1491b0e0cac4a07eb3995b58 [clena] rm lv_conf.h 34da7d978572cf3ed9a481ceba55647d3f8a9a28 [feat] add lv_conf.h for cardv
+
+repo: thttpd, branch: framework
+1b660b0b05c1f8f3c0d450e13bb82cc0f46da890 [style]delete cvi for thttpd 47d97960fdeb627eb6f97c86f4c049dd1a3afa77 By default, open the mime_ encodings. h and mime_ types. h files
+

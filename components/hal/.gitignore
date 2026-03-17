@@ -1,0 +1,5 @@
+build
+samples/sample_gsensor/build
+samples/sample_led/build
+samples/sample_pwm/build
+samples/sample_wifi/build

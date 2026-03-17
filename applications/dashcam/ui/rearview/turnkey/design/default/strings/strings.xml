@@ -1,0 +1,560 @@
+<string name="STRID_LANGUAGE">
+  <language name="en_US">Language</language>
+  <language name="zh_CN">语言</language>
+</string>
+<string name="STRID_FORMAT_FAILED">
+  <language name="en_US">Format SD Failed!</language>
+  <language name="zh_CN">格式化存储卡失败</language>
+</string>
+<string name="STRID_SUCCESS">
+  <language name="en_US">Format SD Failed!</language>
+  <language name="zh_CN">格式化存储卡成功</language>
+</string>
+<string name="STRID_CANCEL">
+  <language name="en_US">Cancel</language>
+  <language name="zh_CN">取消</language>
+</string>
+<string name="STRID_CONFIRM">
+  <language name="en_US">Confirm</language>
+  <language name="zh_CN">确认</language>
+</string>
+<string name="STRID_BACK">
+  <language name="en_US">Back</language>
+  <language name="zh_CN">返回</language>
+</string>
+<string name="STRID_MENU">
+  <language name="en_US">Menu</language>
+  <language name="zh_CN">菜单</language>
+</string>
+<string name="STRID_OK">
+  <language name="en_US">OK</language>
+  <language name="zh_CN">确认</language>
+</string>
+<string name="STRID_ALBUM">
+  <language name="en_US">Album</language>
+  <language name="zh_CN">相册</language>
+</string>
+<string name="STRID_FRONT_CAM">
+  <language name="en_US">Front</language>
+  <language name="zh_CN">前路</language>
+</string>
+<string name="STRID_BACK_CAM">
+  <language name="en_US">Back</language>
+  <language name="zh_CN">后路</language>
+</string>
+<string name="STRID_TAKE_PHOTO">
+  <language name="en_US">PHOTO</language>
+  <language name="zh_CN">拍照</language>
+</string>
+<string name="STRID_RECORD">
+  <language name="en_US">RECORD</language>
+  <language name="zh_CN">录像</language>
+</string>
+<string name="STRID_HOME_VIDEO_ON">
+  <language name="en_US">Record</language>
+  <language name="zh_CN">录像中</language>
+</string>
+<string name="STRID_HOME_VIDEO_OFF">
+  <language name="en_US">Pause</language>
+  <language name="zh_CN">暂停</language>
+</string>
+<string name="STRID_HOME_EMR">
+  <language name="en_US">EMR</language>
+  <language name="zh_CN">紧急录像</language>
+</string>
+<string name="STRID_HOME_PHOTO_MODE">
+  <language name="en_US">Photo</language>
+  <language name="zh_CN">拍照模式</language>
+</string>
+<string name="STRID_FILELIST_INFO">
+  <language name="en_US">FileList</language>
+  <language name="zh_CN">文件列表</language>
+</string>
+<string name="STRID_SET_INFO">
+  <language name="en_US">Settings</language>
+  <language name="zh_CN">设置</language>
+</string>
+<string name="STRID_PHOTO_SET_INFO">
+  <language name="en_US">Photo Settings</language>
+  <language name="zh_CN">拍照设置</language>
+</string>
+<string name="STRID_RESET_SYSTEM">
+  <language name="en_US">Reset System</language>
+  <language name="zh_CN">恢复出厂设置</language>
+</string>
+<string name="STRID_RESOLUTION">
+  <language name="en_US">Resolution</language>
+  <language name="zh_CN">分辨率</language>
+</string>
+<string name="STRID_4K">
+  <language name="en_US">4K</language>
+  <language name="zh_CN">4K</language>
+</string>
+<string name="STRID_1600P">
+  <language name="en_US">1600P</language>
+  <language name="zh_CN">1600P</language>
+</string>
+<string name="STRID_1440P">
+  <language name="en_US">1440P</language>
+  <language name="zh_CN">1440P</language>
+</string>
+<string name="STRID_1296P">
+  <language name="en_US">1296P</language>
+  <language name="zh_CN">1296P</language>
+</string>
+<string name="STRID_1080P">
+  <language name="en_US">1080P</language>
+  <language name="zh_CN">1080P</language>
+</string>
+<string name="STRID_720P">
+  <language name="en_US">720P</language>
+  <language name="zh_CN">720P</language>
+</string>
+<string name="STRID_FLIP">
+  <language name="en_US">Flip</language>
+  <language name="zh_CN">翻转</language>
+</string>
+<string name="STRID_OSD">
+  <language name="en_US">OSD</language>
+  <language name="zh_CN">水印信息</language>
+</string>
+<string name="STRID_WDR">
+  <language name="en_US">WDR</language>
+  <language name="zh_CN">宽动态</language>
+</string>
+<string name="STRID_ANTIFLICKER">
+  <language name="en_US">Antiflicker Mode</language>
+  <language name="zh_CN">抗闪模式</language>
+</string>
+<string name="STRID_VOLUME">
+  <language name="en_US">Volume</language>
+  <language name="zh_CN">音量</language>
+</string>
+<string name="STRID_KEYTONE">
+  <language name="en_US">Keytone</language>
+  <language name="zh_CN">按键音</language>
+</string>
+<string name="STRID_BOOTSOUND">
+  <language name="en_US">Boot Sound</language>
+  <language name="zh_CN">开机音乐</language>
+</string>
+<string name="STRID_SCREEN_BRIGHTNESS">
+  <language name="en_US">Screen Brightness</language>
+  <language name="zh_CN">屏幕亮度</language>
+</string>
+<string name="STRID_SCREEN_DORMANT">
+  <language name="en_US">Screen Dormant</language>
+  <language name="zh_CN">屏幕休眠</language>
+</string>
+<string name="STRID_VIDEO_ENCODE">
+  <language name="en_US">Video Encode</language>
+  <language name="zh_CN">视频编码</language>
+</string>
+<string name="STRID_AUDIO">
+  <language name="en_US">Audio</language>
+  <language name="zh_CN">音频</language>
+</string>
+<string name="STRID_BACK_REC">
+  <language name="en_US">Back Record</language>
+  <language name="zh_CN">后路录像</language>
+</string>
+<string name="STRID_SPLITTIME">
+  <language name="en_US">Split Time</language>
+  <language name="zh_CN">录像时间</language>
+</string>
+<string name="STRID_PREVIEWPIP">
+  <language name="en_US">PreviewPIP</language>
+  <language name="zh_CN">画中画</language>
+</string>
+<string name="STRID_NOTICE">
+  <language name="en_US">Notice</language>
+  <language name="zh_CN">提示</language>
+</string>
+<string name="STRID_TIME_SET">
+  <language name="en_US">Time Setting</language>
+  <language name="zh_CN">时间设置</language>
+</string>
+<string name="STRID_NO_SD_CARD">
+  <language name="en_US">No SD card!</language>
+  <language name="zh_CN">存储卡不存在!</language>
+</string>
+<string name="STRID_SD_ERROR">
+  <language name="en_US">SD error!</language>
+  <language name="zh_CN">存储卡错误!</language>
+</string>
+<string name="STRID_SD_NEED_FORMAT">
+  <language name="en_US">SD card need to format!</language>
+  <language name="zh_CN">存储卡需要格式化处理!</language>
+</string>
+<string name="STRID_SD_READ_ONLY">
+  <language name="en_US">SD card read only, please backup it before format!</language>
+  <language name="zh_CN">存储卡唯讀,请备份並格式化处理</language>
+</string>
+<string name="STRID_SD_SPEED_LOW">
+  <language name="en_US">SD speed is low,Please replace the card!</language>
+  <language name="zh_CN">存储卡卡速太低,请更换存储卡!</language>
+</string>
+<string name="STRID_SD_PREPARING">
+  <language name="en_US">SD is preparing!</language>
+  <language name="zh_CN">存储卡正在准备中!</language>
+</string>
+<string name="STRID_SD_ERROR_FORMAT">
+  <language name="en_US">SD card need to format!</language>
+  <language name="zh_CN">存储卡需要格式化处理!</language>
+</string>
+<string name="STRID_SD_ERROR_PLUG">
+  <language name="en_US">SD card error, please re-plug the card!</language>
+  <language name="zh_CN">存储卡错误,请重新拔插存储卡!</language>
+</string>
+<string name="STRID_SD_ERROR_CHANGE">
+  <language name="en_US">SD card error,Please replace the card!</language>
+  <language name="zh_CN">存储卡错误,请更换存储卡!</language>
+</string>
+<string name="STRID_FORMAT_SD">
+  <language name="en_US">Format SD</language>
+  <language name="zh_CN">格式化存储卡</language>
+</string>
+<string name="STRID_PWM_BRI">
+  <language name="en_US">PWM BRI</language>
+  <language name="zh_CN">背光亮度</language>
+</string>
+<string name="STRID_LCD_CONTROL">
+  <language name="en_US">LCD CONTROL</language>
+  <language name="zh_CN">屏幕保护</language>
+</string>
+<string name="STRID_VIEW_WIN">
+  <language name="en_US">VIEW WIN</language>
+  <language name="zh_CN">显示视窗</language>
+</string>
+<string name="STRID_LCD_LOW">
+  <language name="en_US">PWM_BRI_PWM_LOW</language>
+  <language name="zh_CN">低</language>
+</string>
+<string name="STRID_LCD_MID">
+  <language name="en_US">STRID_BRI_PWM_MID</language>
+  <language name="zh_CN">中</language>
+</string>
+<string name="STRID_LCD_HIGH">
+  <language name="en_US">STRID_BRI_PWM_HIGH</language>
+  <language name="zh_CN">高</language>
+</string>
+<string name="STRID_FRONT_WIN">
+  <language name="en_US">STRID_VIEW_WIN_FRONT</language>
+  <language name="zh_CN">显示前路</language>
+</string>
+<string name="STRID_BACK_WIN">
+  <language name="en_US">STRID_VIEW_WIN_BACK</language>
+  <language name="zh_CN">显示后路</language>
+</string>
+<string name="STRID_DOUBLE_WIN">
+  <language name="en_US">STRID_VIEW_WIN_DOUBLE</language>
+  <language name="zh_CN">显示双路</language>
+</string>
+<string name="STRID_FORMAT_SD_AT_ONCE">
+  <language name="en_US">Format SD at once?</language>
+  <language name="zh_CN">是否立即格式化存储卡?</language>
+</string>
+<string name="STRID_RESET_FACTORY">
+  <language name="en_US">Reset Factory</language>
+  <language name="zh_CN">恢复出厂设置</language>
+</string>
+<string name="STRID_RESET_FACTORY_AT_ONCE">
+  <language name="en_US">Reset factory at once?</language>
+  <language name="zh_CN">是否立即恢复出厂设置?</language>
+</string>
+<string name="STRID_USB_CHOICES">
+  <language name="en_US">Usb Choices</language>
+  <language name="zh_CN">USB模式</language>
+</string>
+<string name="STRID_ABOUT">
+  <language name="en_US">About</language>
+  <language name="zh_CN">关于</language>
+</string>
+<string name="STRID_SOFTWARE">
+  <language name="en_US">Software: </language>
+  <language name="zh_CN">软件: </language>
+</string>
+<string name="STRID_MODEL">
+  <language name="en_US">Model: </language>
+  <language name="zh_CN">型号: </language>
+</string>
+<string name="STRID_WIFI_SSID">
+  <language name="en_US">WIFI SSID: </language>
+  <language name="zh_CN">WIFI名称: </language>
+</string>
+<string name="STRID_USB_MODE">
+  <language name="en_US">USB Mode</language>
+  <language name="zh_CN">USB模式</language>
+</string>
+<string name="STRID_UVC">
+  <language name="en_US">UVC</language>
+  <language name="zh_CN">USB摄像头</language>
+</string>
+<string name="STRID_USB_STORAGE">
+  <language name="en_US">USB Storage</language>
+  <language name="zh_CN">USB存储</language>
+</string>
+<string name="STRID_GSENSOR_SENSITIVITY">
+  <language name="en_US">Sensitivity</language>
+  <language name="zh_CN">碰撞灵敏度</language>
+</string>
+<string name="STRID_PARKING">
+  <language name="en_US">Parking</language>
+  <language name="zh_CN">停车监控</language>
+</string>
+<string name="STRID_SD_ERROR_CHANGE">
+  <language name="en_US">SD card error,Please replace the card!</language>
+  <language name="zh_CN">存储卡错误,请更换存储卡!</language>
+</string>
+<string name="STRID_Alarm_Parking">
+  <language name="en_US">Going to parking</language>
+  <language name="zh_CN">正在进入停车监控</language>
+</string>
+<string name="STRID_FILE_CNT_PARKING">
+  <language name="en_US">Parking record file count:</language>
+  <language name="zh_CN">停车录像文件个数:</language>
+</string>
+<string name="STRID_PLAYBACK_FILE_ERR">
+  <language name="en_US">Parking record file is error!</language>
+  <language name="zh_CN">停车录像文件错误!</language>
+</string>
+<string name="STRID_FILE_ERR">
+  <language name="en_US">File is error!</language>
+  <language name="zh_CN">文件错误!</language>
+</string>
+<string name="STRID_PLAYBACK">
+  <language name="en_US">Play the files at once?</language>
+  <language name="zh_CN">是否立即播放这些文件?</language>
+</string>
+<string name="STRID_UPGRADE_AT_ONCE">
+  <language name="en_US">Do you want to upgrade now?</language>
+  <language name="zh_CN">是否立即升级?</language>
+</string>
+<string name="STRID_UPGRADE_SUCCESS">
+  <language name="en_US">Upgrade success!</language>
+  <language name="zh_CN">升级成功!</language>
+</string>
+<string name="STRID_UPGRADE_FAILED">
+  <language name="en_US">Upgrade failed!</language>
+  <language name="zh_CN">升级失败!</language>
+</string>
+<string name="STRID_UPGRADE_MODE">
+  <language name="en_US">Start firmware upgrade!</language>
+  <language name="zh_CN">进入升级模式！</language>
+</string>
+<string name="STRID_FAST_FORMAT_SD">
+  <language name="en_US">Fast format</language>
+  <language name="zh_CN">快速格式化</language>
+</string>
+<string name="STRID_LOW_BATTERY">
+  <language name="en_US">Low battery!</language>
+  <language name="zh_CN">低电量!</language>
+</string>
+<string name="STRID_REC_TYPE">
+  <language name="en_US">Rec type</language>
+  <language name="zh_CN">录像类型</language>
+</string>
+<string name="STRID_LAPSE_REC_TIME">
+  <language name="en_US">Lapse Interval</language>
+  <language name="zh_CN">缩时间隔</language>
+</string>
+<string name="STRID_NORMAL_REC">
+  <language name="en_US">Normal Record</language>
+  <language name="zh_CN">缩时录像</language>
+</string>
+<string name="STRID_500MS">
+  <language name="en_US">0.5S</language>
+  <language name="zh_CN">0.5秒</language>
+</string>
+<string name="STRID_1S">
+  <language name="en_US">1S</language>
+  <language name="zh_CN">1秒</language>
+</string>
+<string name="STRID_2S">
+  <language name="en_US">2S</language>
+  <language name="zh_CN">2秒</language>
+</string>
+<string name="STRID_3S">
+  <language name="en_US">3S</language>
+  <language name="zh_CN">3秒</language>
+</string>
+<string name="STRID_5S">
+  <language name="en_US">5S</language>
+  <language name="zh_CN">5秒</language>
+</string>
+<string name="STRID_1MIN">
+  <language name="en_US">1MIN</language>
+  <language name="zh_CN">1分钟</language>
+</string>
+<string name="STRID_3MIN">
+  <language name="en_US">3MIN</language>
+  <language name="zh_CN">3分钟</language>
+</string>
+<string name="STRID_5MIN">
+  <language name="en_US">5MIN</language>
+  <language name="zh_CN">5分钟</language>
+</string>
+<string name="STRID_ON">
+  <language name="en_US">ON</language>
+  <language name="zh_CN">开</language>
+</string>
+<string name="STRID_OFF">
+  <language name="en_US">OFF</language>
+  <language name="zh_CN">关</language>
+</string>
+<string name="STRID_EN">
+  <language name="en_US">English</language>
+  <language name="zh_CN">英语</language>
+</string>
+<string name="STRID_ZH">
+  <language name="en_US">zh</language>
+  <language name="zh_CN">中文</language>
+</string>
+<string name="STRID_SELECT_CHARGE">
+  <language name="en_US">CHARGE</language>
+  <language name="zh_CN">仅充电</language>
+</string>
+<string name="STRID_SELECT_UVC">
+  <language name="en_US">UVC</language>
+  <language name="zh_CN">USB摄像头</language>
+</string>
+<string name="STRID_SELECT_STORAGE">
+  <language name="en_US">STORAGE</language>
+  <language name="zh_CN">USB存储</language>
+</string>
+<string name="STRID_LOW">
+  <language name="en_US">LOW</language>
+  <language name="zh_CN">低</language>
+</string>
+<string name="STRID_MIDDLE">
+  <language name="en_US">MIDDLE</language>
+  <language name="zh_CN">中</language>
+</string>
+<string name="STRID_HIGH">
+  <language name="en_US">HIGH</language>
+  <language name="zh_CN">高</language>
+</string>
+<string name="STRID_MUTE">
+  <language name="en_US">MUTE</language>
+  <language name="zh_CN">静音</language>
+</string>
+<string name="STRID_EMR_FRONT">
+  <language name="en_US">front_emr</language>
+  <language name="zh_CN">前路紧急录像</language>
+</string>
+<string name="STRID_NORM_FRONT">
+  <language name="en_US">front_norm</language>
+  <language name="zh_CN">前路普通录像</language>
+</string>
+<string name="STRID_EMR_REAR">
+  <language name="en_US">back_emr</language>
+  <language name="zh_CN">后路紧急录像</language>
+</string>
+<string name="STRID_NORM_REAR">
+  <language name="en_US">back_norm</language>
+  <language name="zh_CN">后路普通录像</language>
+</string>
+<string name="STRID_PHOTO_FRONT">
+  <language name="en_US">front_photo</language>
+  <language name="zh_CN">前路照片</language>
+</string>
+<string name="STRID_PHOTO_BACK">
+  <language name="en_US">back_photo</language>
+  <language name="zh_CN">后路照片</language>
+</string>
+<string name="STRID_EMR">
+  <language name="en_US">emr</language>
+  <language name="zh_CN">单路紧急录像</language>
+</string>
+<string name="STRID_NORM">
+  <language name="en_US">norm</language>
+  <language name="zh_CN">单路普通录像</language>
+</string>
+<string name="STRID_PHOTO">
+  <language name="en_US">photo</language>
+  <language name="zh_CN">照片</language>
+</string>
+<string name="STRID_MD_SENSITIVITY">
+  <language name="en_US">Md Sensitivity</language>
+  <language name="zh_CN">移动侦测</language>
+</string>
+<string name="STRID_FORMATTING">
+  <language name="en_US">Formatting...</language>
+  <language name="zh_CN">正在格式化...</language>
+</string>
+<string name="STRID_UPGRADING">
+  <language name="en_US">Upgrading...</language>
+  <language name="zh_CN">正在升级...</language>
+</string>
+<string name="STRID_UPGRADE_CANCEL">
+  <language name="en_US">cancel upgrade</language>
+  <language name="zh_CN">取消升级</language>
+</string>
+<string name="STRID_UPGRADE_RECEIVING">
+  <language name="en_US">receiving...</language>
+  <language name="zh_CN">接收中...</language>
+</string>
+<string name="STRID_H264">
+  <language name="en_US">H264</language>
+  <language name="zh_CN">H264</language>
+</string>
+<string name="STRID_H265">
+  <language name="en_US">H265</language>
+  <language name="zh_CN">H265</language>
+</string>
+<string name="STRID_DELETE_CURFILE">
+  <language name="en_US">Delete current file</language>
+  <language name="zh_CN">删除当前文件</language>
+</string>
+<string name="STRID_DELETE_CURFILE_CONFIRM">
+  <language name="en_US">Delete current file?</language>
+  <language name="zh_CN">确认删除当前文件?</language>
+</string>
+<string name="STRID_DELETE_ALLFILE">
+  <language name="en_US">Delete all file</language>
+  <language name="zh_CN">删除所有文件</language>
+</string>
+<string name="STRID_NOVIDEO_FILE">
+  <language name="en_US">No video files!</language>
+  <language name="zh_CN">没有视频文件</language>
+</string>
+<string name="STRID_NOPHOTO_FILE">
+  <language name="en_US">No photo files!</language>
+  <language name="zh_CN">没有照片文件</language>
+</string>
+<string name="STRID_NOTSUPPORT_H265">
+  <language name="en_US">Does not support H265 playback!</language>
+  <language name="zh_CN">不支持H265播放</language>
+</string>
+<string name="STRID_VGA">
+  <language name="en_US">VGA</language>
+  <language name="zh_CN">VGA</language>
+</string>
+<string name="STRID_3M">
+  <language name="en_US">3M</language>
+  <language name="zh_CN">3M</language>
+</string>
+<string name="STRID_5M">
+  <language name="en_US">5M</language>
+  <language name="zh_CN">5M</language>
+</string>
+<string name="STRID_8M">
+  <language name="en_US">8M</language>
+  <language name="zh_CN">8M</language>
+</string>
+<string name="STRID_10M">
+  <language name="en_US">10M</language>
+  <language name="zh_CN">10M</language>
+</string>
+<string name="STRID_12M">
+  <language name="en_US">12M</language>
+  <language name="zh_CN">12M</language>
+</string>
+<string name="STRID_APP_CONNECT_SUCCESS">
+  <language name="en_US">APP is connectted</language>
+  <language name="zh_CN">APP接通成功, UI暂停</language>
+</string>
+<string name="STRID_APP_DISCONNECT">
+  <language name="en_US">APP is disconnectted</language>
+  <language name="zh_CN">APP关停, UI恢复</language>
+</string>

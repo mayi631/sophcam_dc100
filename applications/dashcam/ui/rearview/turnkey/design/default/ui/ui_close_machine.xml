@@ -1,0 +1,3 @@
+<window name="ui_close_machine">
+  <image name="ANI_close" x="0" y="0" w="1920" h="440" draw_type="default" image="ANI_close"/>
+</window>

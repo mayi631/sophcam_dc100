@@ -1,0 +1,15 @@
+[submodule "external/json"]
+	path = external/json
+	url = ssh://172.25.4.9:29418/oss/json.git
+[submodule "external/openssl"]
+	path = external/openssl
+	url = ssh://172.25.4.9:29418/oss/openssl.git
+[submodule "external/curl"]
+	path = external/curl
+	url = ssh://172.25.4.9:29418/oss/curl.git
+[submodule "external/zlog"]
+	path = external/zlog
+	url = ssh://172.25.4.9:29418/oss/zlog.git
+[submodule "external/libwebsockets"]
+	path = external/libwebsockets
+	url = ssh://172.25.4.9:29418/oss/libwebsockets.git

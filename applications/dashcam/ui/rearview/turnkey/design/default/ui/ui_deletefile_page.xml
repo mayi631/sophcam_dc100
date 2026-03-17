@@ -1,0 +1,10 @@
+<window name="ui_deletefile_page" style:normal:bg_color="#00000000">
+  <list_view name="list_view" x="653" y="85" w="559" h="266" default_item_height="60">
+    <scroll_view name="scroll_view" x="0" y="0" w="-10" h="100%">
+      <list_item name="list_item_deletecur" style:normal:text_color="#000000" tr_text="STRID_DELETE_CURFILE"/>
+      <list_item name="list_item_deleteall" style:normal:text_color="#000000" tr_text="STRID_DELETE_ALLFILE"/>
+      <list_item name="list_item_cancel" style:normal:text_color="#000000" tr_text="STRID_CANCEL"/>
+    </scroll_view>
+    <scroll_bar_d name="scroll_bar" x="r" y="0" w="10" h="100%" is_mobile="true"/>
+  </list_view>
+</window>

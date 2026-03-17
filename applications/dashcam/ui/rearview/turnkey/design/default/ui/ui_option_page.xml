@@ -1,0 +1,251 @@
+<window name="ui_option_page" style:normal:bg_color="#00000000">
+  <view name="top_view" x="640" y="0" w="640" h="75" style:normal:bg_color="#00B0F0">
+    <image name="setting_page" x="10" y="5" w="64" h="64" draw_type="default" image="home_setup"/>
+    <label name="set_label" x="224" y="0" w="160" h="75" style:normal:font_size="48" tr_text="STRID_RESOLUTION"/>
+    <button name="back_button" x="566" y="5" w="64" h="64" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" style:normal:icon="settup_back" style:focused:border_color="#00000000" style:pressed:bg_color="#00000000">
+      <property name="style:pressed:border_color">
+        <![CDATA[#00000000]]>
+      </property>
+      <property name="style:over:bg_color">
+        <![CDATA[#00000000]]>
+      </property>
+      <property name="style:over:border_color">
+        <![CDATA[#00000000]]>
+      </property>
+      <property name="style:pressed:icon">
+        <![CDATA[settup_back]]>
+      </property>
+      <property name="style:over:icon">
+        <![CDATA[settup_back]]>
+      </property>
+    </button>
+  </view>
+  <list_view name="setting_list" x="640" y="75" w="640" h="365" default_item_height="73" style:normal:text_color="#FFFFFF" style:normal:bg_color="#FFFFFF" auto_hide_scroll_bar="true" focusable="false">
+    <property name="with_focus_state">
+      <![CDATA[false]]>
+    </property>
+    <scroll_view name="scroll_view" x="0" y="0" w="630" h="365" xslidable="false" focusable="false" with_focus_state="false" yslidable="true" style:normal:bg_color="#FFFFFF">
+      <list_item name="list_item" style:normal:border_color="#00000000" style:normal:bg_color="#00000000" style:normal:text_color="#000000" focusable="false" with_focus_state="false" style:normal:font_size="32" style:normal:text_align_h="left" style:focused:font_size="32" style:focused:text_align_h="center">
+        <property name="style:focused:text_color">
+          <![CDATA[#000000]]>
+        </property>
+        <property name="style:pressed:font_size">
+          <![CDATA[32]]>
+        </property>
+        <property name="style:pressed:text_align_h">
+          <![CDATA[left]]>
+        </property>
+        <property name="style:over:font_size">
+          <![CDATA[32]]>
+        </property>
+        <property name="style:over:text_align_h">
+          <![CDATA[left]]>
+        </property>
+        <property name="style:over:border_color">
+          <![CDATA[#00000000]]>
+        </property>
+        <property name="style:focused:border_color">
+          <![CDATA[#00000000]]>
+        </property>
+        <property name="style:over:text_color">
+          <![CDATA[#000000]]>
+        </property>
+        <property name="sensitive">
+          <![CDATA[false]]>
+        </property>
+        <property name="style:pressed:bg_color">
+          <![CDATA[#84848464]]>
+        </property>
+        <property name="style:pressed:border_color">
+          <![CDATA[#00000000]]>
+        </property>
+        <property name="style:pressed:text_color">
+          <![CDATA[#000000]]>
+        </property>
+        <image name="image" x="507" y="0" w="64" h="64" draw_type="default" image="num0" style:normal:icon="menu_sel"/>
+      </list_item>
+      <list_item name="list_item1" style:normal:border_color="#00000000" style:normal:bg_color="#00000000" style:over:text_color="#000000" style:over:font_size="32" style:over:text_align_h="left" style:normal:font_size="32" style:normal:text_color="#000000" style:normal:text_align_h="left" style:pressed:font_size="32">
+        <property name="style:pressed:text_color">
+          <![CDATA[#000000]]>
+        </property>
+        <property name="style:pressed:text_align_h">
+          <![CDATA[left]]>
+        </property>
+        <property name="style:focused:font_size">
+          <![CDATA[32]]>
+        </property>
+        <property name="style:focused:text_color">
+          <![CDATA[#000000]]>
+        </property>
+        <property name="style:over:border_color">
+          <![CDATA[#00000000]]>
+        </property>
+        <property name="style:focused:border_color">
+          <![CDATA[#00000000]]>
+        </property>
+        <property name="style:pressed:border_color">
+          <![CDATA[#00000000]]>
+        </property>
+        <property name="style:pressed:bg_color">
+          <![CDATA[#84848464]]>
+        </property>
+        <property name="sensitive">
+          <![CDATA[false]]>
+        </property>
+        <image name="image" x="507" y="0" w="64" h="64" draw_type="default" image="num0" style:normal:icon="menu_sel"/>
+      </list_item>
+      <list_item name="list_item2" style:normal:border_color="#00000000" style:normal:bg_color="#00000000" h="73" style:focused:font_size="32" style:focused:text_align_h="center" style:focused:text_color="#000000" style:normal:text_color="#000000" style:normal:font_size="32" style:normal:text_align_h="left">
+        <property name="style:pressed:font_size">
+          <![CDATA[32]]>
+        </property>
+        <property name="style:pressed:text_align_h">
+          <![CDATA[left]]>
+        </property>
+        <property name="style:over:font_size">
+          <![CDATA[32]]>
+        </property>
+        <property name="style:over:text_align_h">
+          <![CDATA[left]]>
+        </property>
+        <property name="style:over:border_color">
+          <![CDATA[#00000000]]>
+        </property>
+        <property name="style:over:text_color">
+          <![CDATA[#000000]]>
+        </property>
+        <property name="style:focused:border_color">
+          <![CDATA[#00000000]]>
+        </property>
+        <property name="style:pressed:border_color">
+          <![CDATA[#00000000]]>
+        </property>
+        <property name="style:pressed:bg_color">
+          <![CDATA[#84848464]]>
+        </property>
+        <property name="style:pressed:text_color">
+          <![CDATA[#000000]]>
+        </property>
+        <property name="sensitive">
+          <![CDATA[false]]>
+        </property>
+        <image name="image" x="507" y="0" w="64" h="64" draw_type="default" image="num0" style:normal:icon="menu_sel"/>
+      </list_item>
+      <list_item name="list_item3" style:normal:border_color="#00000000" style:normal:bg_color="#00000000" style:normal:font_size="32" style:normal:text_align_h="left" style:normal:text_color="#000000" style:pressed:font_size="32" style:pressed:text_align_h="left" style:over:font_size="32" style:over:text_align_h="left">
+        <property name="style:focused:font_size">
+          <![CDATA[32]]>
+        </property>
+        <property name="style:focused:text_align_h">
+          <![CDATA[center]]>
+        </property>
+        <property name="style:over:border_color">
+          <![CDATA[#00000000]]>
+        </property>
+        <property name="style:over:text_color">
+          <![CDATA[#000000]]>
+        </property>
+        <property name="style:focused:text_color">
+          <![CDATA[#000000]]>
+        </property>
+        <property name="style:focused:border_color">
+          <![CDATA[#00000000]]>
+        </property>
+        <property name="style:pressed:border_color">
+          <![CDATA[#00000000]]>
+        </property>
+        <property name="style:pressed:bg_color">
+          <![CDATA[#84848464]]>
+        </property>
+        <property name="style:pressed:text_color">
+          <![CDATA[#000000]]>
+        </property>
+        <property name="sensitive">
+          <![CDATA[false]]>
+        </property>
+        <image name="image" x="507" y="0" w="64" h="64" draw_type="default" image="num0" style:normal:icon="menu_sel"/>
+      </list_item>
+      <list_item name="list_item4" style:normal:border_color="#00000000" style:normal:bg_color="#00000000" style:normal:font_size="32" style:normal:text_color="#000000" style:normal:text_align_h="left" style:pressed:font_size="32" style:pressed:text_align_h="left" style:focused:font_size="32" style:focused:text_align_h="center">
+        <property name="style:over:font_size">
+          <![CDATA[32]]>
+        </property>
+        <property name="style:over:text_align_h">
+          <![CDATA[left]]>
+        </property>
+        <property name="style:over:border_color">
+          <![CDATA[#00000000]]>
+        </property>
+        <property name="style:over:text_color">
+          <![CDATA[#000000]]>
+        </property>
+        <property name="style:focused:text_color">
+          <![CDATA[#000000]]>
+        </property>
+        <property name="style:focused:border_color">
+          <![CDATA[#00000000]]>
+        </property>
+        <property name="style:pressed:border_color">
+          <![CDATA[#00000000]]>
+        </property>
+        <property name="style:pressed:bg_color">
+          <![CDATA[#84848464]]>
+        </property>
+        <property name="style:pressed:text_color">
+          <![CDATA[#000000]]>
+        </property>
+        <property name="sensitive">
+          <![CDATA[false]]>
+        </property>
+        <image name="image" x="507" y="0" w="64" h="64" draw_type="default" image="num0" style:normal:icon="menu_sel"/>
+      </list_item>
+      <list_item name="list_item5" style:normal:border_color="#00000000" style:normal:bg_color="#00000000" style:normal:font_size="32" style:normal:text_align_h="left" style:pressed:text_align_h="left" style:pressed:font_size="32" style:over:font_size="32" style:over:text_align_h="left" style:focused:font_size="32">
+        <property name="style:focused:text_align_h">
+          <![CDATA[center]]>
+        </property>
+        <property name="style:focused:text_color">
+          <![CDATA[#000000]]>
+        </property>
+        <property name="style:normal:text_color">
+          <![CDATA[#000000]]>
+        </property>
+        <property name="style:over:border_color">
+          <![CDATA[#00000000]]>
+        </property>
+        <property name="style:over:text_color">
+          <![CDATA[#000000]]>
+        </property>
+        <property name="style:focused:border_color">
+          <![CDATA[#00000000]]>
+        </property>
+        <property name="style:pressed:border_color">
+          <![CDATA[#00000000]]>
+        </property>
+        <property name="style:pressed:bg_color">
+          <![CDATA[#84848464]]>
+        </property>
+        <property name="style:pressed:text_color">
+          <![CDATA[#000000]]>
+        </property>
+        <property name="sensitive">
+          <![CDATA[false]]>
+        </property>
+        <image name="image" x="507" y="0" w="64" h="64" draw_type="default" image="num0" style:normal:icon="menu_sel"/>
+      </list_item>
+    </scroll_view>
+    <scroll_bar_d name="scroll_bar" x="r" y="0" w="10" h="100%" is_mobile="true"/>
+  </list_view>
+  <button name="left_button" x="0" y="0" w="639" h="440" style:normal:bg_color="#00000000" style:focused:border_color="#00000000" style:focused:bg_color="#00000000" style:pressed:border_color="#00000000" style:pressed:bg_color="#00000000">
+    <property name="style:normal:border_color">
+      <![CDATA[#00000000]]>
+    </property>
+    <property name="text">
+      <![CDATA[]]>
+    </property>
+  </button>
+  <button name="right_button" x="1280" y="0" w="639" h="440" style:normal:bg_color="#00000000" style:focused:border_color="#00000000" style:focused:bg_color="#00000000" style:pressed:border_color="#00000000" style:pressed:bg_color="#00000000">
+    <property name="style:normal:border_color">
+      <![CDATA[#00000000]]>
+    </property>
+    <property name="text">
+      <![CDATA[]]>
+    </property>
+  </button>
+</window>

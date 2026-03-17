@@ -1,0 +1,18 @@
+<window name="ui_photo_set_page" style:normal:bg_color="#00000000">
+  <view name="top_view" x="640" y="0" w="640" h="75" style:normal:bg_color="#00B0F0">
+    <image name="setting_page" x="10" y="5" w="64" h="64" draw_type="default" image="home_setup"/>
+    <label name="set_label" x="224" y="0" w="160" h="75" style:normal:font_size="48" tr_text="STRID_PHOTO_SET_INFO"/>
+    <button name="back_button" x="566" y="5" w="64" h="64" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" style:normal:icon="settup_back" style:focused:border_color="#00000000" style:pressed:bg_color="#00000000" style:pressed:border_color="#00000000" style:over:bg_color="#00000000" style:over:border_color="#00000000" style:pressed:icon="settup_back" style:over:icon="settup_back"/>
+  </view>
+  <list_view name="setting_list" x="640" y="75" w="640" h="365" default_item_height="73" style:normal:text_color="#FFFFFF" style:normal:bg_color="#FFFFFF" auto_hide_scroll_bar="true" focusable="false" with_focus_state="false">
+    <scroll_view name="scroll_view" x="0" y="0" w="630" h="365" xslidable="false" focusable="false" with_focus_state="false" yslidable="true" style:normal:bg_color="#FFFFFF">
+      <list_item name="list_item" style:normal:border_color="#00000000" style:normal:bg_color="#00000000" style:normal:text_color="#000000" focusable="false" with_focus_state="false" style:normal:font_size="32" style:normal:text_align_h="left" style:focused:font_size="32" style:focused:text_align_h="left" style:focused:text_color="#000000" style:pressed:font_size="32" style:pressed:text_align_h="left" style:over:font_size="32" style:over:text_align_h="left" style:over:border_color="#00000000" style:focused:border_color="#00000000" style:over:text_color="#000000" sensitive="true" style:pressed:bg_color="#84848464" style:pressed:border_color="#00000000" style:pressed:text_color="#000000" tr_text="STRID_RESOLUTION">
+        <label name="label" x="331" y="0" w="160" h="73" style:normal:text_color="#000000" style:normal:font_size="32" tr_text="1440P"/>
+        <image name="image" x="520" y="6" w="64" h="64" draw_type="default" image="setting_enter"/>
+      </list_item>
+    </scroll_view>
+    <scroll_bar_d name="scroll_bar" x="r" y="0" w="10" h="100%" is_mobile="true"/>
+  </list_view>
+  <button name="left_button" x="0" y="0" w="639" h="440" style:normal:bg_color="#00000000" style:pressed:bg_color="#00000000" style:pressed:border_color="#00000000" style:over:border_color="#00000000" style:over:bg_color="#00000000" style:focused:border_color="#00000000" style:focused:bg_color="#00000000" style:normal:border_color="#00000000"/>
+  <button name="right_button" x="1281" y="0" w="639" h="440" style:normal:bg_color="#00000000" style:pressed:border_color="#00000000" style:pressed:bg_color="#00000000" style:over:border_color="#00000000" style:over:bg_color="#00000000" style:focused:border_color="#00000000" style:focused:bg_color="#00000000" style:normal:border_color="#00000000"/>
+</window>

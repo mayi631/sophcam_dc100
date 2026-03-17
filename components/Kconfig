@@ -1,0 +1,365 @@
+menu "Components Configuration"
+
+
+config COMPONENTS_HAL
+	bool "Enable HAL"
+	depends on !HOST
+	default y
+    help
+      Say Y if you want to enable HAL.
+
+if COMPONENTS_HAL
+menu "Peripheral Configuration"
+
+config ADC
+	bool "Enable ADC"
+	help
+		Say Y if you want to enable ADC.
+
+config BACKLIGHT
+	bool "Enable BACKLIGHT"
+	help
+		Say Y if you want to enable BACKLIGHT.
+
+config GPIO
+	bool "Enable GPIO"
+	help
+	  Say Y if you want to enable GPIO.
+
+config KEY
+	bool "Enable KEY"
+	depends on GPIO || ADC
+	help
+	Say Y if you want to enable key.
+
+config GPS
+	bool "Enable GPS"
+	help
+	  Say Y if you want to enable GPS.
+
+config GSENSOR
+	bool "Enable GSENSOR"
+	help
+		Say Y if you want to enable GSENSOR.
+
+if GSENSOR
+
+choice
+	prompt "Gsensor type"
+	default CONFIG_GSENSOR_DA280
+	default CONFIG_GSENSOR_SC7A20E
+
+
+config GSENSOR_DA280
+	bool "Enable GSENSOR DA280"
+	help
+		Say Y if you want to enable gsensor DA280.
+
+
+config GSENSOR_SC7A20E
+	bool "Enable GSENSOR sc7a20e"
+	help
+		Say Y if you want to enable gsensor sc7a20e.
+
+endchoice
+
+endif
+
+config LED
+	bool "Enable LED"
+	help
+	  Say Y if you want to enable LED.
+
+config PWM
+	bool "Enable PWM"
+	help
+	  Say Y if you want to enable PWM.
+
+config SCREEN
+	bool "Enable SCREEN"
+	help
+		Say Y if you want to enable WIFI.
+if SCREEN
+choice
+	prompt "Screen type"
+	default CONFIG_SCREEN_HX8394
+
+config SCREEN_HX8394
+	bool "Enable screen HX8394"
+	help
+		Say Y if you want to enable screen HX8394.
+
+config SCREEN_OTA5182
+	bool "Enable screen OTA5182"
+	help
+		Say Y if you want to enable screen OTA5182.
+
+config SCREEN_ST7796S
+	bool "Enable screen ST7796S"
+	help
+		Say Y if you want to enable screen ST7796S.
+
+config SCREEN_ST7789
+	bool "Enable screen ST7789"
+	help
+		Say Y if you want to enable screen ST7789.
+
+config SCREEN_ST7796S_RGB16BIT
+	bool "Enable screen ST7796S_RGB16BIT"
+	help
+		Say Y if you want to enable screen ST7796S_RGB16BIT.
+
+config SCREEN_OTA7290B
+	bool "Enable screen OTA7290B"
+	help
+		Say Y if you want to enable screen OTA7290B.
+
+config SCREEN_ILI8961
+	bool "Enable screen ILI8961"
+	help
+		Say Y if you want to enable screen ILI8961.
+
+config SCREEN_OTA7290B_MIPI11INCH
+	bool "Enable screen OTA7290B_MIPI11INCH"
+	help
+		Say Y if you want to enable screen OTA7290B_MIPI11INCH.
+
+config SCREEN_ICNL9707
+	bool "Enable screen ICNL9707"
+	help
+		Say Y if you want to enable screen ICNL9707.
+
+config SCREEN_EK79007
+	bool "Enable screen EK79007"
+	help
+		Say Y if you want to enable screen EK79007.
+
+config SCREEN_ICN9707
+	bool "Enable screen ICN9707"
+	help
+		Say Y if you want to enable screen ICN9707.
+
+config SCREEN_ST7701S
+		bool "Enable screen ST7701S"
+		help
+			Say Y if you want to enable screen ST7701S.
+
+config SCREEN_GC9503V
+	bool "Enable screen GC9503V"
+	help
+		Say Y if you want to enable screen 9503V.
+
+config SCREEN_GC9503V_W820
+		bool "Enable screen GC9503V_W820"
+		help
+			Say Y if you want to enable screen GC9503V_W820.
+
+config SCREEN_NV3049E
+	bool "Enable screen NV3049E"
+	help
+	Say Y if you want to enable screen NV3049E.
+
+config SCREEN_I80ST7789
+	bool "Enable screen I80ST7789"
+	help
+	Say Y if you want to enable screen I80ST7789.
+
+config SCREEN_JD9165A
+	bool "Enable screen JD9165A"
+	help
+	Say Y if you want to enable screen JD9165A.
+
+endchoice
+endif
+
+if SCREEN
+config TOUCHPAD
+	bool "Enable TOUCHPAD"
+	help
+		Say Y if you want to enable TOUCHPAD.
+
+if TOUCHPAD
+choice
+	prompt "TOUCHPAD type"
+	default CONFIG_TOUCHPAD_GT9XX
+
+config TOUCHPAD_GT9XX
+	bool "Enable TOUCHPAD GT9XX"
+	help
+		Say Y if you want to enable touchpad GT9XX.
+
+endchoice
+endif
+endif
+
+config WATCHDOG
+	bool "Enable WATCHDOG"
+	help
+	  Say Y if you want to enable WATCHDOG.
+
+config UART
+	bool "Enable UART"
+	help
+	  Say Y if you want to enable UART.
+
+config FLASH
+	bool "Enable FLASH"
+	help
+	  Say Y if you want to enable FLASH.
+
+config WIFI
+	bool "Enable WIFI"
+	help
+		Say Y if you want to enable WIFI.
+
+if WIFI
+choice
+	prompt "Wifi type"
+	default CONFIG_WIFI_RTL8189
+
+
+config WIFI_RTL8189
+	bool "Enable Wifi RTL8189"
+	help
+		Say Y if you want to enable wifi RTL8189.
+
+config WIFI_HI3881
+	bool "Enable Wifi HI3881"
+	help
+		Say Y if you want to enable wifi HI3881.
+
+config WIFI_AP6201BM
+	bool "Enable wifi AP6201BM"
+	help
+		Say Y if you want to enable wifi AP6201BM.
+
+config WIFI_RTL8188
+	bool "Enable wifi RTL8188"
+	help
+		Say Y if you want to enable wifi RTL8188.
+
+config WIFI_AIC8800
+	bool "Enable Wifi AIC8800"
+	help
+		Say Y if you want to enable wifi AIC8800.
+endchoice
+endif
+
+
+endmenu
+
+endif
+
+config COMPONENTS_RINGBUFFER
+	bool "Ringbuffer Component"
+	help
+	  Say Y if you want to enable Ringbuffer Component.
+
+config COMPONENTS_DEMUXER
+	bool "Demuxer Component"
+	help
+	  Say Y if you want to enable Demuxer Component.
+
+config COMPONENTS_MUXER
+	bool "Muxer Component"
+	help
+	  Say Y if you want to enable Muxer Component.
+
+config FLUSH_MOOV_STREAM
+	bool "Flush Moov Stream"
+	depends on COMPONENTS_MUXER
+	help
+		Say Y if you want to enable Flush Moov Stream.
+
+config COMPONENTS_PLAYER
+	bool "Player Component"
+	help
+	  Say Y if you want to enable Player Component.
+
+config COMPONENTS_FILE_RECOVER
+	bool "File_recover Component"
+	help
+	  Say Y if you want to enable File_recover Component.
+
+config COMPONENTS_THUMBNAIL_EXTRACTOR
+	bool "Thumbnail_Extractor Component"
+	help
+	  Say Y if you want to enable Thumbnail_Extractor Component.
+
+config COMPONENTS_RECORDER
+	bool "Record Component"
+	help
+	  Say Y if you want to enable Recorder Component.
+
+config COMPONENTS_ONVIF
+	bool "Onvif Component"
+	default n
+	help
+	  Say Y if you want to enable Onvif Component.
+
+config COMPONENTS_PERF
+	bool "Perf Component"
+	default n
+	help
+	  Say Y if you want to enable perf Component.
+
+config COMPONENTS_STORAGE
+	bool "Storage Component"
+	depends on !HOST
+	default n
+	help
+	  Say Y if you want to enable storage Component.
+
+config COMPONENTS_MAPI
+	bool "Mapi Component"
+	depends on !HOST
+	default n
+	help
+	  Say Y if you want to enable Mapi Component.
+
+config ENABLE_VO_INIT
+	bool "Enable VO init"
+	depends on COMPONENTS_MAPI
+	default n
+	help
+	  Say Y if you want to enable VO init.
+
+config COMPONENTS_UPGRADE
+	bool "Upgrade Component"
+	depends on !HOST
+	default n
+	help
+	  Say Y if you want to enable Upgrade Component.
+
+config COMPONENTS_EXIF
+	bool "Exif Component"
+	default n
+	help
+	  Say Y if you want to enable Exif Component.
+
+config COMPONENTS_DTCF
+	bool "Dtcf Component"
+	default n
+	help
+	  Say Y if you want to enable Dtcf Component.
+
+config COMPONENTS_RTSP
+	bool "RTSP Component"
+	default n
+	help
+	  Say Y if you want to enable RTSP Component.
+
+config COMPONENTS_FSTOOL
+	bool "Fstool Component"
+	depends on !HOST
+	default n
+	help
+	  Say Y if you want to enable Fstool Component.
+
+config COMPONENTS_AISDK
+	bool "AI SDK Component"
+	depends on !HOST
+	default n
+	help
+	  Say Y if you want to enable AI SDK Component.
+endmenu

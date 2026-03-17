@@ -1,0 +1,3 @@
+<window name="ui_storage_page">
+  <image name="image" x="911" y="155" w="128" h="128" draw_type="default" image="storage"/>
+</window>

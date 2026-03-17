@@ -1,0 +1,79 @@
+#
+# Kbuild for framework components
+#
+
+ifeq ($(CONFIG_COMPONENTS_DEMUXER), y)
+    KBUILD_DEFINES += -DCOMPONENTS_DEMUXER_ON
+endif
+
+ifeq (${CONFIG_FLUSH_MOOV_STREAM}, y)
+    KBUILD_DEFINES += -DFLUSH_MOOV_STREAM_ON
+endif
+
+ifeq ($(CONFIG_COMPONENTS_PLAYER), y)
+    KBUILD_DEFINES += -DCOMPONENTS_PLAYER_ON
+endif
+
+ifeq ($(CONFIG_COMPONENTS_THUMBNAIL_EXTRACTOR), y)
+    KBUILD_DEFINES += -DCOMPONENTS_THUMBNAIL_EXTRACTOR_ON
+endif
+
+ifeq ($(CONFIG_COMPONENTS_FILE_RECOVER), y)
+    KBUILD_DEFINES += -DCOMPONENTS_FILE_RECOVER_ON
+endif
+
+ifeq ($(CONFIG_HOST),)
+#
+# Kbuild for WATCHDOG
+#
+ifeq ($(CONFIG_WATCHDOG), y)
+    KBUILD_DEFINES += -DWATCHDOG_ON
+endif
+
+ifeq ($(CONFIG_ADC), y)
+    KBUILD_DEFINES += -DADC_ON
+endif
+
+ifeq ($(CONFIG_GPS), y)
+    KBUILD_DEFINES += -DGPS_ON
+endif
+
+ifeq ($(CONFIG_KEY), y)
+    KBUILD_DEFINES += -DKEY_ON
+endif
+
+ifeq (${CONFIG_SCREEN}, y)
+    KBUILD_DEFINES += -DSCREEN_ON
+endif
+
+ifeq (${ENABLE_VO_INIT}, y)
+    KBUILD_DEFINES += -DENABLE_VO_INIT
+endif
+
+ifeq (${CONFIG_PWM}, y)
+    KBUILD_DEFINES += -DCONFIG_PWM_ON
+endif
+
+ifeq (${CONFIG_TOUCHPAD}, y)
+    KBUILD_DEFINES += -DCONFIG_TOUCHPAD_ON
+endif
+
+#
+# Kbuild for wifi
+#
+ifeq ($(CONFIG_WIFI), y)
+    KBUILD_DEFINES += -DWIFI_ON
+ifeq ($(CONFIG_WIFI_RTL8189), y)
+    KBUILD_DEFINES += -DWIFI_RTL8189
+else ifeq ($(CONFIG_WIFI_AP6201BM), y)
+    KBUILD_DEFINES += -DWIFI_AP6201BM
+else ifeq ($(CONFIG_WIFI_HI3881), y)
+    KBUILD_DEFINES += -DWIFI_HI3881
+else ifeq ($(CONFIG_WIFI_RTL8188), y)
+    KBUILD_DEFINES += -DWIFI_RTL8188
+else ifeq ($(CONFIG_WIFI_AIC8800), y)
+    KBUILD_DEFINES += -DWIFI_AIC8800
+endif
+endif
+
+endif

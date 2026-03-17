@@ -1,0 +1,336 @@
+[    0.000000] Booting Linux on physical CPU 0x0
+[    0.000000] Linux version 5.10.4-tag--gf35ce4680a57-dirty (mayi@DESKTOP-TLCVMSU) (arm-none-linux-musleabihf-gcc.br_real (Buildroot 2023.02-rc3) 11.3.0, GNU ld (GNU Binutils) 2.38) #1 PRE
+EMPT Thu Mar 5 14:52:35 CST 2026
+[    0.000000] CPU: ARMv7 Processor [410fd034] revision 4 (ARMv7), cr=70d0383d
+[    0.000000] CPU: div instructions available: patching division code
+[    0.000000] CPU: PIPT / VIPT nonaliasing data cache, VIPT aliasing instruction cache
+[    0.000000] OF: fdt: Machine model: Cvitek. CV184X ASIC. ARM.
+[    0.000000] Memory policy: Data cache writeback
+[    0.000000] Ion: Ion memory setup at 0x0000000087200000 size 14 MiB
+[    0.000000] OF: reserved mem: initialized node ion, compatible id ion-region
+[    0.000000] Zone ranges:
+[    0.000000]   Normal   [mem 0x0000000080000000-0x000000008fffffff]
+[    0.000000] Movable zone start for each node
+[    0.000000] Early memory node ranges
+[    0.000000]   node   0: [mem 0x0000000080000000-0x000000008fffffff]
+[    0.000000] Initmem setup node 0 [mem 0x0000000080000000-0x000000008fffffff]
+[    0.000000] On node 0 totalpages: 65536
+[    0.000000]   Normal zone: 640 pages used for memmap
+[    0.000000]   Normal zone: 0 pages reserved
+[    0.000000]   Normal zone: 65536 pages, LIFO batch:15
+[    0.000000] psci: probing for conduit method from DT.
+[    0.000000] psci: PSCIv1.0 detected in firmware.
+[    0.000000] psci: Using standard PSCI v0.2 function IDs
+[    0.000000] psci: Trusted OS migration not required
+[    0.000000] psci: SMC Calling Convention v1.0
+[    0.000000] CPU: All CPU(s) started in SVC mode.
+[    0.000000] pcpu-alloc: s0 r0 d32768 u32768 alloc=1*32768
+[    0.000000] pcpu-alloc: [0] 0
+[    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 64896
+[    0.000000] Kernel command line: mtdparts=cvsnfc:2560K(fip),3072K(2nd),8192K(BOOT),384K(MISC),128K(ENV),128K(ENV_BAK),30720K(ROOTFS),57344K(DATA) ubi.mtd=ROOTFS ubi.block=0,0 rw root=ubi
+0:ROOTFS rootfstype=ubifs console=ttyS0,115200 earlycon=sbi   loglevel=0
+[    0.000000] Dentry cache hash table entries: 32768 (order: 5, 131072 bytes, linear)
+[    0.000000] Inode-cache hash table entries: 16384 (order: 4, 65536 bytes, linear)
+[    0.000000] mem auto-init: stack:off, heap alloc:off, heap free:off
+[    0.000000] Memory: 99168K/262144K available (4096K kernel code, 367K rwdata, 1400K rodata, 2048K init, 143K bss, 162976K reserved, 0K cma-reserved)
+[    0.000000] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
+[    0.000000] rcu: Preemptible hierarchical RCU implementation.
+[    0.000000] rcu:     RCU event tracing is enabled.
+[    0.000000]  Trampoline variant of Tasks RCU enabled.
+[    0.000000] rcu: RCU calculated value of scheduler-enlistment delay is 10 jiffies.
+[    0.000000] NR_IRQS: 16, nr_irqs: 16, preallocated irqs: 16
+[    0.000000] arch_timer: cp15 timer(s) running at 25.00MHz (virt).
+[    0.000000] clocksource: arch_sys_counter: mask: 0xffffffffffffff max_cycles: 0x5c40939b5, max_idle_ns: 440795202646 ns
+[    0.000004] sched_clock: 56 bits at 25MHz, resolution 40ns, wraps every 4398046511100ns
+[    0.000012] Switching to timer-based delay loop, resolution 40ns
+[    0.000049] Calibrating delay loop (skipped), value calculated using timer frequency.. 50.00 BogoMIPS (lpj=250000)
+[    0.000059] pid_max: default: 4096 minimum: 301
+[    0.000157] Mount-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
+[    0.000165] Mountpoint-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
+[    0.000531] CPU: Testing write buffer coherency: ok
+[    0.000841] Setting up static identity map for 0x80800000 - 0x80800054
+[    0.000885] rcu: Hierarchical SRCU implementation.
+[    0.001201] devtmpfs: initialized
+[    0.004236] early_time_log: do_initcalls: 667990us
+[    0.004409] random: get_random_u32 called from bucket_table_alloc+0x8d/0xa4 with crng_init=0
+[    0.004567] VFP support v0.3: implementor 41 architecture 3 part 40 variant 3 rev 4
+[    0.004716] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 19112604462750000 ns
+[    0.004727] futex hash table entries: 16 (order: -5, 192 bytes, linear)
+[    0.004783] pinctrl core: initialized pinctrl subsystem
+[    0.004985] NET: Registered protocol family 16
+[    0.005577] DMA: preallocated 1024 KiB pool for atomic coherent allocations
+[    0.006057] thermal_sys: Registered thermal governor 'step_wise'
+[    0.012847] OF: /gpio@03020000/gpio-controller@0: could not find phandle
+[    0.012891] OF: /gpio@03021000/gpio-controller@1: could not find phandle
+[    0.012930] OF: /gpio@03022000/gpio-controller@2: could not find phandle
+[    0.012969] OF: /gpio@03023000/gpio-controller@3: could not find phandle
+[    0.013006] OF: /gpio@05021000/gpio-controller@4: could not find phandle
+[    0.019761] dw_dmac 4330000.dma: CVITEK DMA Controller, 8 channels, probe done!
+[    0.020217] SCSI subsystem initialized
+[    0.020354] usbcore: registered new interface driver usbfs
+[    0.020390] usbcore: registered new interface driver hub
+[    0.020449] usbcore: registered new device driver usb
+[    0.021858] Ion: ion_parse_dt_heap_common: id 0 type 2 name carveout align 1000
+[    0.022118] Ion: rmem_ion_device_init: heap carveout base 0x0000000087200000 size 0x0000000000e00000 dev (ptrval)
+[    0.022124] ion_carveout_heap_create, size=0xe00000
+[    0.022278] platform carveout: [ion] add heap id 0, type 2, base 0x87200000, size 0xe00000
+[    0.023146] clocksource: Switched to clocksource arch_sys_counter
+[    0.023706] NET: Registered protocol family 2
+[    0.024109] tcp_listen_portaddr_hash hash table entries: 512 (order: 0, 4096 bytes, linear)
+[    0.024127] TCP established hash table entries: 2048 (order: 1, 8192 bytes, linear)
+[    0.024148] TCP bind hash table entries: 2048 (order: 1, 8192 bytes, linear)
+[    0.024167] TCP: Hash tables configured (established 2048 bind 2048)
+[    0.024221] UDP hash table entries: 256 (order: 0, 4096 bytes, linear)
+[    0.024238] UDP-Lite hash table entries: 256 (order: 0, 4096 bytes, linear)
+[    0.024329] NET: Registered protocol family 1
+[    0.024580] RPC: Registered named UNIX socket transport module.
+[    0.024585] RPC: Registered udp transport module.
+[    0.024589] RPC: Registered tcp transport module.
+[    0.024592] RPC: Registered tcp NFSv4.1 backchannel transport module.
+[    0.026138] Initialise system trusted keyrings
+[    0.026241] workingset: timestamp_bits=30 max_order=15 bucket_order=0
+[    0.028559] squashfs: version 4.0 (2009/01/31) Phillip Lougher
+[    0.028981] jffs2: version 2.2. (NAND) © 2001-2006 Red Hat, Inc.
+[    0.029313] Key type asymmetric registered
+[    0.029319] Asymmetric key parser 'x509' registered
+[    0.029558] cvitek,pinctrl-cv184x 3001000.pinctrl: cvi_pinctrl_probe(): reg=(ptrval),4096 CVITEK_PINMUX_REG_LAST=0xc90
+[    0.032346] cv184x-cooling cv184x_cooling: elems of dev-freqs=6
+[    0.032364] cv184x-cooling cv184x_cooling: dev_freqs[0].cpu_freq=1100000000 exceeds max_freq=1000000000
+[    0.032372] cv184x-cooling cv184x_cooling: dev_freqs[0].tpu_freq=750000000 exceeds max_freq=500000000
+[    0.032378] cv184x-cooling cv184x_cooling: dev_freqs[0]: 1000000000 500000000
+[    0.032385] cv184x-cooling cv184x_cooling: dev_freqs[1]: 500000000 375000000
+[    0.032392] cv184x-cooling cv184x_cooling: dev_freqs[2]: 500000000 300000000
+[    0.032467] cv184x-cooling cv184x_cooling: Cooling device registered: cv184x_cooling
+[    0.033379] cvi-wiegand 3030000.wiegand0: failed to retrieve wiegand res_wgn
+[    0.033567] cvi-wiegand 3031000.wiegand1: failed to retrieve wiegand res_wgn
+[    0.033698] cvi-wiegand 3032000.wiegand2: failed to retrieve wiegand res_wgn
+[    0.034386] Serial: 8250/16550 driver, 5 ports, IRQ sharing disabled
+[    0.035112] printk: console [ttyS0] disabled
+[    0.035171] 4140000.serial: ttyS0 at MMIO 0x4140000 (irq = 37, base_baud = 1562500) is a 16550A
+[    0.035336] printk: console [ttyS0] enabled
+[    0.038928] loop: module loaded
+[    0.039352] cvsnfc 4060000.cv-spinf: IRQ: nr 35
+[    0.039987] SPI Nand ID Table Version 1.4
+[    0.040007] nand: device found, Manufacturer ID: 0xef, Chip ID: 0xaa
+[    0.040011] nand: Winbond W25N01GV
+[    0.040017] nand: 128 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+[    0.040022] mtd->bitflip_threshold 3
+[    0.040309] Bad block table found at page 65472, version 0x01
+[    0.040532] Bad block table found at page 65408, version 0x01
+[    0.040815] 8 cmdlinepart partitions found on MTD device cvsnfc
+[    0.040820] Creating 8 MTD partitions on "cvsnfc":
+[    0.040829] 0x000000000000-0x000000280000 : "fip"
+[    0.041669] 0x000000280000-0x000000580000 : "2nd"
+[    0.042466] 0x000000580000-0x000000d80000 : "BOOT"
+[    0.043313] 0x000000d80000-0x000000de0000 : "MISC"
+[    0.044111] 0x000000de0000-0x000000e00000 : "ENV"
+[    0.044895] 0x000000e00000-0x000000e20000 : "ENV_BAK"
+[    0.045673] 0x000000e20000-0x000002c20000 : "ROOTFS"
+[    0.046550] 0x000002c20000-0x000006420000 : "DATA"
+[    0.048112] dw_spi_mmio 41b0000.spi3: DMA init failed:-19
+[    0.049067] libphy: Fixed MDIO Bus: probed
+[    0.049112] usbcore: registered new interface driver rndis_wlan
+[    0.049144] usbcore: registered new interface driver asix
+[    0.049169] usbcore: registered new interface driver ax88179_178a
+[    0.049191] usbcore: registered new interface driver cdc_ether
+[    0.049213] usbcore: registered new interface driver net1080
+[    0.049236] usbcore: registered new interface driver rndis_host
+[    0.049258] usbcore: registered new interface driver cdc_subset
+[    0.049280] usbcore: registered new interface driver zaurus
+[    0.049316] usbcore: registered new interface driver cdc_ncm
+[    0.049873] dwc2 4340000.usb: Clock axi not found
+[    0.049893] dwc2 4340000.usb: Clock apb not found
+[    0.049911] dwc2 4340000.usb: Clock 125m not found
+[    0.049928] dwc2 4340000.usb: Clock 33k not found
+[    0.049945] dwc2 4340000.usb: Clock 12m not found
+[    0.049992] dwc2 4340000.usb: axi clk_bus_early installed
+[    0.049999] dwc2 4340000.usb: axi clk_suspend installed
+[    0.050004] dwc2 4340000.usb: axi clk_ref installed
+[    0.050010] dwc2 4340000.usb: axi clk_coreclkin installed
+[    0.050055] dwc2 4340000.usb: EPs: 8, dedicated fifos, 3072 entries in SPRAM
+[    0.050231] dwc2 4340000.usb: DWC OTG Controller
+[    0.050251] dwc2 4340000.usb: new USB bus registered, assigned bus number 1
+[    0.050271] dwc2 4340000.usb: irq 66, io mem 0x04340000
+[    0.050673] hub 1-0:1.0: USB hub found
+[    0.050691] hub 1-0:1.0: 1 port detected
+[    0.051225] usbcore: registered new interface driver cdc_acm
+[    0.051231] cdc_acm: USB Abstract Control Model driver for USB modems and ISDN adapters
+[    0.051349] usbcore: registered new interface driver uas
+[    0.051397] usbcore: registered new interface driver usb-storage
+[    0.051804] i2c /dev entries driver
+[    0.052833] sdhci: Secure Digital Host Controller Interface driver
+[    0.052839] sdhci: Copyright(c) Pierre Ossman
+[    0.052843] sdhci-pltfm: SDHCI platform and OF driver helper
+[    0.052959] cvi:sdhci_cvi_probe
+[    0.099716] mmc0: SDHCI controller on 4310000.cv-sd [4310000.cv-sd] using ADMA 64-bit
+[    0.099727] cvi_proc_init cvi_host 0x(ptrval)
+[    0.099817] cvi:sdhci_cvi_probe
+[    0.101989] mmc1 bounce up to 128 segments into one, max segment size 65536 bytes
+[    0.130701] mmc1: SDHCI controller on 4320000.wifi-sd [4320000.wifi-sd] using DMA
+[    0.131195] cvitek_spacc 2060000.cvi_spacc: cvitek_spacc_drv_probe success
+[    0.131464] usbcore: registered new interface driver usbhid
+[    0.131469] usbhid: USB HID core driver
+[    0.131973] NET: Registered protocol family 17
+[    0.132147] Registering SWP/SWPB emulation handler
+[    0.132188] Loading compiled-in X.509 certificates
+[    0.142507] cvi-saradc 30f0000.saradc: failed to     retrieve clk_rtc_sys_saradc1
+[    0.142527] cvi-saradc 30f0000.saradc: failed to     retrieve res_saradc
+[    0.143239] i2c_designware 4000000.i2c: running with gpio recovery mode! scl,sda
+[    0.145476] rtc-pcf8563 0-0051: low voltage detected, date/time is not reliable.
+[    0.145584] rtc-pcf8563 0-0051: registered as rtc0
+[    0.146647] rtc-pcf8563 0-0051: low voltage detected, date/time is not reliable.
+[    0.146653] rtc-pcf8563 0-0051: hctosys: unable to read the hardware clock
+[    0.173417] input: adc-key1 as /devices/platform/adc-key1/input/input0
+[    0.184731] ubi0: attaching mtd6
+[    0.188310] random: fast init done
+[    0.192420] mmc0: new high speed SDHC card at address b368
+[    0.193310] mmcblk0: mmc0:b368 SDABC 29.1 GiB
+[    0.195573]  mmcblk0: p1
+[    0.289678] ubi0: scanning is finished
+[    0.295145] ubi0 warning: ubi_eba_init: cannot reserve enough PEBs for bad PEB handling, reserved 10, need 20
+[    0.295510] ubi0: attached mtd6 (name "ROOTFS", size 30 MiB)
+[    0.295518] ubi0: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
+[    0.295524] ubi0: min./max. I/O unit sizes: 2048/2048, sub-page size 2048
+[    0.295529] ubi0: VID header offset: 2048 (aligned 2048), data offset: 4096
+[    0.295535] ubi0: good PEBs: 240, bad PEBs: 0, corrupted PEBs: 0
+[    0.295540] ubi0: user volume: 1, internal volumes: 1, max. volumes count: 128
+[    0.295546] ubi0: max/mean erase counter: 2/0, WL threshold: 4096, image sequence number: 1849900967
+[    0.295552] ubi0: available PEBs: 0, total reserved PEBs: 240, PEBs reserved for bad PEB handling: 10
+[    0.296079] block ubiblock0_0: created from ubi0:0(ROOTFS)
+[    0.296492] input: power-key as /devices/platform/power-key/input/input1
+[    0.296832] cfg80211: Loading compiled-in X.509 certificates for regulatory database
+[    0.296964] ubi0: background thread "ubi_bgt0d" started, PID 65
+[    0.298825] cfg80211: Loaded X.509 cert 'sforshee: 00b28ddf47aef9cea7'
+[    0.298903] cfg80211: failed to load regulatory.db
+[    0.299555] ttyS0, get NULL dma-names
+[    0.299560] ttyS0, get NULL dma-names
+[    0.299564] ttyS0, get NULL dma-names
+[    0.300305] UBIFS (ubi0:0): Mounting in unauthenticated mode
+[    0.300470] UBIFS (ubi0:0): background thread "ubifs_bgt0_0" started, PID 70
+[    0.327803] UBIFS (ubi0:0): recovery needed
+[    0.441555] UBIFS (ubi0:0): recovery completed
+[    0.441627] UBIFS (ubi0:0): UBIFS: mounted UBI device 0, volume 0, name "ROOTFS"
+[    0.441636] UBIFS (ubi0:0): LEB size: 126976 bytes (124 KiB), min./max. I/O unit sizes: 2048 bytes/2048 bytes
+[    0.441644] UBIFS (ubi0:0): FS size: 27426816 bytes (26 MiB, 216 LEBs), journal size 3936256 bytes (3 MiB, 31 LEBs)
+[    0.441649] UBIFS (ubi0:0): reserved for root: 0 bytes (0 KiB)
+[    0.441658] UBIFS (ubi0:0): media format: w4/r0 (latest is w5/r0), UUID FC9E4AA1-7FED-47A1-9353-29B225037BEC, small LPT model
+[    0.442372] VFS: Mounted root (ubifs filesystem) on device 0:14.
+[    0.443535] devtmpfs: mounted
+[    0.446665] Freeing unused kernel memory: 2048K
+[    0.446805] Run /sbin/init as init process
+[    0.446808]   with arguments:
+[    0.446811]     /sbin/init
+[    0.446813]   with environment:
+[    0.446816]     HOME=/
+[    0.446819]     TERM=linux
+[    0.446824] early_time_log: run_init_process: 1110584us
+[    0.484403] random: crng init done
+[    0.669936] ubi1: attaching mtd7
+[    0.864200] ubi1: scanning is finished
+[    0.869790] ubi1 warning: ubi_eba_init: cannot reserve enough PEBs for bad PEB handling, reserved 18, need 20
+[    0.870856] ubi1: attached mtd7 (name "DATA", size 56 MiB)
+[    0.870866] ubi1: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
+[    0.870872] ubi1: min./max. I/O unit sizes: 2048/2048, sub-page size 2048
+[    0.870877] ubi1: VID header offset: 2048 (aligned 2048), data offset: 4096
+[    0.870883] ubi1: good PEBs: 448, bad PEBs: 0, corrupted PEBs: 0
+[    0.870888] ubi1: user volume: 1, internal volumes: 1, max. volumes count: 128
+[    0.870895] ubi1: max/mean erase counter: 2/0, WL threshold: 4096, image sequence number: 1364946109
+[    0.870901] ubi1: available PEBs: 0, total reserved PEBs: 448, PEBs reserved for bad PEB handling: 18
+[    0.871937] ubi1: background thread "ubi_bgt1d" started, PID 93
+[    0.876104] UBIFS (ubi1:0): Mounting in unauthenticated mode
+[    0.876269] UBIFS (ubi1:0): background thread "ubifs_bgt1_0" started, PID 95
+[    0.903485] UBIFS (ubi1:0): recovery needed
+[    1.055415] UBIFS (ubi1:0): recovery completed
+[    1.055488] UBIFS (ubi1:0): UBIFS: mounted UBI device 1, volume 0, name "DATA"
+[    1.055497] UBIFS (ubi1:0): LEB size: 126976 bytes (124 KiB), min./max. I/O unit sizes: 2048 bytes/2048 bytes
+[    1.055505] UBIFS (ubi1:0): FS size: 52822016 bytes (50 MiB, 416 LEBs), journal size 7110656 bytes (6 MiB, 56 LEBs)
+[    1.055511] UBIFS (ubi1:0): reserved for root: 0 bytes (0 KiB)
+[    1.055519] UBIFS (ubi1:0): media format: w4/r0 (latest is w5/r0), UUID 1226011E-6710-46C4-9CA5-5BAD89DEEAA6, small LPT model
+[    1.487070] cv184x_osal: bad vermagic: kernel tainted.
+[    1.492816] Disabling lock debugging due to kernel taint
+[    1.498981] cv184x_osal: loading out-of-tree module taints kernel.
+[    1.544451] base_probe:533(): base probe done
+[    1.579322] tde_probe:269(): tde probe done
+[    1.624625] <info>[ipcm_dev_probe:288]ipcm_dev_probe start ---
+[    1.631149] <info>[ipcm_dev_probe:289]name=1900000.rtos_cmdqu
+[    1.640951] <info>[mailbox_init:185]reg_base virt-addr(d0989000)
+[    1.648481] <info>[ipcm_dev_probe:365]ipcm_dev_probe DONE
+[    1.750527] [HYN][enter]hyn_ts_init
+[    1.755159] [HYN][enter]hyn_ts_probe
+[    1.759788] [HYN]== Hynitron V2.24 20251212 ==
+[    1.765438] [HYN][enter]hyn_parse_dt
+[    1.770005] [HYN]vdd_ana not config
+[    1.774547] [HYN]vdd_i2c not config
+[    1.779076] [HYN]reset_gpio:510 irq_gpio:494
+[    1.784549] [HYN]pinctrl not config or can't find "ts-active" "ts_suspend"
+[    1.792809] [HYN]dts x_res = 360,y_res = 640,touch-number = 5 swap_xy = 1 reversex = 0 reversey = 1
+[    1.803572] [HYN]key not config
+[    1.807695] [HYN][enter]hyn_power_source_ctrl
+[    1.819715] [HYN][enter]cst7xx_init
+[    2.184347] [HYN]IC_info fw_project_id:0 ictype:0011 fw_ver:14 checksum:0xaa4
+[    2.213447] [HYN]MODULE_ID is disable
+[    2.213447]
+[    2.219293] [HYN]Bin_info fw_project_id:0 ictype:0013 fw_ver:0 checksum:0x40b
+[    2.227702] [HYN][Error]cst7xx_updata_judge:.h file is damaged !! check_h:0x03cb f_checksum:0x040b
+[    2.238528] [HYN][enter]hyn_input_dev_init
+[    2.245605] input: hyn_ts as /devices/platform/4000000.i2c/i2c-0/0-005a/input/input2
+[    2.262206] [HYN]request irq:77 for gpio:494
+[    2.270785] [HYN][enter]hyn_irq_set
+[    2.303191] [HYN]set IRQ 77 to 0
+[    2.306840] [HYN]sys_node creat success ,GKI version is [disable]
+[    2.315047] [HYN]hyn_tool_dev register sucess
+[    2.320424] [HYN]apk node creat success
+[    2.325443] [HYN][enter]hyn_proximity_int
+[    2.330401] [HYN][enter]hyn_irq_set
+[    2.363161] [HYN]set IRQ 77 to 1
+[    2.377319] 42 bit mask
+[    2.380818] bm-tpu c000000.bmtpu: Card 0(type:MARS3) probe done
+[    2.616281] RTW: module init start
+[    2.620088] RTW: rtl8189fs v5.11.6.0-2-gb9aa73b62.20211117
+[    2.626591] RTW: build time: Mar  5 2026 15:01:18
+[    2.632461] RTW: rtw_inetaddr_notifier_register
+[    2.639200] RTW: module init ret=0
+[    2.672181] sh (131): drop_caches: 3
+[    3.218375] <info>[pool_print_info:689]pool info:
+[    3.218375]  addr(c04c0100) range num(2) total blk(15) data pos(640) len(41600)
+[    3.218375]  block info:
+[    3.218385] <info>[pool_print_info:693]      idx(0) size(128) start pos(640) num(5)
+[    3.218391] <info>[pool_print_info:693]      idx(1) size(4096) start pos(1280) num(10)
+[    3.218401] <info>[pool_print_info:698]      0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[    3.218410] <info>[pool_print_info:698]      0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[    3.218419] <info>[pool_print_info:698]      0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[    3.218428] <info>[pool_print_info:698]      0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[    3.218437] <info>[pool_print_info:698]      0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[    3.218446] <info>[pool_print_info:698]      0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[    3.218455] <info>[pool_print_info:698]      0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[    3.218463] <info>[pool_print_info:698]      0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[    3.218472] ipcmsg_add_service:358(): Add Service, name(CVI_MMF_MSG) id(0)
+[    3.218481] ipcmsg_tryconnect:415(): connected, name(CVI_MMF_MSG), id(0)
+[    3.223862] service_run:597(): ipcmsg service running, id(0)
+[    3.463131] dwc2 4340000.usb: new device is high-speed
+[    3.880409] file system registered
+[    3.990940] read descriptors
+[    3.990951] read strings
+[    4.017708] dwc2 4340000.usb: bound driver configfs-gadget
+[    4.045620] dwc2 4340000.usb: bound driver configfs-gadget
+[    4.204648] dwc2 4340000.usb: new device is high-speed
+[    4.238365] dwc2 4340000.usb: new address 48
+[   11.051727] adbd (286): /proc/286/oom_adj is deprecated, please use /proc/286/oom_score_adj instead.
+[  303.500780] RTW: module exit start
+[  303.501244] RTW: rtw_inetaddr_notifier_unregister
+[  303.501252] RTW: module exit success
+[  334.547876] RTW: module init start
+[  334.547887] RTW: rtl8189fs v5.11.6.0-2-gb9aa73b62.20211117
+[  334.547891] RTW: build time: Mar  5 2026 15:01:18
+[  334.547902] RTW: rtw_inetaddr_notifier_register
+[  334.548191] RTW: module init ret=0
+[  898.933344] dwc2 4340000.usb: new device is high-speed
+[  898.967042] dwc2 4340000.usb: new address 49
+[  898.991021] dwc2 4340000.usb: dwc2_hsotg_ep_sethalt(ep 22921bdf ep1in, 0)
+[  898.991039] dwc2 4340000.usb: dwc2_hsotg_ep_sethalt(ep 7704d191 ep1out, 0)
+[  898.991548] read descriptors
+[  898.991559] read strings
+[  899.004334] dwc2 4340000.usb: bound driver configfs-gadget
+[  899.012968] dwc2 4340000.usb: bound driver configfs-gadget
+[  899.171234] dwc2 4340000.usb: new device is high-speed
+[  899.204404] dwc2 4340000.usb: new address 50

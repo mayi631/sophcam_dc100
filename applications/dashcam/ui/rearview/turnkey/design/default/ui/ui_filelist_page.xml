@@ -1,0 +1,10 @@
+<window name="ui_filelist_page" style:normal:bg_color="#FFFFFF">
+  <view name="view" x="640" y="0" w="640" h="75" style:normal:bg_color="#00B0F0">
+    <label name="title" x="230" y="22" w="200" h="32" style:normal:font_size="32" style:normal:text_align_h="center" text=""/>
+    <button name="back_button" x="553" y="6" w="64" h="64" style:focused:bg_color="#00000000" style:normal:bg_color="#00000000" style:pressed:bg_color="#00000000" style:pressed:border_color="#00000000" style:pressed:icon="" style:normal:border_color="#00000000" style:normal:icon="settup_back" style:over:bg_color="#00000000" style:over:border_color="#00000000" style:focused:border_color="#00000000"/>
+  </view>
+  <list_view name="list_viewthm" x="640" y="75" w="640" h="365" default_item_height="182" style:normal:bg_color="#FFFFFF" style:normal:border_color="#00000000" style:normal:spacer="5">
+    <scroll_view name="scroll_viewthm" x="0" y="0" w="-10" h="100%" style:normal:bg_color="#00000000" yslidable="true" style:normal:border_width="1"/>
+    <scroll_bar_d name="scroll_barthm" x="r" y="0" w="10" h="100%" is_mobile="true"/>
+  </list_view>
+</window>

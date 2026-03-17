@@ -1,0 +1,13 @@
+<window name="ui_optioniden_page" style:normal:bg_color="#000000">
+  <view name="top_view" x="116" y="0" w="600" h="100" style:normal:border="bottom" style:normal:border_color="#0036FF">
+    <label name="title_label" x="206" y="0" w="160" h="28" style:normal:text_color="#FFFFFF" tr_text=""/>
+  </view>
+  <view name="set_leftkey" x="0" y="0" w="50" h="320" style:normal:bg_color="#00000000" style:normal:round_radius_top_left="30" style:normal:round_radius_top_right="30" style:normal:round_radius_bottom_left="30" style:normal:round_radius_bottom_right="30">
+    <image name="keypower_image" x="0" y="40" w="50" h="50" draw_type="default" image="ICON_TIP_BACK"/>
+  </view>
+  <view name="set_rightkey" x="770" y="0" w="50" h="320" style:normal:bg_color="#25252596" style:normal:round_radius_top_left="30" style:normal:round_radius_top_right="30" style:normal:round_radius_bottom_left="30" style:normal:round_radius_bottom_right="30">
+    <image name="keyup_image" x="0" y="40" w="50" h="50" draw_type="default" image="ICON_ZZZZ_TIP_UP"/>
+    <image name="keymid_image" x="0" y="145" w="50" h="50" draw_type="default" image="ICON_ZZZZ_TIP_OK"/>
+    <image name="keydown_image" x="0" y="240" w="50" h="50" draw_type="default" image="ICON_ZZZZ_TIP_DOWN"/>
+  </view>
+</window>

@@ -1,0 +1,14 @@
+<?xml ruler_x="833" ruler_y="326"?>
+<window name="ui_option_page" style:normal:bg_color="#000000" focusable="true" style:focused:bg_color="#000000">
+  <view name="top_view" x="300" y="9" w="200" h="50" style:normal:border="none" style:normal:border_color="#00000000">
+    <label name="title_label" x="23" y="10" w="160" h="28" style:normal:text_color="#FFFFFF" text=""/>
+  </view>
+  <view name="set_leftkey" x="0" y="0" w="50" h="320" style:normal:bg_color="#00000000" style:normal:round_radius_top_left="30" style:normal:round_radius_top_right="30" style:normal:round_radius_bottom_left="30" style:normal:round_radius_bottom_right="30">
+    <image name="keypower_image" x="0" y="25" w="50" h="50" draw_type="default" image="ICON_TIP_BACK"/>
+  </view>
+  <view name="set_rightkey" x="765" y="0" w="50" h="320" style:normal:bg_color="#25252596" style:normal:round_radius_top_left="30" style:normal:round_radius_top_right="30" style:normal:round_radius_bottom_left="30" style:normal:round_radius_bottom_right="30">
+    <image name="keyup_image" x="0" y="40" w="50" h="50" draw_type="default" image="ICON_ZZZZ_TIP_UP"/>
+    <image name="keymid_image" x="0" y="145" w="50" h="50" draw_type="default" image="ICON_ZZZZ_TIP_OK"/>
+    <image name="keydown_image" x="0" y="240" w="50" h="50" draw_type="default" image="ICON_ZZZZ_TIP_DOWN"/>
+  </view>
+</window>

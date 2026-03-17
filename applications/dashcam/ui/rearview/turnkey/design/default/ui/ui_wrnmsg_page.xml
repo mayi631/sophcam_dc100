@@ -1,0 +1,5 @@
+<popup x="c" y="m" w="960" h="220" name="ui_wrnmsg_page">
+  <label name="msg_label" x="45" y="38" w="834" h="118" line_wrap="true" tr_text="STRID_NO_SD_CARD"/>
+  <button name="confirm_button" x="139" y="146" w="149" h="64" visible="false" tr_text="STRID_CONFIRM"/>
+  <button name="cancel_button" x="702" y="146" w="149" h="64" visible="false" tr_text="STRID_CANCEL"/>
+</popup>

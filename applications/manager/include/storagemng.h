@@ -1,0 +1,61 @@
+#ifndef _STORAGEMNG_H_
+#define _STORAGEMNG_H_
+
+#include "appcomm.h"
+#include "stg.h"
+#include "osal.h"
+#ifdef __cplusplus
+#if __cplusplus
+extern "C" {
+#endif
+#endif /* End of #ifdef __cplusplus */
+
+#define MAX_STORAGE_FILENAME_LEN (64)
+
+/** Error Code */
+#define STORAGEMNG_EINVAL APP_APPCOMM_ERR_ID(APP_MOD_STORAGEMNG, APP_EINVAL)						/**<Invalid argument */
+#define STORAGEMNG_ENOTINIT APP_APPCOMM_ERR_ID(APP_MOD_STORAGEMNG, APP_ENOINIT)						/**<Not inited */
+#define STORAGEMNG_EINITIALIZED APP_APPCOMM_ERR_ID(APP_MOD_STORAGEMNG, APP_EINITIALIZED)			/**<Already Initialized */
+#define STORAGEMNG_EINTER APP_APPCOMM_ERR_ID(APP_MOD_STORAGEMNG, APP_EINTER)						/**<Already Initialized */
+#define STORAGEMNG_EREGISTER_EVENT APP_APPCOMM_ERR_ID(APP_MOD_STORAGEMNG, APP_ERRNO_CUSTOM_BOTTOM)	/**<register event failed */
+#define STORAGEMNG_EMAXINSTANCE APP_APPCOMM_ERR_ID(APP_MOD_STORAGEMNG, APP_ERRNO_CUSTOM_BOTTOM + 1) /**<beyond maximum instance */
+#define STORAGEMNG_ESTORAGE APP_APPCOMM_ERR_ID(APP_MOD_STORAGEMNG, APP_ERRNO_CUSTOM_BOTTOM + 2)		/**<storage interface error */
+
+/** Event */
+typedef enum EVENT_STORAGEMNG_E {
+	EVENT_STORAGEMNG_DEV_UNPLUGED = APPCOMM_EVENT_ID(APP_MOD_STORAGEMNG, 0),
+	EVENT_STORAGEMNG_DEV_CONNECTING,
+	EVENT_STORAGEMNG_DEV_ERROR,
+	EVENT_STORAGEMNG_FS_CHECKING,
+	EVENT_STORAGEMNG_FS_CHECK_FAILED,
+	EVENT_STORAGEMNG_FS_EXCEPTION,
+	EVENT_STORAGEMNG_MOUNTED,
+	EVENT_STORAGEMNG_MOUNT_FAILED,
+	EVENT_STORAGEMNG_MOUNT_READ_ONLY,
+	EVENT_STORAGEMNG_START_UPFILE,
+	EVENT_STORAGEMNG_UPFILE_SUCCESSED,
+	EVENT_STORAGEMNG_UPFILE_FAIL,
+	EVENT_STORAGEMNG_UPFILE_FAIL_FILE_ERROR,
+	EVENT_STORAGEMNG_BUTT
+} EVENT_STORAGEMNG_E;
+
+int32_t STORAGEMNG_RegisterEvent(void);
+int32_t STORAGEMNG_Create(STG_DEVINFO_S *devinfo);
+int32_t STORAGEMNG_Destroy(void);
+int32_t STORAGEMNG_GetFSInfo(STG_FS_INFO_S *pstFSInfo);
+int32_t STORAGEMNG_GetInfo(STG_DEV_INFO_S *pstInfo);
+int32_t STORAGEMNG_GetDevInfo(STG_DEVINFO_S *pstDevInfo);
+int32_t STORAGEMNG_Format(char *labelname);
+int32_t STORAGEMNG_Mount(void);
+int32_t STORAGEMNG_Umount(void);
+int32_t STORAGEMNG_Check_Space(void);
+
+/** @} */ /** <!-- ==== STORAGEMNG End ==== */
+
+#ifdef __cplusplus
+#if __cplusplus
+}
+#endif
+#endif /* End of #ifdef __cplusplus */
+
+#endif /* End of #ifndef _STORAGEMNG_H_ */

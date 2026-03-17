@@ -1,0 +1,187 @@
+menu "Application Configuration"
+
+menu "AHD Configuration"
+config RESET_MODE_AHD_HOTPLUG
+bool "Reset Mode After AHD Hotplug"
+help
+	Say Y if you want to enable Reset Mode After AHD Hotplug.
+endmenu
+
+menu "ISP Configuration"
+config ENABLE_ISP_PQ_TOOL
+	bool "Enable ISP PQ Tool"
+	select SERVICES_RTSP
+	help
+	  Say Y if you want to enable ISP PQ Tool.
+endmenu
+
+menu "APP Param Configuration"
+    config LOAD_PARAM_FROM_FILE
+	bool "Load Param From File"
+	help
+		Say Y if you want to load param from bin file.
+
+	config LOAD_PARAM_FROM_FLASH
+		bool "Load Param From Flash"
+		help
+			Say Y if you want to load param from flash.
+
+	config INIPATH
+		string "Ini Path"
+		default "cadv_turnkey"
+		help
+			Please set the ini path folder name.
+endmenu
+
+choice
+	prompt "Log Level"
+	default LOG_INFO
+config LOG_DEBUG
+	bool "debug"
+config LOG_INFO
+	bool "info"
+config LOG_WARNING
+	bool "waening"
+config LOG_ERROR
+	bool "error"
+config LOG_FATAL
+	bool "fatal"
+config LOG_NONE
+	bool "none"
+endchoice
+
+choice
+	prompt "Application type"
+	default CONFIG_APP_DASHCAM
+
+config APP_DASHCAM
+	bool "Dashcam Application"
+	help
+	  Say Y if you want to enable Dashcam Application.
+
+if APP_DASHCAM
+
+choice
+	prompt "DashCam type"
+	default REARVIEW
+config CARRECORDER
+	bool "CarRecorder"
+config REARVIEW
+	bool "RearView"
+config NONESCREEN
+	bool "NoneScreen"
+config AICAMERA
+	bool "AICamera"
+endchoice
+
+if (CARRECORDER || REARVIEW || AICAMERA)
+menu "UI Configuration"
+
+if CARRECORDER
+choice
+	prompt "UI Packet"
+	default CARRECORDER_TURNKEY
+config CARRECORDER_TURNKEY
+	bool "CarRecorder turnkey"
+endchoice
+endif
+
+if REARVIEW
+choice
+	prompt "UI Packet"
+	default REARVIEW_TURNKEY
+config REARVIEW_TURNKEY
+    bool "RearView turnkey"
+endchoice
+endif
+
+if AICAMERA
+choice
+	prompt "UI Packet"
+	default AICAMERA_TURNKEY
+config AICAMERA_TURNKEY
+    bool "AICamera turnkey"
+config AICAMERA_DC309
+    bool "AICamera dc309"
+endchoice
+endif
+
+config UI_RESPATH
+	string "Ui res path"
+	  help
+	  	Ui res path.
+
+config UI_WIDTH
+	int "Ui width"
+	help
+	  Ui Width.
+
+config UI_HEIGHT
+	int "Ui height"
+	  help
+		Ui Height.
+
+config FB_DUAL_BUFFER
+	bool "FB dual buffer mode"
+	help
+	  Say Y if you want to enable dual buffer mode.
+
+choice
+	prompt "FB pixdepth"
+	default FB_PIX_DEPTH_16
+	config FB_PIX_DEPTH_16
+		bool "FB_PIX_DEPTH_16"
+	config FB_PIX_DEPTH_32
+		bool "FB_PIX_DEPTH_32"
+endchoice
+
+choice
+	prompt "FB pixformat"
+	default FB_ARGB4444
+	config FB_ARGB4444
+		bool "FB_ARGB4444"
+		depends on FB_PIX_DEPTH_16
+	config FB_ARGB1555
+		bool "FB_ARGB1555"
+		depends on FB_PIX_DEPTH_16
+	config FB_ARGB8888
+		bool "FB_ARGB8888"
+		depends on FB_PIX_DEPTH_32
+endchoice
+
+endmenu
+endif
+
+menu "Net Configuration"
+
+config APPLICATION_NET
+    bool "Application Net"
+    help
+      Say Y if you want to enable application net.
+
+if APPLICATION_NET
+
+choice
+    prompt "NetProtocol type"
+    default NETPROTOCOL_CGI
+
+config NETPROTOCOL_XML
+    bool "NetProtocol_Xml"
+
+config NETPROTOCOL_CGI
+    bool "NetProtocol_Cgi"
+
+config NETPROTOCOL_CJSON
+    bool "NetProtocol_cJson"
+
+endchoice
+
+endif
+
+endmenu
+
+
+endif
+endchoice
+
+endmenu

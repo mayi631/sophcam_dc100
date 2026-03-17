@@ -1,0 +1,9 @@
+build
+./samples/sample_eventhub/build
+./samples/sample_hfsm/build
+./samples/sample_md5/build
+./samples/sample_mq/build
+./samples/sample_queue/build
+./samples/sample_timer/build
+./samples/sample_signal_slot/build
+./samples/sample_list/build

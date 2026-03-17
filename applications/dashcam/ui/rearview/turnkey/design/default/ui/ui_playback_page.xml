@@ -1,0 +1,15 @@
+<window name="ui_playback_page" style:normal:bg_color="#00000000" style:disable:bg_color="#00000000" style:focused:bg_color="#00000000">
+  <view name="top_view" x="0" y="0" w="1920" h="64">
+    <label name="filename" x="566" y="0" w="300" h="64" style:normal:font_size="24" style:normal:text_align_h="left" style:normal:text_color="#000000" text=""/>
+    <label name="time" x="1015" y="40" w="300" h="24" style:normal:font_size="24" style:normal:text_align_h="left" style:normal:text_color="#000000" visible="false" text=""/>
+    <slider name="slider" x="1008" y="14" w="726" h="16" style:focused:round_radius="10" style:focused:icon="rounded_n" style:disable:round_radius="10" style:over:icon="rounded_n" style:pressed:icon="rounded_n" vertical="false" slide_with_bar="true" visible="false" max="300" value="0"/>
+  </view>
+  <view name="playback_setup_view" x="678" y="360" w="564" h="70">
+    <button name="palyback_pre_button" x="92" y="0" w="64" h="64" style:normal:icon="playback_pre" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" text=""/>
+    <button name="palyback_start_button" x="173" y="0" w="64" h="64" style:normal:icon="playback_start" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" text=""/>
+    <button name="palyback_pause_button" x="247" y="0" w="64" h="64" style:normal:icon="playback_pause" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" text=""/>
+    <button name="palyback_next_button" x="328" y="0" w="64" h="64" style:normal:icon="playback_next" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" text=""/>
+    <button name="palyback_delete_button" x="409" y="0" w="64" h="64" style:normal:icon="delete" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" text=""/>
+    <button name="palyback_back_button" x="490" y="0" w="64" h="64" style:normal:icon="settup_back" style:normal:bg_color="#00000000" style:normal:border_color="#00000000" text=""/>
+  </view>
+</window>

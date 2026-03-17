@@ -1,0 +1,135 @@
+menu "Services Configuration"
+
+config SERVICES_AUDIO
+	bool "Audio Service"
+	help
+		 Say Y if you want to enable Audio Rec Service
+
+config SERVICES_IMAGE_VIEWER
+	bool "Image_viewer Service"
+	help
+		 Say Y if you want to enable Image_viewer Rec Service
+
+config SERVICES_LIVEVIEW
+	bool "Liveview Service"
+	help
+		 Say Y if you want to enable Liveview Rec Service
+
+config SERVICES_PLAYER
+	bool "Player Service"
+	help
+		 Say Y if you want to enable Player Rec Service
+
+if SERVICES_PLAYER
+
+	config PLAYER_SUBVIDEO
+	bool "Player Subvideo"
+	help
+		 Say Y if you want to enable Player Subvideo Service
+
+endif
+
+config SERVICES_RECORD
+	bool "Record Service"
+	help
+		 Say Y if you want to enable Record Rec Service
+
+if SERVICES_RECORD
+
+	config SERVICES_SUBVIDEO
+	bool "Rec/Rtsp Subvideo Service"
+	help
+		 Say Y if you want to enable Subvideo Rec/Rtsp Service
+
+endif
+
+config SERVICES_PHOTO
+	bool "Photo Service"
+	help
+		 Say Y if you want to enable Photo Service
+
+config SERVICES_RTSP
+	bool "RTSP Service"
+	help
+		 Say Y if you want to enable RTSP Rec Service
+
+if SERVICES_RTSP
+
+config RTSP_NO_AUDIO
+bool "Rtsp No Audio"
+help
+	Say Y if you want to enable Rtsp No Audio
+
+endif
+
+config ENABLE_SNAP
+	bool "Snap Service"
+	help
+		 Say Y if you want to enable Snap Service
+
+config SERVICES_STORAGE
+	bool "Storage Service"
+	help
+		 Say Y if you want to enable Storage Rec Service
+
+config SERVICES_MD
+	bool "Motion Detect"
+	help
+		Say Y if you want to enable Motion Detect.
+
+config SERVICES_FACEP
+	bool "Face Process"
+	help
+		Say Y if you want to enable Face Process.
+
+
+config SERVICES_SPEECH
+	bool "Speech Service"
+	help
+		Say Y if you want to enable Service_Speech.
+
+if SERVICES_SPEECH
+	choice
+		prompt "Model type"
+		default SPEECH_CARDV
+
+
+	config SPEECH_CARDV
+		bool "Enable Speech Cardv"
+		help
+			Say Y if you want to enable Model Cardv.
+	endchoice
+endif
+
+config SERVICES_ADAS
+	bool "ADAS Service"
+	help
+		Say Y if you want to enable Service_ADAS.
+
+if SERVICES_ADAS
+
+	config ADAS_LABEL_CAR
+		bool "Enabel ADAS CAR Label"
+		help
+		  Say Y if you want to enable ADAS CAR Label.
+
+	config ADAS_LABEL_LANE
+	bool "Enabel ADAS LANE Label"
+	help
+		Say Y if you want to enable ADAS LANE Label.
+
+endif
+
+config SERVICES_QRCODE
+	bool "Decoding QRCode Service"
+	help
+		Say Y if you want to enable decoding QRCode
+choice
+	prompt "Dec QRCode Lib"
+	default ZBAR
+	depends on SERVICES_QRCODE
+	config ZBAR
+		bool "Zbar"
+endchoice
+
+endmenu

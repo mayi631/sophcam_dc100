@@ -1,0 +1,24 @@
+<window name="ui_home_page" style:normal:border_color="#00000000" style:normal:bg_color="#00000000">
+  <view name="home_top" x="0" y="0" w="400" h="130">
+    <image name="screen_ctrl_image" x="15" y="0" w="50" h="50" draw_type="default" image="ICON_ZZZZ_SCREEN_CTRL"/>
+    <image name="rec_image" x="135" y="0" w="50" h="50" draw_type="default" image="ICON_ZZZZ_TIP_REC"/>
+    <image name="gsensor_image" x="200" y="0" w="50" h="50" draw_type="default" image="ICON_GSENSOR_M_M"/>
+    <image name="liveview_image" x="265" y="0" w="50" h="50" draw_type="default" image="ICON_BEHIND_OFF"/>
+    <image name="cyclic_rec_image" x="15" y="80" w="50" h="50" draw_type="default" image="ICON_CYCLIC_REC_3MIN_M"/>
+  </view>
+  <view name="home_right" x="680" y="75" w="80" h="191">
+    <image name="audio_image" x="30" y="5" w="50" h="50" draw_type="default" image="ICON_AUDIO_REC_ON_M"/>
+    <image name="gps_image" x="30" y="70" w="50" h="50" draw_type="default" image="ICON_GPS_SERCH"/>
+    <image name="sdcard_image" x="30" y="135" w="50" h="50" draw_type="default" image="ICON_SD_CARD_M"/>
+  </view>
+  <view name="home_key" x="768" y="0" w="50" h="320" style:normal:bg_color="#3f3f3f96" style:normal:round_radius_top_left="30" style:normal:round_radius_top_right="30" style:normal:round_radius_bottom_left="30" style:normal:round_radius_bottom_right="30">
+    <image name="keyup_image" x="0" y="40" w="50" h="50" draw_type="default" image="ICON_ZZZZ_TIP_LOCK"/>
+    <image name="keymid_image" x="0" y="145" w="50" h="50" draw_type="default" image="ICON_ZZZZ_TIP_MENU"/>
+    <image name="keydown_image" x="0" y="240" w="50" h="50" draw_type="default" image="ICON_ZZZZ_TIP_REC"/>
+  </view>
+  <digit_clock name="digit_clock" x="258" y="286" w="300" h="24" format="Y-MM-DD hh:mm:ss" style:normal:text_align_h="left" style:normal:text_color="#FFFFFF" style:normal:font_size="30"/>
+  <label name="resolution_label" x="680" y="276" w="78" h="40" style:normal:font_size="30" style:normal:text_color="#FFFFFF" style:normal:icon_at="left"  tr_text="1440P"/>
+  <image name="recstate_image" x="90" y="260" w="50" h="50" draw_type="default" style:normal:bg_color="#FF0000" style:normal:round_radius_top_left="50" style:normal:round_radius_top_right="50" style:normal:round_radius_bottom_left="50" style:normal:round_radius_bottom_right="50"/>
+  <image name="sosstate_image" x="383" y="135" w="50" h="50" draw_type="default" style:normal:bg_color="#00000000" style:normal:round_radius_top_left="0" style:normal:round_radius_top_right="0" style:normal:round_radius_bottom_left="0" style:normal:round_radius_bottom_right="0" image="ICON_LOCK_ON_M"/>
+  <image name="fatiguedrive_image" x="16" y="251" w="50" h="50" draw_type="default" image="ICON_FATIGUE_M"/>
+</window>

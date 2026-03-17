@@ -1,0 +1,60 @@
+#ifndef _SPEECHMNG_H_
+#define _SPEECHMNG_H_
+
+#ifdef __cplusplus
+#if __cplusplus
+extern "C" {
+#endif
+#endif /* End of #ifdef __cplusplus */
+
+#include <stdint.h>
+#include "appcomm.h"
+#include "speech.h"
+
+#define SPEECHMNG_EREGISTER_EVENT APP_APPCOMM_ERR_ID(APP_MOD_SPEECHMNG, APP_ERRNO_CUSTOM_BOTTOM)     /**<register event failed */
+
+typedef SPEECH_SERVICE_PARAM_S SPEECHMNG_PARAM_S;
+
+typedef enum _SPEECHMNG_CMD_E
+{
+    SPEECHMNG_NONE = 0,
+    SPEECHMNG_SHOW_FRONT,
+    SPEECHMNG_SHOW_REAR,
+    SPEECHMNG_TURN_OFF_SCREEN,
+    SPEECHMNG_OPEN_SCREEN,
+    SPEECHMNG_LOCK_VEDIO,
+    SPEECHMNG_TAKE_PICTURE,
+    SPEECHMNG_TURN_OFF_RECORDING,
+    SPEECHMNG_OPEN_RECORDING,
+    SPEECHMNG_OPEN_WIFI,
+    SPEECHMNG_TURN_OFF_WIFI,
+    SPEECHMNG_BUIT
+} SPEECHMNG_CMD_E;
+
+/** event ID define */
+typedef enum EVENT_SPEECHMNG_E {
+    EVENT_SPEECHMNG_STARTREC = APPCOMM_EVENT_ID(APP_MOD_SPEECHMNG, 0),
+    EVENT_SPEECHMNG_STOPREC,
+    EVENT_SPEECHMNG_OPENFRONT,
+    EVENT_SPEECHMNG_OPENREAR,
+    EVENT_SPEECHMNG_CLOSESCREEN,
+    EVENT_SPEECHMNG_OPENSCREEN,
+    EVENT_SPEECHMNG_EMRREC,
+    EVENT_SPEECHMNG_PIV,
+    EVENT_SPEECHMNG_CLOSEWIFI,
+    EVENT_SPEECHMNG_OPENWIFI,
+    EVENT_SPEECHMNG_BUTT
+} EVENT_SPEECHMNG_E;
+
+int32_t SPEECHMNG_Init(SPEECHMNG_PARAM_S* SpeechCfg);
+int32_t SPEECHMNG_DeInit(void);
+int32_t SPEECHMNG_StartSpeech(void);
+int32_t SPEECHMNG_StopSpeech(void);
+
+#ifdef __cplusplus
+#if __cplusplus
+}
+#endif
+#endif /* End of #ifdef __cplusplus */
+
+#endif /* _SPEECHMNG_H_ */
