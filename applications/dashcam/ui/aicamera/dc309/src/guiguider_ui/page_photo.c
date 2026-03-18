@@ -61,6 +61,7 @@ static bool is_photo_back = true;
 
 const char *batter_image_big[] = {"充电.png", "电池1.png", "电池2.png", "电池满.png"};
 char *red_light_image_level[] = {"IR  1.png", "IR 2.png", "IR 3.png", "IR 4.png","IR 5.png", "IR 6.png", "IR 7.png"};
+static lv_obj_t *g_top_controls[7];  // 存储顶部控件对象
 // 资源释放函数声明
 static void release_HomePhoto_resources(lv_ui_t *ui);
 
@@ -86,6 +87,45 @@ bool get_is_photo_back(void)
 void set_is_photo_back(bool is_back)
 {
     is_photo_back = is_back;
+}
+
+// 简洁的顶部控件布局更新
+static void update_top_controls_simple(void)
+{
+    lv_ui_t *ui = &g_ui;
+    int x_pos = 6;  // 起始X坐标
+    
+    // 1. 相机模式按钮
+    lv_obj_set_pos(ui->page_photo.img_mode, x_pos, 0);
+    x_pos += 74 + 14;
+    
+    // 2. 分辨率按钮
+    lv_obj_set_pos(g_top_controls[0], x_pos, 4);
+    x_pos += 38 + 14;
+    
+    // 3. 红光亮级按钮
+    if (brightness_level > 0) {
+        lv_obj_clear_flag(ui->page_photo.redlight_level, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_set_pos(ui->page_photo.redlight_level, x_pos, 4);
+        x_pos += 38 + 14;
+    } else {
+        lv_obj_add_flag(ui->page_photo.redlight_level, LV_OBJ_FLAG_HIDDEN);
+    }
+    
+    // 4. ISO级别按钮
+    lv_obj_set_pos(g_top_controls[1], x_pos, 4);
+    x_pos += 38 + 14;
+    
+    // 5. 屏幕亮度按钮
+    lv_obj_set_pos(g_top_controls[2], x_pos, 4);
+    x_pos += 38 + 14;
+    
+    // 6. 连拍按钮
+    lv_obj_set_pos(g_top_controls[3], x_pos, 4);
+    x_pos += 38 + 14;
+    
+    // 7. 延时拍摄按钮
+    lv_obj_set_pos(g_top_controls[4], x_pos, 4);
 }
 
 const char *get_ai_process_result_img_data(bool is_aiprocess)
@@ -461,11 +501,15 @@ static void photo_menu_callback(void)
 // UP按键处理回调函数
 static void photo_redlight_callback(void)
 {
+    lv_ui_t *ui = &g_ui;
+    // 更新红光亮级图片
     if (brightness_level > 6) {
-        show_image(g_ui.page_photo.redlight_level, red_light_image_level[6]);
-    } else {
-        show_image(g_ui.page_photo.redlight_level, red_light_image_level[brightness_level]);
+        show_image(ui->page_photo.redlight_level, red_light_image_level[6]);
+    } else if (brightness_level > 0) {
+        show_image(ui->page_photo.redlight_level, red_light_image_level[brightness_level-1]);
     }
+    // 更新布局
+    update_top_controls_simple();
 }
 
 // 模式切换按键处理回调函数
@@ -540,8 +584,9 @@ void Home_Photo(lv_ui_t *ui)
 {
     MLOG_DBG("loading page_home1...\n");
     HomePhoto_t *Home_Photo_Item = &ui->page_photo;
-    is_photo_back                = true;
+    is_photo_back = true;
     set_exit_completed(false);
+    
     // 创建新页面
     Home_Photo_Item->photoscr = lv_obj_create(NULL);
     lv_obj_set_size(Home_Photo_Item->photoscr, H_RES, V_RES);
@@ -552,58 +597,57 @@ void Home_Photo(lv_ui_t *ui)
     lv_obj_set_style_bg_grad_dir(Home_Photo_Item->photoscr, LV_GRAD_DIR_NONE, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_add_event_cb(Home_Photo_Item->photoscr, gesture_event_handler, LV_EVENT_GESTURE, ui);
     create_viewfinder(Home_Photo_Item->photoscr);
-
+    
     // 相机模式按钮
     Home_Photo_Item->img_mode = lv_imagebutton_create(Home_Photo_Item->photoscr);
-    lv_obj_align(Home_Photo_Item->img_mode, LV_ALIGN_TOP_LEFT, 6, 0);
     lv_obj_set_size(Home_Photo_Item->img_mode, 74, 47);
     show_image(Home_Photo_Item->img_mode, "paizhaompshi.png");
-
+    
     // 分辨率按钮
-    lv_obj_t *res = lv_imagebutton_create(Home_Photo_Item->photoscr);
-    lv_obj_align(res, LV_ALIGN_TOP_LEFT, 72+14, 4);
-    lv_obj_set_size(res, 38, 32);
-    show_image(res, photo_getRes_Icon());
-
-
+    g_top_controls[0] = lv_imagebutton_create(Home_Photo_Item->photoscr);
+    lv_obj_set_size(g_top_controls[0], 38, 32);
+    show_image(g_top_controls[0], photo_getRes_Icon());
+    
+    // 红光亮级按钮
     Home_Photo_Item->redlight_level = lv_imagebutton_create(Home_Photo_Item->photoscr);
-    lv_obj_align( Home_Photo_Item->redlight_level, LV_ALIGN_TOP_LEFT, 116+14, 4);
-    lv_obj_set_size( Home_Photo_Item->redlight_level, 38, 32);
-    show_image( Home_Photo_Item->redlight_level, red_light_image_level[brightness_level]);
-
-    lv_obj_t *iso_level = lv_imagebutton_create(Home_Photo_Item->photoscr);
-    lv_obj_align(iso_level, LV_ALIGN_TOP_LEFT, 160+14, 4);
-    lv_obj_set_size(iso_level, 38, 32);
+    lv_obj_set_size(Home_Photo_Item->redlight_level, 38, 32);
+    
+    // ISO级别按钮
+    g_top_controls[1] = lv_imagebutton_create(Home_Photo_Item->photoscr);
+    lv_obj_set_size(g_top_controls[1], 38, 32);
     char* iso_buf[] = {
-        "ISO.png",
-        "ISO 100.png",
-        "ISO 200.png",
-        "ISO 400.png",
-        "ISO 800.png",
-        "ISO 1600.png",
-        "ISO 3200.png",
-        "ISO 6400.png",
+        "ISO.png", "ISO 100.png", "ISO 200.png", "ISO 400.png",
+        "ISO 800.png", "ISO 1600.png", "ISO 3200.png", "ISO 6400.png",
     };
-
-    show_image(iso_level, iso_buf[get_iso_index()]);
-
-    lv_obj_t *screenbrightness_level = lv_imagebutton_create(Home_Photo_Item->photoscr);
-    lv_obj_align(screenbrightness_level, LV_ALIGN_TOP_LEFT, 204+14, 4);
-    lv_obj_set_size(screenbrightness_level, 38, 32);
+    show_image(g_top_controls[1], iso_buf[get_iso_index()]);
+    
+    // 屏幕亮度按钮
+    g_top_controls[2] = lv_imagebutton_create(Home_Photo_Item->photoscr);
+    lv_obj_set_size(g_top_controls[2], 38, 32);
     char* brightness_buf[] = { "1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png" };
-    show_image(screenbrightness_level, brightness_buf[get_curr_brightness()]);
-
-    lv_obj_t *continue_photo = lv_imagebutton_create(Home_Photo_Item->photoscr);
-    lv_obj_align(continue_photo, LV_ALIGN_TOP_LEFT, 268, 4);
-    lv_obj_set_size(continue_photo, 38, 33);
+    show_image(g_top_controls[2], brightness_buf[get_curr_brightness()]);
+    
+    // 连拍按钮
+    g_top_controls[3] = lv_imagebutton_create(Home_Photo_Item->photoscr);
+    lv_obj_set_size(g_top_controls[3], 38, 33);
     char* continue_buf[] = { "连拍关闭.png", "连拍3.png", "连拍5.png", "连拍7.png" };
-    show_image(continue_photo, continue_buf[get_shootmode(0)]);
-
-    lv_obj_t *delay_photo = lv_imagebutton_create(Home_Photo_Item->photoscr);
-    lv_obj_align(delay_photo, LV_ALIGN_TOP_LEFT, 312, 4);
-    lv_obj_set_size(delay_photo, 38, 33);
+    show_image(g_top_controls[3], continue_buf[get_shootmode(0)]);
+    
+    // 延时拍摄按钮
+    g_top_controls[4] = lv_imagebutton_create(Home_Photo_Item->photoscr);
+    lv_obj_set_size(g_top_controls[4], 38, 33);
     char* delay_buf[] = { "延时 关闭.png", "延时5.png", "延时7.png", "延时10.png" };
-    show_image(delay_photo, delay_buf[get_self_index()]);
+    show_image(g_top_controls[4], delay_buf[get_self_index()]);
+    
+    // 初始设置红光亮级图片
+    if (brightness_level > 6) {
+        show_image(Home_Photo_Item->redlight_level, red_light_image_level[6]);
+    } else if (brightness_level > 0) {
+        show_image(Home_Photo_Item->redlight_level, red_light_image_level[brightness_level-1]);
+    }
+    
+    // 初始布局更新
+    update_top_controls_simple();
 
     // 剩余拍照数量
     Home_Photo_Item->label_numphoto = lv_label_create(Home_Photo_Item->photoscr);

@@ -46,7 +46,6 @@ static void photo_zoom_event_cb(lv_event_t* e);
 // 清理视频页面资源的通用函数
 static void cleanup_vedio_page_resources(void)
 {
-
     takephoto_unregister_all_callback();//取消所有按键回调
     if(is_start_video == VEDIO_START) {
         is_start_video = VEDIO_STOP;
@@ -168,7 +167,7 @@ static void buttonVedio_All_event_handler(lv_event_t* e)
     switch(code) {
         case LV_EVENT_CLICKED: {
             // 清理视频页面资源
-            if(Click_index != 4) cleanup_vedio_page_resources();
+            cleanup_vedio_page_resources();
             if(Click_index == 1) {
                 ui_load_scr_animation(&g_ui, &obj_vedioMenu_s, 1, NULL, vedioMenu_Setting, LV_SCR_LOAD_ANIM_NONE, 0, 0,
                                       false, true);
@@ -203,7 +202,15 @@ static void buttonVedio_All_event_handler(lv_event_t* e)
                 ui_load_scr_animation(&g_ui, &obj_home_s, 1, NULL, setup_scr_home1, LV_SCR_LOAD_ANIM_NONE, 0, 0, false,
                                       true);
             } else if(Click_index == 4) {
-                MLOG_DBG("切换前后摄像头\n");
+                // 进入录像模式
+                MESSAGE_S Msg = { 0 };
+                Msg.topic = EVENT_MODEMNG_MODESWITCH;
+                Msg.arg1 = WORK_MODE_PLAYBACK;
+                MODEMNG_SendMessage(&Msg);
+                // 复位缩放
+                set_zoom_level(1);
+                is_video_mode = false;
+                ui_load_scr_animation(&g_ui, &obj_Aibum_s, 1, NULL, Home_Album, LV_SCR_LOAD_ANIM_NONE, 0, 0, false, true);
             }
             break;
         }

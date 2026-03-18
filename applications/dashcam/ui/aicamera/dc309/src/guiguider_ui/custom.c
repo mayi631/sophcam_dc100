@@ -180,7 +180,7 @@ void custom_init(lv_ui_t *ui)
 
     // 创建共享的WiFi图标
     ui->img_wifi = lv_img_create(ui->status_bar);
-    lv_obj_align(ui->img_wifi, LV_ALIGN_LEFT_MID, 538, -4);
+    lv_obj_align(ui->img_wifi, LV_ALIGN_LEFT_MID, 520, -4);
     lv_obj_set_size(ui->img_wifi, 24, 23);
     lv_obj_add_flag(ui->img_wifi, LV_OBJ_FLAG_CLICKABLE);
     lv_image_set_pivot(ui->img_wifi, 50, 50);

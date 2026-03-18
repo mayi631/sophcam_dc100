@@ -2172,7 +2172,7 @@ void album_return_cb(void)
         is_video_mode = true;
         ui_load_scr_animation(&g_ui, &obj_vedio_s, 1, &g_ui.screenHomePhoto_del, Home_Vedio, LV_SCR_LOAD_ANIM_NONE,
             0, 0, false, true);
-    } else {
+    } else if(ui_Get_PreScreen() == obj_home_s){
         MLOG_DBG("album_menu_callback\n");
         MESSAGE_S Msg = { 0 };
         Msg.topic = EVENT_MODEMNG_MODESWITCH;
