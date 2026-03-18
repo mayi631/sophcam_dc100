@@ -62,6 +62,11 @@ static bool is_photo_back = true;
 const char *batter_image_big[] = {"充电.png", "电池1.png", "电池2.png", "电池满.png"};
 char *red_light_image_level[] = {"IR  1.png", "IR 2.png", "IR 3.png", "IR 4.png","IR 5.png", "IR 6.png", "IR 7.png"};
 static lv_obj_t *g_top_controls[7];  // 存储顶部控件对象
+
+static lv_timer_t *g_zoom_longpress_timer = NULL;  // 长按定时器
+static int g_zoom_longpress_dir = 0;               // 长按方向: 0=无, 1=缩小, 2=放大
+static bool g_zoom_longpress_active = false;       // 是否正在长按
+
 // 资源释放函数声明
 static void release_HomePhoto_resources(lv_ui_t *ui);
 
@@ -679,13 +684,13 @@ void Home_Photo(lv_ui_t *ui)
     lv_obj_align(imgbtn_zoomout, LV_ALIGN_LEFT_MID, 12, -42);
     lv_obj_set_size(imgbtn_zoomout, 38, 38);
     show_image(imgbtn_zoomout, "T.png");
-    lv_obj_add_event_cb(imgbtn_zoomout, photo_zoom_event_cb, LV_EVENT_CLICKED, (void *)(intptr_t)1);
+    lv_obj_add_event_cb(imgbtn_zoomout, photo_zoom_event_cb, LV_EVENT_ALL, (void *)(intptr_t)2);
 
     lv_obj_t *imgbtn_zoomin = lv_imagebutton_create(Home_Photo_Item->photoscr);
     lv_obj_align(imgbtn_zoomin, LV_ALIGN_LEFT_MID, 12, 42);
     lv_obj_set_size(imgbtn_zoomin, 38, 38);
     show_image(imgbtn_zoomin, "W.png");
-    lv_obj_add_event_cb(imgbtn_zoomin, photo_zoom_event_cb, LV_EVENT_CLICKED, (void *)(intptr_t)2);
+    lv_obj_add_event_cb(imgbtn_zoomin, photo_zoom_event_cb, LV_EVENT_ALL, (void *)(intptr_t)1);
 
 
     // 菜单按钮
@@ -985,44 +990,139 @@ void continue_take_photo(void)
 }
 
 
+// 长按定时器回调函数
+static void zoom_longpress_timer_cb(lv_timer_t *timer)
+{
+
+    if (g_ui.page_photo.photoscr == NULL || !lv_obj_is_valid(g_ui.page_photo.photoscr)) {
+        g_zoom_longpress_active = false;
+        if (g_zoom_longpress_timer != NULL) {
+            lv_timer_del(g_zoom_longpress_timer);
+            g_zoom_longpress_timer = NULL;
+        }
+        return;
+    }
+
+    if (!g_zoom_longpress_active) {
+        lv_timer_del(timer);
+        g_zoom_longpress_timer = NULL;
+        return;
+    }
+    
+    uint32_t new_level = get_zoom_level();
+    MESSAGE_S Msg = {0};
+    bool can_continue = false;
+    
+    switch (g_zoom_longpress_dir) {
+        case 1: // 缩小
+            if (new_level > 1) {
+                new_level--;
+                can_continue = true;
+            }
+            break;
+            
+        case 2: // 放大
+            if (new_level < ZOOM_RADIO_MAX) {
+                new_level++;
+                can_continue = true;
+            }
+            break;
+    }
+    
+    if (can_continue) {
+        set_zoom_level(new_level);
+        new_level = get_zoom_level();
+        
+        Msg.topic = EVENT_MODEMNG_LIVEVIEW_ADJUSTFOCUS;
+        Msg.arg1 = 0;
+        snprintf((char*)Msg.aszPayload, 3, "%d", new_level);
+        MODEMNG_SendMessage(&Msg);
+        update_zoom_bar(new_level);
+        
+        MLOG_DBG("长按缩放: 方向=%d, 等级=%d\n", g_zoom_longpress_dir, new_level);
+    } else {
+        // 达到边界，停止长按
+        g_zoom_longpress_active = false;
+        lv_timer_del(timer);
+        g_zoom_longpress_timer = NULL;
+    }
+}
+
 static void photo_zoom_event_cb(lv_event_t* e)
 {
     lv_event_code_t code = lv_event_get_code(e);
-    int Click_index      = (int)lv_event_get_user_data(e);
-    uint32_t new_level = get_zoom_level();
-    MESSAGE_S Msg = {0};
-    if(code == LV_EVENT_CLICKED) {
-        switch(Click_index) {
-            case 1: // T
-                if (new_level < ZOOM_RADIO_MAX) {
-                    new_level++;
-                    set_zoom_level(new_level);
-                    new_level = get_zoom_level();
-                    // 设置放大比例
-                    Msg.topic = EVENT_MODEMNG_LIVEVIEW_ADJUSTFOCUS;
-                    Msg.arg1 = 0;
-                    snprintf((char*)Msg.aszPayload, 3, "%d", new_level);
-                    MODEMNG_SendMessage(&Msg);
-                    // 更新UI
-                    update_zoom_bar(new_level);
-                }
-
-                break;
-            case 2: // w
-                if (new_level > 1) {
-                    new_level--;
-                    set_zoom_level(new_level);
-                    new_level = get_zoom_level();
-                    // 设置放大比例
-                    Msg.topic = EVENT_MODEMNG_LIVEVIEW_ADJUSTFOCUS;
-                    Msg.arg1 = 0;
-                    snprintf((char*)Msg.aszPayload, 3, "%d", new_level);
-                    MODEMNG_SendMessage(&Msg);
-                    // 更新UI
-                    update_zoom_bar(new_level);
-                }
-                break;
-            default: break;
+    int click_index = (int)lv_event_get_user_data(e);
+    static uint32_t last_click_time = 0;
+    
+    if (g_ui.page_photo.photoscr == NULL || !lv_obj_is_valid(g_ui.page_photo.photoscr)) {
+        g_zoom_longpress_active = false;
+        if (g_zoom_longpress_timer != NULL) {
+            lv_timer_del(g_zoom_longpress_timer);
+            g_zoom_longpress_timer = NULL;
         }
+        return;
+    }
+
+    switch(code) {
+        case LV_EVENT_PRESSED: {
+            // 立即执行一次缩放
+            uint32_t new_level = get_zoom_level();
+            MESSAGE_S msg = {0};
+            bool zoom_performed = false;
+            
+            if (click_index == 1 && new_level > 1) { // 缩小
+                new_level--;
+                zoom_performed = true;
+            } else if (click_index == 2 && new_level < ZOOM_RADIO_MAX) { // 放大
+                new_level++;
+                zoom_performed = true;
+            }
+            
+            if (zoom_performed) {
+                set_zoom_level(new_level);
+                new_level = get_zoom_level();
+                
+                msg.topic = EVENT_MODEMNG_LIVEVIEW_ADJUSTFOCUS;
+                msg.arg1 = 0;
+                snprintf((char*)msg.aszPayload, 3, "%d", new_level);
+                MODEMNG_SendMessage(&msg);
+                update_zoom_bar(new_level);
+                
+                MLOG_DBG("缩放按钮按下: 方向=%d, 新等级=%d\n", click_index, new_level);
+            }
+            
+            // 记录按下时间
+            last_click_time = lv_tick_get();
+            
+            // 启动长按定时器
+            g_zoom_longpress_dir = click_index;
+            g_zoom_longpress_active = true;
+            if (g_zoom_longpress_timer == NULL) {
+                g_zoom_longpress_timer = lv_timer_create(zoom_longpress_timer_cb, 300, NULL);
+            }
+            break;
+        }
+        
+        case LV_EVENT_RELEASED: {
+            // 停止长按
+            g_zoom_longpress_active = false;
+            if (g_zoom_longpress_timer != NULL) {
+                lv_timer_del(g_zoom_longpress_timer);
+                g_zoom_longpress_timer = NULL;
+            }
+            
+            // 计算按下时间
+            uint32_t press_duration = lv_tick_get() - last_click_time;
+            
+            // 如果是短按（小于300ms），不执行额外操作
+            if (press_duration < 300) {
+                MLOG_DBG("短按释放: 持续时间=%dms\n", press_duration);
+            } else {
+                MLOG_DBG("长按释放: 持续时间=%dms\n", press_duration);
+            }
+            break;
+        }
+        default:
+        break;
     }
 }

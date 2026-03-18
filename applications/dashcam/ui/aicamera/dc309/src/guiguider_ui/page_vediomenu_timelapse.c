@@ -216,6 +216,7 @@ void check_and_start_timelapse(void)
                     MESSAGE_S Msg  = {0};
                     Msg.topic      = EVENT_MODEMNG_STOP_REC;
                     MODEMNG_SendMessage(&Msg);
+                    enable_touch_events(); // 停止录像，恢复TP事件
                 }
             }
         }

@@ -1,34 +1,48 @@
 #define DEBUG
-#include "lvgl.h"
-#include "mlog.h"
-#include "ui_common.h"
-#include <linux/input.h>
-#include "indev.h"
-#include "cvi_af.h"
 #include "takephoto.h"
 #include "config.h"
 #include "custom.h"
-#include "storagemng.h"
-#include "page_all.h"
-#include "cvi_vo.h"
+#include "cvi_af.h"
 #include "cvi_comm_vo.h"
-#include "zoom_bar.h"
+#include "cvi_vo.h"
+#include "indev.h"
+#include "lvgl.h"
+#include "mlog.h"
+#include "page_all.h"
+#include "storagemng.h"
+#include "ui_common.h"
 #include "voiceplay.h"
+#include "zoom_bar.h"
+#include <linux/input.h>
 
-#define MAX_PHOTO_SIZE_64MB 6 * 1024 * 1024
-#define MAX_PHOTO_SIZE_48MB 4.2 * 1024 * 1024
-#define MAX_PHOTO_SIZE_32MB 3.5 * 1024 * 1024
-#define MAX_PHOTO_SIZE_24MB 2.7 * 1024 * 1024
-#define MAX_PHOTO_SIZE_16MB 2.3 * 1024 * 1024
-#define MAX_PHOTO_SIZE_12MB 1.8 * 1024 * 1024
-#define MAX_PHOTO_SIZE_8MB 1.4 * 1024 * 1024
-#define MAX_PHOTO_SIZE_5MB 0.8 * 1024 * 1024
-#define MAX_PHOTO_SIZE_2MB 0.3 * 1024 * 1024
+// 分辨率枚举值用于数组索引时，确保枚举值连续且从0开始
+#define PHOTO_RES_CNT 5 // 照片分辨率数量
+#define QUALITY_CNT 3 // 画质等级数量
+#define VIDEO_RES_CNT 4 // 录像分辨率数量
 
-#define MAX_VIDEO_SIZE_4K 280494
-#define MAX_VIDEO_SIZE_2_7K 99614
-#define MAX_VIDEO_SIZE_FULL 55050
-#define MAX_VIDEO_SIZE_HD 49807
+#define MAX_VIDEO_BYTE_PER_SEC_4K 4096000
+#define MAX_VIDEO_BYTE_PER_SEC_2_7K 2048000
+#define MAX_VIDEO_BYTE_PER_SEC_FULL 1024000
+#define MAX_VIDEO_BYTE_PER_SEC_HD 1024000
+
+// 记录不同分辨率和画质下照片的估算大小(单位:Byte)
+// 拍照方法，自拍，对着人脸
+static const uint32_t photo_bytes[PHOTO_RES_CNT][QUALITY_CNT] = {
+    // {超高画质，高画质，普通画质}
+    { 11114905, 5557452, 4613734 }, // 64M
+    { 9227468, 4718592, 3879731 }, // 48M
+    { 5557452, 2726297, 2359296 }, // 24M
+    { 3250585, 1572864, 1363148 }, // 12M
+    { 2726297, 1279262, 1121976 }, // 8M
+};
+
+// 录像每秒字节数数组，单位:Byte
+static const uint32_t video_bytes_per_sec[VIDEO_RES_CNT] = {
+    MAX_VIDEO_BYTE_PER_SEC_4K, // 4K
+    MAX_VIDEO_BYTE_PER_SEC_2_7K, // 2.7K
+    MAX_VIDEO_BYTE_PER_SEC_FULL, // FULL
+    MAX_VIDEO_BYTE_PER_SEC_HD, // HD
+};
 
 // 录像剩余时间
 static char remain_time_of_video[32] = {0};
@@ -95,36 +109,57 @@ uint32_t photo_CalculateRemainingPhotoCount(void)
         uint64_t availableSpaceBytes = stFSInfo.u64AvailableSize;
         // 获取SD卡总空间
         uint64_t totalSpaceBytes = stFSInfo.u64TotalSize;
-        // 计算reserve space
-        uint64_t reserveSpaceBytes = totalSpaceBytes * 0.01;
-        // 计算可用空间
-        availableSpaceBytes = availableSpaceBytes - reserveSpaceBytes;
+
+        // 添加边界检查
+        if (totalSpaceBytes == 0) {
+            MLOG_ERR("Total storage space is 0");
+            return 0;
+        }
+
+        // 计算reserve space (5%)
+        uint64_t reserveSpaceBytes = totalSpaceBytes * 0.05; // 等同于 * 0.05
+
+        // MLOG_DBG("BUG调试 reserveSpaceBytes:%llu kb availableSpaceBytes:%llu totalSpaceBytes:%llu\n",reserveSpaceBytes>>10,availableSpaceBytes>>10,totalSpaceBytes>>10);
+        // 确保可用空间不会下溢
+        if (availableSpaceBytes > reserveSpaceBytes) {
+            availableSpaceBytes = availableSpaceBytes - reserveSpaceBytes;
+        } else {
+            availableSpaceBytes = 0;
+        }
 
         // 估算单张照片文件大小（字节）
-        uint32_t estimatedPhotoSizeBytes = 0;
+        // 枚举值直接作为数组索引，枚举值必须从0开始且连续
+        uint8_t res_idx = photo_getRes_Index();
+        uint8_t qual_idx = photo_getQuality_Index();
 
-        //按当前分辨率最大size计算，如64M大概6MB
-        switch(photo_getRes_Index()) {
-            case PHOTO_RES_64M: estimatedPhotoSizeBytes = MAX_PHOTO_SIZE_64MB; break;
-            case PHOTO_RES_48M: estimatedPhotoSizeBytes = MAX_PHOTO_SIZE_48MB; break;
-            case PHOTO_RES_32M: estimatedPhotoSizeBytes = MAX_PHOTO_SIZE_32MB; break;
-            case PHOTO_RES_24M: estimatedPhotoSizeBytes = MAX_PHOTO_SIZE_24MB; break;
-            case PHOTO_RES_16M: estimatedPhotoSizeBytes = MAX_PHOTO_SIZE_16MB; break;
-            case PHOTO_RES_12M: estimatedPhotoSizeBytes = MAX_PHOTO_SIZE_12MB; break;
-            case PHOTO_RES_8M: estimatedPhotoSizeBytes = MAX_PHOTO_SIZE_8MB; break;
-            case PHOTO_RES_5M: estimatedPhotoSizeBytes = MAX_PHOTO_SIZE_5MB; break;
-            case PHOTO_RES_2M: estimatedPhotoSizeBytes = MAX_PHOTO_SIZE_2MB; break;
+        // 添加边界检查，防止数组越界
+        if (res_idx >= PHOTO_RES_CNT) {
+            res_idx = PHOTO_RES_CNT - 1; // 默认使用最后一个分辨率
         }
-        // 计算剩余可拍照片数量
-        if (estimatedPhotoSizeBytes > 0) {
-            remainingPhotoCount = (uint32_t)(availableSpaceBytes / estimatedPhotoSizeBytes);
+        if (qual_idx >= QUALITY_CNT) {
+            qual_idx = QUALITY_CNT - 1; // 默认使用最后一个画质
+        }
+
+        uint32_t estimatedPhotoSizeBytes = photo_bytes[res_idx][qual_idx];
+        // MLOG_DBG("res_idx=%u, qual_idx=%u, estimatedPhotoSizeBytes=%u bytes\n",
+        //     res_idx, qual_idx, estimatedPhotoSizeBytes);
+
+        // 计算剩余可拍照片数量，添加溢出保护
+        if (estimatedPhotoSizeBytes > 0 && availableSpaceBytes > 0) {
+            uint64_t tempCount = availableSpaceBytes / estimatedPhotoSizeBytes;
+
+            // 限制最大值，防止溢出
+            if (tempCount > UINT32_MAX) {
+                remainingPhotoCount = UINT32_MAX;
+            } else {
+                remainingPhotoCount = (uint32_t)tempCount;
+            }
+        } else {
+            remainingPhotoCount = 0;
         }
 
         // MLOG_DBG("Photo count calc: space=%llu bytes, photo_size=%u bytes, remaining_count=%u\n",
         //           availableSpaceBytes, estimatedPhotoSizeBytes, remainingPhotoCount);
-    } else {
-        MLOG_ERR("get fs info failed, use default remaining photo count 1000\n");
-        remainingPhotoCount = 1000;
     }
 
     return remainingPhotoCount;
@@ -141,23 +176,35 @@ char * video_Calculateremainingvideo(void)
         uint64_t availableSpaceBytes = stFSInfo.u64AvailableSize;
         // 获取SD卡总空间
         uint64_t totalSpaceBytes = stFSInfo.u64TotalSize;
-        // 计算reserve space
-        uint64_t reserveSpaceBytes = totalSpaceBytes * 0.01;
-        // 计算可用空间
-        availableSpaceBytes = availableSpaceBytes - reserveSpaceBytes;
 
-        // 估算单秒视频文件大小（字节）
-        uint32_t estimatedvideoSizeBytes = 0;
-
-        // 280,494
-        switch(video_getRes_Index()) {
-            case VIDEO_RES_4K: estimatedvideoSizeBytes = MAX_VIDEO_SIZE_4K; break;
-            case VIDEO_RES_2_7K: estimatedvideoSizeBytes = MAX_VIDEO_SIZE_2_7K; break;
-            case VIDEO_RES_FULL: estimatedvideoSizeBytes = MAX_VIDEO_SIZE_FULL; break;
-            case VIDEO_RES_HD: estimatedvideoSizeBytes = MAX_VIDEO_SIZE_HD; break;
+        // 添加边界检查
+        if (totalSpaceBytes == 0) {
+            MLOG_ERR("Total storage space is 0");
+            snprintf(remain_time_of_video, sizeof(remain_time_of_video), "0:00:00");
+            return remain_time_of_video;
         }
 
-        // 计算剩余可拍照片数量
+        // 计算reserve space (5%)
+        uint64_t reserveSpaceBytes = totalSpaceBytes * 0.05;
+        // 确保可用空间不会下溢
+        if (availableSpaceBytes > reserveSpaceBytes) {
+            availableSpaceBytes = availableSpaceBytes - reserveSpaceBytes;
+        } else {
+            availableSpaceBytes = 0;
+        }
+
+        // 估算单秒视频文件大小（字节）
+        // 枚举值直接作为数组索引，枚举值必须从0开始且连续
+        uint8_t video_res_idx = video_getRes_Index();
+
+        // 添加边界检查，防止数组越界
+        if (video_res_idx >= VIDEO_RES_CNT) {
+            video_res_idx = 0; // 默认使用第一个分辨率
+        }
+
+        uint32_t estimatedvideoSizeBytes = video_bytes_per_sec[video_res_idx];
+
+        // 计算剩余可录时间
         if (estimatedvideoSizeBytes > 0) {
             remainingvideo = (uint32_t)(availableSpaceBytes / estimatedvideoSizeBytes);
         }
@@ -170,8 +217,8 @@ char * video_Calculateremainingvideo(void)
         // MLOG_ERR("time calc: space=%llu bytes, photo_size=%u bytes, remaining_count=%u\n",
         //           availableSpaceBytes, estimatedvideoSizeBytes, remainingvideo);
     } else {
-        MLOG_ERR("get fs info failed, use default value 1:00:00\n");
-        snprintf(remain_time_of_video, sizeof(remain_time_of_video), "1:00:00");
+        MLOG_ERR("get fs info failed, use default value 00:00:00\n");
+        snprintf(remain_time_of_video, sizeof(remain_time_of_video), "00:00:00");
     }
 
     return remain_time_of_video;
@@ -182,9 +229,17 @@ void video_get_status(uint8_t* status){
 }
 
 // 长zoomin按键检测定时器回调函数
+static uint8_t entyr_count = 0;
 void zoomin_long_press_timer_cb(lv_timer_t *t)
 {
     uint32_t zoom_level = get_zoom_level();
+    entyr_count++;
+    if (entyr_count >= 2) {
+        zoomin_long_press_triggered = true;
+        if (g_zoomin_callback != NULL) {
+            g_zoomin_callback();
+        }
+    }
     if(get_arc_handel() != NULL) {
         zoomin_long_press_triggered = true;
         if(g_zoomin_callback != NULL) {
@@ -205,10 +260,6 @@ void zoomin_long_press_timer_cb(lv_timer_t *t)
         // 100ms周期继续检测, 直到按键松开
         lv_timer_set_period(t, 100);
         lv_timer_reset(t);
-    } else {
-        // 删除定时器
-        lv_timer_del(t);
-        zoomin_long_press_timer = NULL;
     }
 }
 
@@ -216,7 +267,13 @@ void zoomin_long_press_timer_cb(lv_timer_t *t)
 void zoomout_long_press_timer_cb(lv_timer_t *t)
 {
     uint32_t zoom_level = get_zoom_level();
-
+    entyr_count++;
+    if (entyr_count >= 2) {
+        zoomout_long_press_triggered = true;
+        if(g_zoomout_callback != NULL) {
+            g_zoomout_callback();
+        }
+    }
     if(get_arc_handel() != NULL) {
         zoomout_long_press_triggered = true;
         if(g_zoomout_callback != NULL) {
@@ -237,10 +294,6 @@ void zoomout_long_press_timer_cb(lv_timer_t *t)
         // 100ms周期继续检测, 直到按键松开
         lv_timer_set_period(t, 100);
         lv_timer_reset(t);
-    } else {
-        // 删除定时器
-        lv_timer_del(t);
-        zoomout_long_press_timer = NULL;
     }
 }
 
@@ -252,7 +305,7 @@ int32_t do_zoom_in(int32_t key_value)
         zoomin_long_press_triggered = false;
         zoomin_long_press_timer = lv_timer_create(zoomin_long_press_timer_cb, 300, NULL);
     } else {
-        // zoomin(T)按键释放
+        entyr_count = 0;
         // 短按或者长按，在按键释放的时候都要删除定时器
         if(zoomin_long_press_timer != NULL) {
             lv_timer_del(zoomin_long_press_timer);
@@ -290,7 +343,7 @@ int32_t do_zoom_out(int32_t key_value)
         zoomout_long_press_triggered = false;
         zoomout_long_press_timer = lv_timer_create(zoomout_long_press_timer_cb, 300, NULL);
     } else {
-        // zoomin(T)按键释放
+        entyr_count = 0;
         // 短按或者长按，在按键释放的时候都要删除定时器
         if(zoomout_long_press_timer != NULL) {
             lv_timer_del(zoomout_long_press_timer);
@@ -334,14 +387,12 @@ static void sd_not_ready_timer_cb(lv_timer_t *t)
 void sd_card_status_label(void)
 {
     extern lv_style_t ttf_font_30;
-    lv_obj_t *label_card_status = lv_label_create(lv_layer_top());
-    if(ui_event_type == EVT_SDCARD_SPACE_FULL)
-    {
+    lv_obj_t* label_card_status = lv_label_create(lv_layer_top());
+    //SD卡状态在线并且获取的数量为0时，提示空间已满
+    if (ui_event_type == EVT_SDCARD_SPACE_FULL || (photo_CalculateRemainingPhotoCount() == 0 && ui_common_cardstatus())) {
         MLOG_ERR("SD卡空间已满,无法拍照/录像\n");
         lv_label_set_text(label_card_status, "空间已满!!!\n");
-    }
-    else
-    {
+    } else {
         MLOG_ERR("SD卡未就绪,无法拍照/录像\n");
         lv_label_set_text(label_card_status, "请插入SD卡!!!\n");
     }
@@ -525,7 +576,7 @@ void takephoto_key_handler(int key_code, int key_value)
             return;
         }
         if(ui_common_cardstatus()) {
-            if(ui_event_type == EVT_SDCARD_SPACE_FULL) {
+            if(ui_event_type == EVT_SDCARD_SPACE_FULL || photo_CalculateRemainingPhotoCount() == 0) {
                 // 提示用户SD卡空间已满
                 sd_card_status_label();
                 return;
