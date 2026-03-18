@@ -601,7 +601,6 @@ void Home_Photo(lv_ui_t *ui)
     lv_obj_set_style_bg_color(Home_Photo_Item->photoscr, lv_color_hex(0x020524), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_grad_dir(Home_Photo_Item->photoscr, LV_GRAD_DIR_NONE, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_add_event_cb(Home_Photo_Item->photoscr, gesture_event_handler, LV_EVENT_GESTURE, ui);
-    create_viewfinder(Home_Photo_Item->photoscr);
     
     // 相机模式按钮
     Home_Photo_Item->img_mode = lv_imagebutton_create(Home_Photo_Item->photoscr);
@@ -811,7 +810,6 @@ void hide_all_widgets(lv_obj_t *parent)
 {
     // 首先计算需要存储的控件数量
     int child_count = lv_obj_get_child_count(parent);
-    lv_obj_t *viewfinder = lv_obj_get_child(g_ui.page_photo.photoscr, 0);
     // 分配内存存储控件状态
     if (g_widget_states == NULL || g_max_widgets < child_count) {
         g_max_widgets = child_count + 10; // 额外分配一些空间
@@ -832,9 +830,7 @@ void hide_all_widgets(lv_obj_t *parent)
         g_widget_states[g_widget_count].hidden = lv_obj_has_flag(child, LV_OBJ_FLAG_HIDDEN);
 
         // 隐藏控件（除非是取景框）
-        if (child != viewfinder) { // 假设viewfinder是取景框的全局变量
-            lv_obj_add_flag(child, LV_OBJ_FLAG_HIDDEN);
-        }
+        lv_obj_add_flag(child, LV_OBJ_FLAG_HIDDEN);
 
         g_widget_count++;
         child = lv_obj_get_child(parent, g_widget_count);

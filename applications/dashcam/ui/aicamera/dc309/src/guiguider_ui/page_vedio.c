@@ -383,6 +383,21 @@ static void video_redlight_callback(void)
 }
 
 
+static void key_takephoto_power_callback(void)
+{
+    MLOG_DBG("key_takephoto_power_callback\n");
+    static bool power_key_count = false;
+    power_key_count = !power_key_count;
+    switch (power_key_count) {
+    case false:
+        restore_all_widgets();
+        break;
+    case true:
+        hide_all_widgets(obj_vedio_s);
+        break;
+    }
+}
+
 void Home_Vedio(lv_ui_t *ui)
 {
     MLOG_DBG("loading obj_vedio_s...\n");
@@ -577,8 +592,6 @@ void Home_Vedio(lv_ui_t *ui)
     lv_obj_add_flag(dot_red_s, LV_OBJ_FLAG_HIDDEN);
     lv_obj_set_style_pad_all(dot_red_s, 0, LV_STATE_DEFAULT);
 
-    create_viewfinder(obj_vedio_s);
-
     /* 设置当前页面按键处理回调 */
     set_current_page_handler(takephoto_key_handler);
     takephoto_register_up_callback(video_redlight_callback);
@@ -592,6 +605,7 @@ void Home_Vedio(lv_ui_t *ui)
     takephoto_register_zoomout_callback(video_zoomout_key_cb);
     takephoto_register_left_callback(video_left_callback);
     takephoto_register_right_callback(video_right_callback);
+    takephoto_power_callback(key_takephoto_power_callback);
     //创建时间更新定时器
     if(date_timer_s == NULL) {
         date_timer_s = lv_timer_create(video_var_dynamic_update, 1000, ui);

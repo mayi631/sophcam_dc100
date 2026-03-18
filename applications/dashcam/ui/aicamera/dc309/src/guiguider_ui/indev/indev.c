@@ -561,4 +561,5 @@ void takephoto_unregister_all_callback(void)
     // 取消注册拍照前/后处理回调函数
     takephoto_unregister_callback();
     takephoto_unregister_before_callback();
+    takephoto_unregister_power_callback();
 }

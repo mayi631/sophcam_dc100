@@ -20,6 +20,9 @@ void display_viewfinder(void);
 // 取消取景框
 void cancel_viewfinder(void);
 void set_viewfinder_color(uint32_t color);
+
+void hide_all_widgets(lv_obj_t *parent);
+void restore_all_widgets(void);
 #ifdef __cplusplus
 }
 #endif

@@ -414,6 +414,14 @@ static void photomenu_setting_click_callback(lv_obj_t *obj)
                                             g_ui.screen_SettingSensitivity_del, &g_ui.screenPhotoMenuSetting_del,
                                             photoMenu_Sensitivity, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
                 }; break;
+                case PHOTO_DELAY: // 延时
+                {
+                    ui_load_scr_animation(&g_ui, &g_ui.page_selfietime.self_scr, 1, NULL, photoMenu_SelfieTime, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
+                }; break;
+                case PHOTO_SHOOTMODE: // 连拍
+                {
+                    ui_load_scr_animation(&g_ui, &g_ui.page_shootingmode.shoot_scr, 1, NULL, photoMenu_ShootingMode, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
+                }; break;
                 // case PHOTO_AUTOFOCUS: //自动对焦
                 // {
                 //     ui_load_scr_animation(&g_ui, &g_ui.page_autofocus.auto_scr,
