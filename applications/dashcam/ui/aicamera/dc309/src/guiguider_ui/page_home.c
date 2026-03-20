@@ -228,7 +228,8 @@ static void home_btn_event_handler(lv_event_t* e)
 void setup_scr_home1(lv_ui_t* ui)
 {
     MLOG_DBG("loading page_home1...\n");
-
+    extern uint8_t g_last_scr_mode;
+    g_last_scr_mode = 0;
     // 创建主屏幕
     obj_home_s = lv_obj_create(NULL);
     lv_obj_set_size(obj_home_s, H_RES, V_RES);

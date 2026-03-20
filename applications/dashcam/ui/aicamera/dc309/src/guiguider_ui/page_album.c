@@ -37,6 +37,8 @@ static lv_obj_t *btn_vialbum_s;//视频按钮
 static lv_obj_t *cont_album_grid_s;
 static lv_obj_t *scrollbar_slider_s;
 
+uint8_t g_last_scr_mode = 0;
+
 #define GRID_ITEM_WIDTH 200
 #define GRID_ITEM_HEIGHT 140
 
@@ -2155,13 +2157,13 @@ static bool is_valid_click(void)
 void album_return_cb(void)
 {
     // 返回主菜单
-    if (ui_Get_PreScreen() == g_ui.page_photo.photoscr) {
+    if (g_last_scr_mode == 1) {
         MESSAGE_S Msg = { 0 };
         Msg.topic = EVENT_MODEMNG_MODESWITCH;
         Msg.arg1 = WORK_MODE_PHOTO;
         MODEMNG_SendMessage(&Msg);
         ui_load_scr_animation(&g_ui, &g_ui.page_photo.photoscr, g_ui.screenHomePhoto_del, NULL, Home_Photo, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
-    } else if (ui_Get_PreScreen() == obj_vedio_s) {
+    } else if (g_last_scr_mode == 2) {
         MESSAGE_S Msg = { 0 };
         homeMode_Set(VEDIO_MODE);
         // 进入录像模式
@@ -2172,7 +2174,7 @@ void album_return_cb(void)
         is_video_mode = true;
         ui_load_scr_animation(&g_ui, &obj_vedio_s, 1, &g_ui.screenHomePhoto_del, Home_Vedio, LV_SCR_LOAD_ANIM_NONE,
             0, 0, false, true);
-    } else if(ui_Get_PreScreen() == obj_home_s){
+    } else if(g_last_scr_mode == 0){
         MLOG_DBG("album_menu_callback\n");
         MESSAGE_S Msg = { 0 };
         Msg.topic = EVENT_MODEMNG_MODESWITCH;

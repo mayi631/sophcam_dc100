@@ -590,6 +590,8 @@ void Home_Photo(lv_ui_t *ui)
     MLOG_DBG("loading page_home1...\n");
     HomePhoto_t *Home_Photo_Item = &ui->page_photo;
     is_photo_back = true;
+    extern uint8_t g_last_scr_mode;
+    g_last_scr_mode = 1;
     set_exit_completed(false);
     
     // 创建新页面

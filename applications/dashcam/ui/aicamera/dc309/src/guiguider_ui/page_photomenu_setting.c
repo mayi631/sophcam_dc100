@@ -597,7 +597,7 @@ void photoMenu_Setting(lv_ui_t *ui)
 
         lv_obj_set_size(label, 280, MENU_BTN_SIZE - 10); // 固定宽度
         lv_label_set_text(label, btn_labels[i]);
-        lv_obj_align(label, LV_ALIGN_LEFT_MID, 38, 0);
+        lv_obj_align(label, LV_ALIGN_LEFT_MID, 38, 5);
         // lv_obj_set_style_text_font(label, &lv_font_SourceHanSerifSC_Regular_16, LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_set_style_text_font(label, get_usr_fonts(ALI_PUHUITI_FONTPATH, MENU_FONT_SIZE), LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_set_style_text_color(label, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -606,7 +606,7 @@ void photoMenu_Setting(lv_ui_t *ui)
         // 创建右侧值标签
         lv_obj_t *value_label = lv_label_create(btn);
         lv_obj_set_size(value_label, 180, MENU_BTN_SIZE - 10); // 固定宽度
-        lv_obj_align(value_label, LV_ALIGN_RIGHT_MID, -10, 0);
+        lv_obj_align(value_label, LV_ALIGN_RIGHT_MID, -10, 5);
         lv_obj_set_style_text_color(value_label, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
         // lv_obj_set_style_text_font(value_label, &lv_font_SourceHanSerifSC_Regular_16, LV_PART_MAIN |
         // LV_STATE_DEFAULT);

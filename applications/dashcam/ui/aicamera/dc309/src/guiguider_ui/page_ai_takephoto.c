@@ -333,6 +333,7 @@ void takephoto_result_resources(void) // 要先删除结果页面在加载拍照
     /* 清理结果页面相关资源 */
     safe_delete_timer(&update_result_timer);
     result_desc_label = NULL;
+    memset(&result_text, 0, sizeof(result_text));
     voice_arc_delete();
     safe_delete_timer(&read_status_timer);
     /* 安全删除结果页面 */

@@ -38,6 +38,8 @@ static lv_timer_t *g_zoom_longpress_timer = NULL;  // 长按定时器
 static int g_zoom_longpress_dir = 0;               // 长按方向: 0=无, 1=缩小, 2=放大
 static bool g_zoom_longpress_active = false;       // 是否正在长按
 
+static lv_obj_t *g_video_top_controls[5];  // 存储视频页面顶部控件对象
+
 static void video_zoomin_key_cb(void);//w按键回调
 static void video_zoomout_key_cb(void);//t按键回调
 // left按键处理回调函数
@@ -142,6 +144,49 @@ static void video_var_dynamic_update(lv_timer_t *timer)
         }
     }
 }
+
+// 视频页面顶部控件布局更新
+static void update_video_top_controls_layout(void)
+{
+    int x_pos = 6;  // 起始X坐标
+    
+    // 1. 录像模式按钮 (74x47)
+    if (g_video_top_controls[0] && lv_obj_is_valid(g_video_top_controls[0])) {
+        lv_obj_set_pos(g_video_top_controls[0], x_pos, 0);
+    }
+    x_pos += 74 + 14;
+    
+    // 2. 分辨率按钮 (38x32)
+    if (g_video_top_controls[1] && lv_obj_is_valid(g_video_top_controls[1])) {
+        lv_obj_set_pos(g_video_top_controls[1], x_pos, 4);
+    }
+    x_pos += 38 + 14;
+    
+    // 3. 红光亮级按钮 (38x32)
+    if (g_video_top_controls[2] && lv_obj_is_valid(g_video_top_controls[2])) {
+        if (brightness_level > 0) {
+            lv_obj_clear_flag(g_video_top_controls[2], LV_OBJ_FLAG_HIDDEN);
+            lv_obj_set_pos(g_video_top_controls[2], x_pos, 4);
+            x_pos += 38 + 14;
+        } else {
+            lv_obj_add_flag(g_video_top_controls[2], LV_OBJ_FLAG_HIDDEN);
+        }
+    }
+    
+    // 4. ISO级别按钮
+    if (g_video_top_controls[3] && lv_obj_is_valid(g_video_top_controls[3])) {
+        lv_obj_set_pos(g_video_top_controls[3], x_pos, 4);
+    }
+    x_pos += 38 + 14;
+    
+    // 5. 屏幕亮度按钮
+    if (g_video_top_controls[4] && lv_obj_is_valid(g_video_top_controls[4])) {
+        lv_obj_set_pos(g_video_top_controls[4], x_pos, 4);
+    }
+    
+    MLOG_DBG("视频页面顶部控件布局已更新，brightness_level=%d\n", brightness_level);
+}
+
 
 //渐隐动画完成回调
 void animCompleted_objDel_cb(lv_anim_t *a)
@@ -375,11 +420,17 @@ static void gesture_event_handler(lv_event_t *e)
 
 static void video_redlight_callback(void)
 {
-    if (brightness_level > 6) {
-        show_image(video_red_level_s, red_light_image_level[6]);
-    } else {
-        show_image(video_red_level_s, red_light_image_level[brightness_level]);
+     // 更新红光亮级图片
+     if (brightness_level > 6) {
+        show_image(g_video_top_controls[2], red_light_image_level[6]);
+    } else if (brightness_level > 0) {
+        show_image(g_video_top_controls[2], red_light_image_level[brightness_level-1]);
     }
+    
+    // 更新布局
+    update_video_top_controls_layout();
+    
+    MLOG_DBG("视频红光亮级更新: brightness_level=%d\n", brightness_level);
 }
 
 
@@ -411,85 +462,61 @@ void Home_Vedio(lv_ui_t *ui)
         }
         obj_vedio_s = NULL;
     }
+    extern uint8_t g_last_scr_mode;
+    g_last_scr_mode = 2;
+
     obj_vedio_s = lv_obj_create(NULL);
     lv_obj_set_size(obj_vedio_s, H_RES, V_RES);
 
-    lv_obj_set_scrollbar_mode(obj_vedio_s, LV_SCROLLBAR_MODE_OFF); // 禁用滚动条，默认 LV_SCROLLBAR_MODE_AUTO
+    lv_obj_set_scrollbar_mode(obj_vedio_s, LV_SCROLLBAR_MODE_OFF);
     lv_obj_set_style_bg_opa(lv_layer_bottom(), LV_OPA_TRANSP, LV_PART_MAIN);
     lv_obj_set_style_bg_opa(obj_vedio_s, LV_OPA_TRANSP, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(obj_vedio_s, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT); // 背景颜色
-    lv_obj_set_style_bg_grad_dir(obj_vedio_s, LV_GRAD_DIR_NONE, LV_PART_MAIN | LV_STATE_DEFAULT);    // 无渐变色
+    lv_obj_set_style_bg_color(obj_vedio_s, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_dir(obj_vedio_s, LV_GRAD_DIR_NONE, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_add_event_cb(obj_vedio_s, gesture_event_handler, LV_EVENT_GESTURE, ui);
 
-    // 录像模式
-    lv_obj_t *img_mode = lv_imagebutton_create(obj_vedio_s);
-    lv_obj_align(img_mode, LV_ALIGN_TOP_LEFT, 6, 0);
-    lv_obj_set_size(img_mode, 74, 47);
-    show_image(img_mode, "shexiangmoshi.png");
-    lv_obj_add_event_cb(img_mode, buttonVedio_All_event_handler, LV_EVENT_CLICKED, (void *)(intptr_t)2);
+    // 录像模式按钮
+    g_video_top_controls[0] = lv_imagebutton_create(obj_vedio_s);
+    lv_obj_set_size(g_video_top_controls[0], 74, 47);
+    show_image(g_video_top_controls[0], "shexiangmoshi.png");
+    lv_obj_add_event_cb(g_video_top_controls[0], buttonVedio_All_event_handler, LV_EVENT_CLICKED, (void *)(intptr_t)2);
 
-    // res
-    lv_obj_t *img_res = lv_imagebutton_create(obj_vedio_s);
-    lv_obj_align(img_res, LV_ALIGN_TOP_LEFT, 72+14, 4);
-    lv_obj_set_size(img_res, 38, 32);
-    show_image(img_res, video_getRes_Icon());
-    lv_obj_update_layout(img_res);
+    // 分辨率按钮
+    g_video_top_controls[1] = lv_imagebutton_create(obj_vedio_s);
+    lv_obj_set_size(g_video_top_controls[1], 38, 32);
+    show_image(g_video_top_controls[1], video_getRes_Icon());
 
-    //闪光灯
-    video_red_level_s = lv_imagebutton_create(obj_vedio_s);
-    lv_obj_align(video_red_level_s, LV_ALIGN_TOP_LEFT, 116+14, 4);
-    lv_obj_set_size(video_red_level_s, 38, 32);
-    show_image(video_red_level_s, red_light_image_level[brightness_level]);
-
-
-    lv_obj_t *iso_level = lv_imagebutton_create(obj_vedio_s);
-    lv_obj_align(iso_level, LV_ALIGN_TOP_LEFT, 160+14, 4);
-    lv_obj_set_size(iso_level, 38, 32);
+    // 红光亮级按钮
+    g_video_top_controls[2] = lv_imagebutton_create(obj_vedio_s);
+    lv_obj_set_size(g_video_top_controls[2], 38, 32);
+    
+    // ISO级别按钮
+    g_video_top_controls[3] = lv_imagebutton_create(obj_vedio_s);
+    lv_obj_set_size(g_video_top_controls[3], 38, 32);
     char* iso_buf[] = {
-        "ISO.png",
-        "ISO 100.png",
-        "ISO 200.png",
-        "ISO 400.png",
-        "ISO 800.png",
-        "ISO 1600.png",
-        "ISO 3200.png",
-        "ISO 6400.png",
+        "ISO.png", "ISO 100.png", "ISO 200.png", "ISO 400.png",
+        "ISO 800.png", "ISO 1600.png", "ISO 3200.png", "ISO 6400.png",
     };
+    show_image(g_video_top_controls[3], iso_buf[get_iso_index()]);
 
-    show_image(iso_level, iso_buf[get_iso_index()]);
-
-    lv_obj_t *screenbrightness_level = lv_imagebutton_create(obj_vedio_s);
-    lv_obj_align(screenbrightness_level, LV_ALIGN_TOP_LEFT, 204+14, 4);
-    lv_obj_set_size(screenbrightness_level, 38, 32);
+    // 屏幕亮度按钮
+    g_video_top_controls[4] = lv_imagebutton_create(obj_vedio_s);
+    lv_obj_set_size(g_video_top_controls[4], 38, 32);
     char* brightness_buf[] = { "1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png" };
-    show_image(screenbrightness_level, brightness_buf[get_curr_brightness()]);
+    show_image(g_video_top_controls[4], brightness_buf[get_curr_brightness()]);
 
-    // // 白平衡
-    // const char *whitebalanc[] = {"WAB AUTo.png", "白平衡太阳.png", "白平衡阴天.png", "白平衡灯泡.png",
-    //                              "白平衡日光灯.png"};
-    // lv_obj_t *img_whitebalanc = lv_imagebutton_create(obj_vedio_s);
-    // lv_obj_align(img_whitebalanc, LV_ALIGN_TOP_LEFT, 194, 0);
-    // if(getwhiBlance_Index() != 0)
-    //     lv_obj_set_size(img_whitebalanc, 58, 58);
-    // else
-    //     lv_obj_set_size(img_whitebalanc, 0, 58);
-    // show_image(img_whitebalanc, whitebalanc[getwhiBlance_Index()]);
-    // lv_obj_set_style_image_recolor(img_whitebalanc, lv_color_hex(0xFFFFFF), LV_PART_MAIN);
-    // lv_obj_set_style_image_recolor_opa(img_whitebalanc, LV_OPA_COVER, LV_PART_MAIN);
-    // lv_obj_set_style_image_recolor(img_whitebalanc, lv_color_hex(0xFFFFFF), LV_PART_MAIN);
-    // lv_obj_update_layout(img_whitebalanc);
-    // // 曝光
-    // static const char *photo_EV_s[] = {
-    //     "ev3.png", "EV2.png", "EV1.png", "EV00.png", "EV11.png", "EV22.png", "EV33.png",
-    // };
-    // lv_obj_t *img_ev = lv_imagebutton_create(obj_vedio_s);
-    // lv_obj_align(img_ev, LV_ALIGN_TOP_LEFT, lv_obj_get_x(img_whitebalanc) + lv_obj_get_width(img_whitebalanc) - 4, 0);
-    // if(get_EV_Level() != 3)
-    //     lv_obj_set_size(img_ev, 58, 58);
-    // else
-    //     lv_obj_set_size(img_ev, 0, 58);
-    // show_image(img_ev, photo_EV_s[get_EV_Level()]);
-    // lv_obj_update_layout(img_ev);
+    // 初始设置红光亮级图片
+    if (brightness_level > 6) {
+        show_image(g_video_top_controls[2], red_light_image_level[6]);
+    } else if (brightness_level > 0) {
+        show_image(g_video_top_controls[2], red_light_image_level[brightness_level-1]);
+    }
+    
+    // 初始布局更新
+    update_video_top_controls_layout();
+
+    // // 将video_red_level_s指向红光亮级按钮，保持向后兼容
+    // video_red_level_s = g_video_top_controls[2];
 
     // 剩余录像时间
     label_available_video_s = lv_label_create(obj_vedio_s);
@@ -768,7 +795,7 @@ static void photo_zoom_event_cb(lv_event_t* e)
             g_zoom_longpress_dir = click_index;
             g_zoom_longpress_active = true;
             if (g_zoom_longpress_timer == NULL) {
-                g_zoom_longpress_timer = lv_timer_create(zoom_longpress_timer_cb, 300, NULL);
+                g_zoom_longpress_timer = lv_timer_create(zoom_longpress_timer_cb, 100, NULL);
             }
             break;
         }

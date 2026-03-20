@@ -455,7 +455,7 @@ void vedioMenu_Setting(lv_ui_t *ui)
 
         // 使用结构体中的按钮名称
         lv_label_set_text(label, vedio_button_settings[i].button_name);
-        lv_obj_align(label, LV_ALIGN_LEFT_MID, 38, 0);
+        lv_obj_align(label, LV_ALIGN_LEFT_MID, 38, 5);
         lv_obj_set_style_text_font(label, get_usr_fonts(ALI_PUHUITI_FONTPATH, MENU_FONT_SIZE), LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_set_style_text_color(label, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_set_size(label, 280, MENU_BTN_SIZE - 10);
@@ -463,7 +463,7 @@ void vedioMenu_Setting(lv_ui_t *ui)
 
         // 创建右侧值标签
         lv_obj_t* value_label = lv_label_create(btn);
-        lv_obj_align(value_label, LV_ALIGN_RIGHT_MID, -10, 0);
+        lv_obj_align(value_label, LV_ALIGN_RIGHT_MID, -10, 5);
         lv_obj_set_style_text_color(value_label, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_set_style_text_font(value_label, get_usr_fonts(ALI_PUHUITI_FONTPATH, MENU_FONT_SIZE),
             LV_PART_MAIN | LV_STATE_DEFAULT);

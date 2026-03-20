@@ -352,7 +352,7 @@ void sysMenu_Setting(lv_ui_t *ui)
         if(!label) continue; // 如果标签创建失败则跳过
 
         lv_obj_set_size(label, 280, MENU_BTN_SIZE - 10); // 固定宽度
-        lv_obj_align(label, LV_ALIGN_LEFT_MID, 42, 0);  // 图标右侧
+        lv_obj_align(label, LV_ALIGN_LEFT_MID, 42, 5);  // 图标右侧
         lv_label_set_text(label, btn_labels[i]);
         lv_obj_set_style_text_font(label, get_usr_fonts(ALI_PUHUITI_FONTPATH, MENU_FONT_SIZE), LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_set_style_text_color(label, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -361,7 +361,7 @@ void sysMenu_Setting(lv_ui_t *ui)
         // 右侧值标签 - 固定宽度，右对齐
         lv_obj_t *value_label = lv_label_create(btn);
         lv_obj_set_size(value_label, 180, MENU_BTN_SIZE - 10); // 固定宽度
-        lv_obj_align(value_label, LV_ALIGN_RIGHT_MID, -10, 0);
+        lv_obj_align(value_label, LV_ALIGN_RIGHT_MID, -10, 5);
         lv_obj_set_style_text_color(value_label, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_set_style_text_font(value_label, get_usr_fonts(ALI_PUHUITI_FONTPATH, MENU_FONT_SIZE), LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_label_set_long_mode(value_label, LV_LABEL_LONG_SCROLL); // 过长显示省略号
