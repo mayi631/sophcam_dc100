@@ -17,7 +17,7 @@
 #include <stdio.h>
 
 #define GRID_COLS 1
-#define GRID_ROWS 3
+#define GRID_ROWS 4
 #define GRID_MAX_OBJECTS GRID_ROWS * GRID_COLS
 static lv_obj_t *focusable_objects[GRID_MAX_OBJECTS];
 

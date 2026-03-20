@@ -1103,7 +1103,7 @@ static void photo_zoom_event_cb(lv_event_t* e)
             g_zoom_longpress_dir = click_index;
             g_zoom_longpress_active = true;
             if (g_zoom_longpress_timer == NULL) {
-                g_zoom_longpress_timer = lv_timer_create(zoom_longpress_timer_cb, 300, NULL);
+                g_zoom_longpress_timer = lv_timer_create(zoom_longpress_timer_cb, 100, NULL);
             }
             break;
         }
