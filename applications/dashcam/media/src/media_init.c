@@ -194,22 +194,72 @@ int32_t MEDIA_Size2PhotoMediaMode(int32_t width, int32_t height)
     return media_mode;
 }
 
-int32_t MEDIA_Size2VideoMediaMode(int32_t width, int32_t height)
+/**
+ * @brief 从"显示名@帧率"格式中提取帧率
+ * @param full_str 完整字符串（格式："显示名加帧率"）
+ * @param desc_buf 输出缓冲区，存储帧率字符
+ * @param buf_size 缓冲区大小
+ * @note 去除第一个空格后的部分即为显示名
+ */
+static void extract_fps(const char *full_str, char *desc_buf, size_t buf_size)
+{
+    if (!full_str || !desc_buf || buf_size == 0) {
+        return;
+    }
+
+    const char *space_pos = strchr(full_str, '@');
+    if (space_pos != NULL) {
+        /* 找到第一个@，跳过它，后面的就是显示名 */
+        strncpy(desc_buf, space_pos + 1, buf_size - 1);
+        desc_buf[buf_size - 1] = '\0';
+    } else {
+        /* 没有@，整个字符串就是显示名*/
+        strncpy(desc_buf, full_str, buf_size - 1);
+        desc_buf[buf_size - 1] = '\0';
+    }
+}
+
+static uint32_t get_shot_count_value(char *desc_buf)
+{
+    char *endptr;
+    unsigned long value = strtoul(desc_buf, &endptr, 10);
+
+    // 检查转换是否有效
+    if (*endptr != '\0' ||        // 存在非法字符
+        endptr == desc_buf || // 空字符串
+        value > UINT16_MAX)       // 超过uint16_t范围
+    {
+        // CVI_ERR("Invalid shot count: %s", desc_buf);
+        return 25; // 返回默认值
+    }
+
+    return (uint32_t)value;
+}
+
+int32_t MEDIA_Size2VideoMediaMode(int32_t width, int32_t height,char *str)
 {
 	(void)height;
 	int media_mode = 0;
-        if (width == 3840) {
-            media_mode = MEDIA_VIDEO_SIZE_3840X2160P25;
-        } else if (width == 2688) {
-            media_mode = MEDIA_VIDEO_SIZE_2688X1512P25;
-        } else if (width == 1920) {
-            media_mode = MEDIA_VIDEO_SIZE_1920X1080P60;
-        } else if (width == 1280) {
-            media_mode = MEDIA_VIDEO_SIZE_1280X720P60;
-        } else if (width == 640) {
-            media_mode = MEDIA_VIDEO_SIZE_640X480P25;
-        }
-        CVI_LOGI("media_mode: %d\n", media_mode);
+	char item_fps[32] = {0};
+	extract_fps(str, item_fps, sizeof(item_fps));//分离帧率字符
+	// CVI_LOGI("bug调试 item_fps: %s\n", item_fps);
+	uint32_t fps = get_shot_count_value(item_fps);//将字符转换成数字
+	// CVI_LOGI("bug调试 fps: %d\n", fps);
+
+	if (width == 3840) {
+		media_mode = MEDIA_VIDEO_SIZE_3840X2160P25;
+	} else if (width == 2688) {
+		media_mode = MEDIA_VIDEO_SIZE_2688X1512P25;
+	} else if (width == 1920  && fps == 25) {
+		media_mode = MEDIA_VIDEO_SIZE_1920X1080P25;
+	} else if (width == 1920 && fps == 60) {
+		media_mode = MEDIA_VIDEO_SIZE_1920X1080P60;
+	}else if (width == 1280) {
+		media_mode = MEDIA_VIDEO_SIZE_1280X720P60;
+	} else if (width == 640) {
+		media_mode = MEDIA_VIDEO_SIZE_640X480P25;
+	}
+	CVI_LOGI("media_mode: %d\n", media_mode);
 	return media_mode;
 }
 

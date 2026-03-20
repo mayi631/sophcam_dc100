@@ -242,6 +242,13 @@ void photo_delay_anim(void *var, int32_t v)
         lv_label_set_text_fmt(label_delay_time_s, "%02d", current_second);
         // 更新记录的最后整秒值
         last_second = current_second;
+
+        if (current_second != get_self_delay_time()) {
+            // 触发倒计时声音
+            EVENT_S stEvent = { 0 };
+            stEvent.topic = EVENT_UI_TOUCH;
+            EVENTHUB_Publish(&stEvent);
+        }
         // 调试信息
         MLOG_DBG("倒计时更新: %d\n", current_second);
     }

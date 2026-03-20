@@ -564,7 +564,7 @@ void takephoto_key_handler(int key_code, int key_value)
 {
 
     //不是录像按键&&是录像模式&&当前正在录像 就丢弃按键事件
-    if (key_code != KEY_OK && is_video_mode && is_start_video == VEDIO_START) {
+    if ((key_code == KEY_POWER || key_code == KEY_PLAY) && is_video_mode && is_start_video == VEDIO_START) {
         return;
     }
 

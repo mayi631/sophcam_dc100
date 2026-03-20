@@ -2580,6 +2580,8 @@ int32_t  PARAM_GetVideoSizeEnum(int32_t Value, MEDIA_VIDEO_SIZE_E *VideoSize)
         *VideoSize = MEDIA_VIDEO_SIZE_1920X1080P25;
     } else if (!APPCOMM_STRCMP_ENUM(pstParamCtx->pstCfg->Menu.VideoSize.Items[Value].Desc, MEDIA_VIDEO_SIZE_1920X1080P30)) {
         *VideoSize = MEDIA_VIDEO_SIZE_1920X1080P30;
+    }  else if (!APPCOMM_STRCMP_ENUM(pstParamCtx->pstCfg->Menu.VideoSize.Items[Value].Desc, MEDIA_VIDEO_SIZE_1920X1080P60)) {
+        *VideoSize = MEDIA_VIDEO_SIZE_1920X1080P60;
     } else if (!APPCOMM_STRCMP_ENUM(pstParamCtx->pstCfg->Menu.VideoSize.Items[Value].Desc, MEDIA_VIDEO_SIZE_2304X1296P25)) {
         *VideoSize = MEDIA_VIDEO_SIZE_2304X1296P25;
     } else if (!APPCOMM_STRCMP_ENUM(pstParamCtx->pstCfg->Menu.VideoSize.Items[Value].Desc, MEDIA_VIDEO_SIZE_2304X1296P30)) {

@@ -587,7 +587,7 @@ static void MODEMNG_SetMediaVideoSize(uint32_t CamID, int32_t value)
         return;
     }
 
-    int32_t media_mode = MEDIA_Size2VideoMediaMode(param_ptr->Menu.VideoSize.Items[value].Value, -1);
+    int32_t media_mode = MEDIA_Size2VideoMediaMode(param_ptr->Menu.VideoSize.Items[value].Value, -1,param_ptr->Menu.VideoSize.Items[value].Desc);
     if(media_mode < 0){
         CVI_LOGE("error media mode: %d with size(%d)", media_mode, param_ptr->Menu.VideoSize.Items[value].Value);
         return;

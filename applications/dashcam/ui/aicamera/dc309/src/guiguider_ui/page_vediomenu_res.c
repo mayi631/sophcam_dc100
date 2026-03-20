@@ -19,7 +19,7 @@
 #include <stdio.h>
 
 #define GRID_COLS 1
-#define GRID_ROWS 4
+#define GRID_ROWS 5
 #define GRID_MAX_OBJECTS GRID_COLS * GRID_ROWS
 
 static lv_obj_t *focusable_objects[GRID_MAX_OBJECTS];
@@ -31,6 +31,7 @@ static uint8_t res_Current_Index_s = 0;
 static const res_to_icon_t video_Res_Icons[] = {
     {.w = 3840, .h = 2160, .icon_c = "4K.png"},
     {.w = 2688, .h = 1520, .icon_c = "2.7K.png"},
+    {.w = 1920, .h = 1080, .icon_c = "FHD.png"},//有两个FHD，一个60fps，一个35fps
     {.w = 1920, .h = 1080, .icon_c = "FHD.png"},
     {.w = 1280, .h = 720, .icon_c = "HD.png"},
     {.w = 640, .h = 480, .icon_c = "VGA.png"},
