@@ -80,7 +80,7 @@ static lv_obj_t* create_function_block(lv_obj_t* parent, int index, const char* 
     lv_obj_t* icon = lv_img_create(block);
     lv_obj_set_size(icon, icon_width, icon_height);
     lv_obj_align(icon, LV_ALIGN_CENTER, 0, 0);
-    if (strcmp(text, "AI识别") != 0) {
+    if (strcmp(text, str_language_ai_recognition[get_curr_language()]) != 0) {
         show_image(icon, icon_path);
     } else {
         lv_obj_set_style_bg_image_src(icon, &airecognition, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -92,7 +92,7 @@ static lv_obj_t* create_function_block(lv_obj_t* parent, int index, const char* 
     lv_obj_set_style_text_color(label, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_add_style(label, &ttf_font_20, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_align(label, LV_ALIGN_BOTTOM_MID, 0, -15);
-    
+    lv_label_set_long_mode(label, LV_LABEL_LONG_SCROLL);
     
     return block;
 }
@@ -253,11 +253,11 @@ void setup_scr_home1(lv_ui_t* ui)
     } function_block_t;
 
     function_block_t blocks[GRID_MAX_OBJECTS] = {
-        { "AI识别.png", "AI识别", ICON_BIG_WIDTH, ICON_BIG_HEIGHT, 30, 38 }, // 索引0
-        { "AI拍识万物.png", "AI拍识万物", ICON_WIDTH, ICON_HEIGHT, ICON_BIG_WIDTH + 30 + W_SPACE, 38 }, // 索引1
-        { "AI夜视仪.png", "AI夜视仪", ICON_WIDTH, ICON_HEIGHT, ICON_BIG_WIDTH + 30 + ICON_WIDTH + W_SPACE * 2, 38 }, // 索引2
-        { "相册.png", "相册", ICON_WIDTH, ICON_HEIGHT, ICON_BIG_WIDTH + 30 + W_SPACE, 38 + ICON_HEIGHT + H_SPACE }, // 索引3
-        { "设置.png", "设置", ICON_WIDTH, ICON_HEIGHT, ICON_BIG_WIDTH + 30 + ICON_WIDTH + W_SPACE * 2, 38 + ICON_HEIGHT + H_SPACE }, // 索引4
+        { "AI识别.png", str_language_ai_recognition[get_curr_language()], ICON_BIG_WIDTH, ICON_BIG_HEIGHT, 30, 38 }, // 索引0
+        { "AI拍识万物.png", str_language_ai_photo_recognize_everything[get_curr_language()], ICON_WIDTH, ICON_HEIGHT, ICON_BIG_WIDTH + 30 + W_SPACE, 38 }, // 索引1
+        { "AI夜视仪.png", str_language_ai_night_vision[get_curr_language()], ICON_WIDTH, ICON_HEIGHT, ICON_BIG_WIDTH + 30 + ICON_WIDTH + W_SPACE * 2, 38 }, // 索引2
+        { "相册.png", str_language_album[get_curr_language()], ICON_WIDTH, ICON_HEIGHT, ICON_BIG_WIDTH + 30 + W_SPACE, 38 + ICON_HEIGHT + H_SPACE }, // 索引3
+        { "设置.png", str_language_settings[get_curr_language()], ICON_WIDTH, ICON_HEIGHT, ICON_BIG_WIDTH + 30 + ICON_WIDTH + W_SPACE * 2, 38 + ICON_HEIGHT + H_SPACE }, // 索引4
     };
 
     // 创建6个功能块

@@ -3936,6 +3936,74 @@ const char* str_language_resume_reading[NUM_LANGUAGES] = {
     "Retomar leitura", // Portugues
 };
 
+/* AI拍识万物 - AI Photo Recognition Everything */
+const char *str_language_ai_photo_recognize_everything[NUM_LANGUAGES] = {
+    "AI拍识万物",      // 简体中文
+    "AI拍識萬物",      // 繁体中文
+    "AIが写真で識別",  // 日语
+    "AI Photo Recognize",  // 英语
+    "AI rozpozn. ze zdj.", // Polski
+    "AI fotoherkenning",   // Nederlands
+    "KI-Fotoerkennung",    // Deutsch
+    "IA reconnaissance photo",  // Francis
+    "IA reconoce foto",    // Espanol
+    "IA riconosce foto",   // Italiano
+    "AI Fotoğraf Tanıma",  // Turkce
+    "ИИ распознавание фото",  // Pyccknn
+    "IA reconhece foto",   // Portugues
+};
+
+/* AI夜视仪 - AI Night Vision */
+const char *str_language_ai_night_vision[NUM_LANGUAGES] = {
+    "AI夜视仪",        // 简体中文
+    "AI夜視儀",        // 繁体中文
+    "AI暗視装置",      // 日语
+    "AI Night Vision", // 英语
+    "AI noktowizja",   // Polski
+    "AI nachtzicht",   // Nederlands
+    "KI-Nachtsicht",   // Deutsch
+    "Vision nocturne IA",  // Francis
+    "Visión nocturna IA",  // Espanol
+    "Visione notturna IA", // Italiano
+    "AI Gece Görüşü",  // Turkce
+    "ИИ ночное видение",  // Pyccknn
+    "Visão noturna IA", // Portugues
+};
+
+/* AI识别 - AI Recognition */
+const char *str_language_ai_recognition[NUM_LANGUAGES] = {
+    "AI识别",          // 简体中文
+    "AI識別",          // 繁体中文
+    "AI認識",          // 日语
+    "AI Recognition",  // 英语
+    "AI rozpoznawanie",// Polski
+    "AI-herkenning",   // Nederlands
+    "KI-Erkennung",    // Deutsch
+    "Reconnaissance IA",  // Francis
+    "Reconocimiento IA",  // Espanol
+    "Riconoscimento IA",  // Italiano
+    "AI Tanıma",       // Turkce
+    "ИИ Распознавание",  // Pyccknn
+    "Reconhecimento IA",  // Portugues
+};
+
+/* 光标 - Cursor */
+const char *str_language_cursor[NUM_LANGUAGES] = {
+    "光标",            // 简体中文
+    "游標",            // 繁体中文
+    "カーソル",        // 日语
+    "Cursor",          // 英语
+    "Kursor",          // Polski
+    "Cursor",          // Nederlands
+    "Cursor",          // Deutsch
+    "Curseur",         // Francis
+    "Cursor",          // Espanol
+    "Cursore",         // Italiano
+    "İmleç",           // Turkce
+    "Курсор",          // Pyccknn
+    "Cursor",          // Portugues
+};
+
 // ASCII字符串数组
 const char *ascii_strings[128] = {
     "",   // 0
