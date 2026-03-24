@@ -765,17 +765,17 @@ static void photo_zoom_event_cb(lv_event_t* e)
             // 立即执行一次缩放
             uint32_t new_level = get_zoom_level();
             MESSAGE_S msg = {0};
-            bool zoom_performed = false;
+            // bool zoom_performed = false;
             
             if (click_index == 1 && new_level > 1) { // 缩小
                 new_level--;
-                zoom_performed = true;
+                // zoom_performed = true;
             } else if (click_index == 2 && new_level < ZOOM_RADIO_MAX) { // 放大
                 new_level++;
-                zoom_performed = true;
+                // zoom_performed = true;
             }
             
-            if (zoom_performed) {
+            // if (zoom_performed) {
                 set_zoom_level(new_level);
                 new_level = get_zoom_level();
                 
@@ -786,7 +786,7 @@ static void photo_zoom_event_cb(lv_event_t* e)
                 update_zoom_bar(new_level);
                 
                 MLOG_DBG("缩放按钮按下: 方向=%d, 新等级=%d\n", click_index, new_level);
-            }
+            // }
             
             // 记录按下时间
             last_click_time = lv_tick_get();
