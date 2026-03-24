@@ -251,6 +251,8 @@ extern const char *str_language_delay[NUM_LANGUAGES];            // 延迟
 extern const char *str_language_burst_shot[NUM_LANGUAGES];       // 连拍
 extern const char* str_language_pause_reading[NUM_LANGUAGES];
 extern const char* str_language_resume_reading[NUM_LANGUAGES];
+extern const char* str_language_photo_preview[NUM_LANGUAGES]; // 成像预览
+extern const char* str_language_press_ai_for_knowledge[NUM_LANGUAGES]; // 按AI键进行知识科普
 /* AI拍识万物 - AI Photo Recognition Everything */
 extern const char *str_language_ai_photo_recognize_everything[NUM_LANGUAGES];
 /* AI夜视仪 - AI Night Vision */

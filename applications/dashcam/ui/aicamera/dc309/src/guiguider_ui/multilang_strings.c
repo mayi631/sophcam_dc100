@@ -3936,6 +3936,38 @@ const char* str_language_resume_reading[NUM_LANGUAGES] = {
     "Retomar leitura", // Portugues
 };
 
+const char* str_language_photo_preview[NUM_LANGUAGES] = {
+    "成像预览", // 简体中文
+    "成像預覽", // 繁体中文
+    "プレビュー", // 日语
+    "Preview", // 英语
+    "Podgląd", // Polski
+    "Voorbeeld", // Nederlands
+    "Vorschau", // Deutsch
+    "Aperçu", // Francis
+    "Vista previa", // Espanol
+    "Anteprima", // Italiano
+    "Önizleme", // Turkce
+    "Предпросмотр", // Pyccknn
+    "Visualização", // Portugues
+};
+
+const char* str_language_press_ai_for_knowledge[NUM_LANGUAGES] = {
+    "按AI键进行知识科普", // 简体中文
+    "按AI鍵進行知識科普", // 繁体中文
+    "AIキーを押して知識普及", // 日语
+    "Press AI key for knowledge", // 英语
+    "Naciśnij klawisz AI, aby uzyskać wiedzę", // Polski
+    "Druk op AI-knop voor kennis", // Nederlands
+    "AI-Taste für Wissen drücken", // Deutsch
+    "Appuyez sur la touche AI pour les connaissances", // Francis
+    "Presione la tecla AI para conocimientos", // Espanol
+    "Premere il tasto AI per la conoscenza", // Italiano
+    "Bilgi için AI tuşuna basın", // Turkce
+    "Нажмите AI для знаний", // Pyccknn
+    "Pressione a tecla AI para conhecimento", // Portugues
+};
+
 /* AI拍识万物 - AI Photo Recognition Everything */
 const char *str_language_ai_photo_recognize_everything[NUM_LANGUAGES] = {
     "AI拍识万物",      // 简体中文
