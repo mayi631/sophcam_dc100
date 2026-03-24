@@ -20,7 +20,7 @@
 #include "style_common.h"
 
 #define GRID_COLS 1
-#define GRID_ROWS 8
+#define GRID_ROWS 9
 #define GRID_MAX_OBJECTS GRID_ROWS * GRID_COLS
 static lv_obj_t *focusable_objects[GRID_MAX_OBJECTS];
 
@@ -38,6 +38,8 @@ char g_button_labelAuto[32]    = "触控对焦";
 // char g_button_labelBeau1[32]   = "";
 // char g_button_labelBeau2[32]   = "美白";
 char g_button_labelflash[32]   = "关闭";
+char g_sysbtn_labelcursor[32]  = "关闭";
+
 char g_button_labelFace[32] = {0};
 char g_button_labelSmile[32] = {0};
 extern char g_button_labelRes[32];
@@ -314,6 +316,10 @@ static void screen_TakePhotoSetting_All_btn_event_handler(lv_event_t *e)
                         {
                             ui_load_scr_animation(&g_ui, &g_ui.page_shootingmode.shoot_scr, 1, NULL, photoMenu_ShootingMode, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
                         }; break;
+                        case PHOTO_CURSOR: // 光标
+                        {
+                            ui_load_scr_animation(&g_ui, &obj_sysMenu_cursor_s, 1, NULL, photoMenu_Cursor, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
+                        }; break;
                             // case PHOTO_AUTOFOCUS: //自动对焦
                             // {
                             //     ui_load_scr_animation(&g_ui, &g_ui.page_autofocus.auto_scr,
@@ -421,6 +427,10 @@ static void photomenu_setting_click_callback(lv_obj_t *obj)
                 case PHOTO_SHOOTMODE: // 连拍
                 {
                     ui_load_scr_animation(&g_ui, &g_ui.page_shootingmode.shoot_scr, 1, NULL, photoMenu_ShootingMode, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
+                }; break;
+                case PHOTO_CURSOR: // 光标
+                {
+                    ui_load_scr_animation(&g_ui, NULL, 1, NULL, photoMenu_Cursor, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
                 }; break;
                 // case PHOTO_AUTOFOCUS: //自动对焦
                 // {
@@ -533,7 +543,7 @@ void photoMenu_Setting(lv_ui_t *ui)
 
     lv_obj_t *modephoto_btn_bg = lv_button_create(MenuSetting->cont_top);
     lv_obj_align(modephoto_btn_bg, LV_ALIGN_LEFT_MID, 90, 0);
-    lv_obj_set_size(modephoto_btn_bg, 30, 30);
+    lv_obj_set_size(modephoto_btn_bg, 36, 36);
     lv_obj_set_style_bg_color(modephoto_btn_bg, lv_color_hex(0x020524), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_all(modephoto_btn_bg, 0, LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(modephoto_btn_bg, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -561,6 +571,7 @@ void photoMenu_Setting(lv_ui_t *ui)
                                 str_language_delay[get_curr_language()],
                                 str_language_burst_shot[get_curr_language()],
                                 str_language_quality[get_curr_language()],
+                                str_language_cursor[get_curr_language()],
                                 };
 
     const char* btn_img[] = { 
@@ -571,7 +582,8 @@ void photoMenu_Setting(lv_ui_t *ui)
         "曝光.png",
         "延时_menu.png",
         "连拍_menu.png",
-        "画质.png", };
+        "画质.png",
+        "光标.png", };
 
     static lv_point_precise_t line_points_pool[sizeof(btn_labels) / sizeof(btn_labels[0])][2];
 
@@ -658,6 +670,9 @@ void photoMenu_Setting(lv_ui_t *ui)
                 break;
             case PHOTO_PICQUAL: // 画质
                 lv_label_set_text(value_label, get_localized_string(i));
+                break;
+            case PHOTO_CURSOR: // 光标
+                lv_label_set_text(value_label, g_sysbtn_labelcursor);
                 break;
         }
     }

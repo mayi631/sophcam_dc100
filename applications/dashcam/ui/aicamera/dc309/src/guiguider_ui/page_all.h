@@ -28,6 +28,7 @@ extern "C" {
 #include "page_photomenu_beauty.h"
 #include "page_photomenu_aimode.h"
 #include "page_photomenu_flash.h"
+#include "page_photomenu_cursor.h"
 
 // 录像设置
 #include "page_vediomenu_setting.h"

@@ -557,6 +557,15 @@ void Home_Vedio(lv_ui_t *ui)
     lv_obj_add_event_cb(imgbtn_zoomin, photo_zoom_event_cb, LV_EVENT_ALL, (void *)(intptr_t)1);
 
 
+    if (get_curr_cursor() != 0) {
+        lv_obj_t *cursor = lv_img_create(obj_vedio_s);
+        lv_obj_set_size(cursor, 180, 180);
+        lv_obj_align(cursor, LV_ALIGN_CENTER, 0, 0);
+        lv_obj_set_style_pad_all(cursor, 0, LV_STATE_DEFAULT);
+        extern const char *cursor_image_array[];
+        show_image(cursor, cursor_image_array[get_curr_cursor()]);
+    }
+
     // menu
     lv_obj_t *img_menu = lv_imagebutton_create(obj_vedio_s);
     lv_obj_align(img_menu, LV_ALIGN_BOTTOM_LEFT, 6, 0);

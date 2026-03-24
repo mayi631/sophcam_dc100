@@ -61,6 +61,18 @@ static bool is_photo_back = true;
 
 const char *batter_image_big[] = {"充电.png", "电池1.png", "电池2.png", "电池满.png"};
 char *red_light_image_level[] = {"IR  1.png", "IR 2.png", "IR 3.png", "IR 4.png","IR 5.png", "IR 6.png", "IR 7.png"};
+
+// 光标图片数组 [光标类型][颜色: 0=Green, 1=Red, 2=Yellow]
+const char *cursor_image_array[] = {
+    "Icon_1_cross_Green.png", "Icon_1_cross_Red.png", "Icon_1_cross_Yellow.png",
+    "Icon_2_cross_Green.png", "Icon_2_cross_Red.png", "Icon_2_cross_Yellow.png",
+    "Icon_3_cross_Green.png", "Icon_3_cross_RED.png", "Icon_3_cross_Yellow.png",
+    "Icon_4_cross_Green.png", "Icon_4_cross_RED.png", "Icon_4_cross_Yellow.png",
+    "Icon_5_cross_Green.png", "Icon_5_cross_Red.png", "Icon_5_cross_Yellow.png",
+    "Icon_6_cross_Green.png", "Icon_6_cross_Red.png", "Icon_6_cross_Yellow.png",
+    "Icon_7_cross_Green.png", "Icon_7_cross_Red.png", "Icon_7_cross_Yellow.png",
+    "Icon_8_cross_Green.png", "Icon_8_cross_Red.png", "Icon_8_cross_Yellow.png",
+};
 static lv_obj_t *g_top_controls[7];  // 存储顶部控件对象
 
 static lv_timer_t *g_zoom_longpress_timer = NULL;  // 长按定时器
@@ -700,6 +712,13 @@ void Home_Photo(lv_ui_t *ui)
     show_image(imgbtn_zoomin, "W.png");
     lv_obj_add_event_cb(imgbtn_zoomin, photo_zoom_event_cb, LV_EVENT_ALL, (void *)(intptr_t)1);
 
+    if (get_curr_cursor() != 0) {
+        lv_obj_t *cursor = lv_img_create(Home_Photo_Item->photoscr);
+        lv_obj_set_size(cursor, 180, 180);
+        lv_obj_align(cursor, LV_ALIGN_CENTER, 0, 0);
+        lv_obj_set_style_pad_all(cursor, 0, LV_STATE_DEFAULT);
+        show_image(cursor, cursor_image_array[get_curr_cursor()]);
+    }
 
     // 菜单按钮
     Home_Photo_Item->img_menu = lv_imagebutton_create(Home_Photo_Item->photoscr);

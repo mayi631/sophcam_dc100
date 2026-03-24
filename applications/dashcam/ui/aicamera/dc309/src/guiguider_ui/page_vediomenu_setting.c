@@ -37,6 +37,7 @@ extern char g_button_labelPho[32];           //滤镜特效
 char g_vediobtn_labelSharpness[32] = "普通"; //锐度
 extern char g_vediobtn_labelRes[32];         //分辨率
 extern char g_button_labelSen[32];           //感光度
+extern char g_sysbtn_labelcursor[32];       //光标
 struct button_setting {
     const char *button_name;//名称 
     const char *button_label;//右侧标签
@@ -52,6 +53,7 @@ struct button_setting vedio_button_settings[] = {
     { "曝光", g_button_labelExp, "曝光.png" },
     { "白平衡", g_button_labelWhi, "白平衡.png" },
     { "锐度", g_vediobtn_labelSharpness, "锐化.png" },
+    {"光标", g_sysbtn_labelcursor, "光标.png" },
 };
 
 #define VEDIO_BUTTON_COUNT (sizeof(vedio_button_settings) / sizeof(vedio_button_settings[0]))
@@ -66,6 +68,7 @@ void video_language_setting(void)
     vedio_button_settings[VEDIO_EXPOSE].button_name = str_language_exposure[get_curr_language()];
     vedio_button_settings[VEDIO_WHITE_BLA].button_name = str_language_white_balance[get_curr_language()];
     vedio_button_settings[VEDIO_SHARPNESS].button_name = str_language_sharpness[get_curr_language()];
+    vedio_button_settings[VEDIO_CURSOR].button_name = str_language_cursor[get_curr_language()];
 }
 
 static const char* get_localized_string(uint8_t index) {
@@ -111,6 +114,7 @@ static const char* get_localized_string(uint8_t index) {
         g_button_labelExp,
         g_button_labelWhi,
         g_vediobtn_labelSharpness,
+        g_sysbtn_labelcursor,
     };
 
     // 检查索引是否在有效范围内
@@ -270,6 +274,9 @@ static void ALL_Select_Item_event_handler(lv_event_t *e)
                             ui_load_scr_animation(&g_ui, &g_ui.page_sensitivity.iso_scr,
                                 g_ui.screen_SettingSensitivity_del, NULL,photoMenu_Sensitivity, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
                             break;
+                        case VEDIO_CURSOR: // 光标
+                            ui_load_scr_animation(&g_ui, &obj_sysMenu_cursor_s, 1, NULL, photoMenu_Cursor, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
+                            break;
                     }
                 }
             }
@@ -321,6 +328,9 @@ static void vedioMenu_setting_click_callback(lv_obj_t *obj)
                 case VEDIO_ISO: // 感光度
                     ui_load_scr_animation(&g_ui, &g_ui.page_sensitivity.iso_scr,
                         g_ui.screen_SettingSensitivity_del, NULL,photoMenu_Sensitivity, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
+                    break;
+                case VEDIO_CURSOR: // 光标
+                    ui_load_scr_animation(&g_ui, &obj_sysMenu_cursor_s, 1, NULL, photoMenu_Cursor, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
                     break;
                 }
         }
@@ -394,7 +404,7 @@ void vedioMenu_Setting(lv_ui_t *ui)
     // 录像模式
     lv_obj_t* modephoto_btn_bg = lv_button_create(cont_top);
     lv_obj_align(modephoto_btn_bg, LV_ALIGN_LEFT_MID, 90, 0);
-    lv_obj_set_size(modephoto_btn_bg, 30, 30);
+    lv_obj_set_size(modephoto_btn_bg, 36, 36);
     lv_obj_set_style_pad_all(modephoto_btn_bg, 0, LV_STATE_DEFAULT);
     // Write style for btn_menusettingback, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
     lv_obj_set_style_bg_opa(modephoto_btn_bg, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -496,6 +506,9 @@ void vedioMenu_Setting(lv_ui_t *ui)
                 break;
             case VEDIO_EFFECT: // 特效选择
                 lv_label_set_text(value_label, get_localized_string(i));
+                break;
+            case VEDIO_CURSOR: // 光标
+                lv_label_set_text(value_label, g_sysbtn_labelcursor);
                 break;
         }
     }

@@ -84,9 +84,11 @@ static char *recognize_image(const char *image_path)
     int ret;
     image_recognizer_t *recognizer;
 
+    char prompt[200] = {0};
+    extern char g_sysbtn_labelLanguage[32];
+    snprintf(prompt, sizeof(prompt), "用50字左右的%s语言介绍一下这张图,注意抓关键信息\n",g_sysbtn_labelLanguage);
     recognizer = image_recognizer_create(IMAGE_RECOGNIZE_MODEL_NAME, IMAGE_RECOGNIZE_API_KEY, IMAGE_RECOGNIZE_BASE_URL);
-    ret        = image_recognizer_from_file(recognizer, image_path, "用50字左右介绍一下这张图，注意抓关键信息",
-                                            recognize_result, sizeof(recognize_result));
+    ret = image_recognizer_from_file(recognizer, image_path, prompt,recognize_result, sizeof(recognize_result));
     if(ret != 0) MLOG_ERR("图像识别失败: %s\n", image_recognizer_get_error_string(ret));
     image_recognizer_destroy(recognizer);
 

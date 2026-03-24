@@ -20,6 +20,7 @@ typedef enum {
     VEDIO_EXPOSE,
     VEDIO_WHITE_BLA,
     VEDIO_SHARPNESS,
+    VEDIO_CURSOR,
 } Vedio_Select_Item_e;
 
 void vedioMenu_Setting(lv_ui_t *ui);

@@ -289,22 +289,18 @@ void sysMenu_Setting(lv_ui_t *ui)
     lv_obj_add_style(label_menuback, &style_common_label_back, LV_PART_MAIN | LV_STATE_DEFAULT);
     //系统设置
     // 设置模式
-    lv_obj_t* btn_setting = lv_button_create(cont_top);
-    lv_obj_set_pos(btn_setting, 90, 10);
-    lv_obj_set_size(btn_setting, 40, 40);
-    lv_obj_set_style_pad_all(btn_setting, 0, LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(btn_setting, lv_color_hex(0x00A9F7), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(btn_setting, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_width(btn_setting, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_radius(btn_setting, 6, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_shadow_width(btn_setting, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_t *modebtn_bg = lv_button_create(cont_top);
+    lv_obj_align(modebtn_bg, LV_ALIGN_LEFT_MID, 90, 0);
+    lv_obj_set_size(modebtn_bg, 36, 36);
+    lv_obj_set_style_bg_color(modebtn_bg, lv_color_hex(0x020524), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_all(modebtn_bg, 0, LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(modebtn_bg, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(modebtn_bg, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(modebtn_bg, 6, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(modebtn_bg, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(modebtn_bg, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+    show_image(modebtn_bg, "设置_menu.png");
 
-    lv_obj_t *label_setting = lv_label_create(btn_setting);
-    lv_obj_align(label_setting, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_width(label_setting, LV_PCT(100));
-    lv_obj_set_style_text_align(label_setting, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_label_set_text(label_setting, "" LV_SYMBOL_SETTINGS "");
-    lv_obj_add_style(label_setting, &style_common_label_back, LV_PART_MAIN | LV_STATE_DEFAULT);
     // 创建设置选项容器 - 使用flex布局
     sysSettings_cont_s = lv_obj_create(obj_sysMenu_Setting_s);
     lv_obj_add_style(sysSettings_cont_s, &style_common_cont_setting, LV_PART_MAIN | LV_STATE_DEFAULT);
