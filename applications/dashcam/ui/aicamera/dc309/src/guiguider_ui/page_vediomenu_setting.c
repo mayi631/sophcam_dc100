@@ -47,7 +47,7 @@ struct button_setting vedio_button_settings[] = {
     {"颜色特效", g_button_labelPho, "颜色特效_menu.png" },
     { "分辨率", g_vediobtn_labelRes, "分辨率.png" },
     {"摄影模式", g_vediobtn_labelGraphy, "摄影.png" },
-    {"缩时录像", "", "索时摄影.png" },
+    // {"缩时录像", "", "索时摄影.png" },
     {"感光度", g_button_labelSen, "iso_菜单.png" },
     { "曝光", g_button_labelExp, "曝光.png" },
     { "白平衡", g_button_labelWhi, "白平衡.png" },
@@ -61,7 +61,7 @@ void video_language_setting(void)
     vedio_button_settings[VEDIO_EFFECT].button_name = str_language_color_effect[get_curr_language()];
     vedio_button_settings[VEDIO_RES].button_name = str_language_resolution[get_curr_language()];
     vedio_button_settings[VEDIO_GRAPHY].button_name = str_language_photography[get_curr_language()];
-    vedio_button_settings[VEDIO_LAPSE_TIME].button_name = str_language_timelapse_photography[get_curr_language()];
+    // vedio_button_settings[VEDIO_LAPSE_TIME].button_name = str_language_timelapse_photography[get_curr_language()];
     vedio_button_settings[VEDIO_ISO].button_name = str_language_iso[get_curr_language()];
     vedio_button_settings[VEDIO_EXPOSE].button_name = str_language_exposure[get_curr_language()];
     vedio_button_settings[VEDIO_WHITE_BLA].button_name = str_language_white_balance[get_curr_language()];
@@ -106,7 +106,7 @@ static const char* get_localized_string(uint8_t index) {
         g_button_labelPho,
         g_vediobtn_labelRes,
         g_vediobtn_labelGraphy, 
-        g_vediobtn_labelTimelapse,
+        // g_vediobtn_labelTimelapse,
         g_button_labelSen,
         g_button_labelExp,
         g_button_labelWhi,
@@ -246,15 +246,6 @@ static void ALL_Select_Item_event_handler(lv_event_t *e)
                                                   LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
 
                             break;
-                        case VEDIO_LAPSE_TIME: // 缩时
-                            if (strcmp(g_vediobtn_labelGraphy, str_language_normal[get_curr_language()]) == 0) {
-                                MLOG_DBG("非缩时摄影模式，不支持设置\n");
-                                return;
-                            }
-                            ui_load_scr_animation(&g_ui, &obj_Vedio_TimeLapse_s, 1, NULL, vedioMenuSetting_Lapse,
-                                                  LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
-
-                            break;
                         case VEDIO_EXPOSE: // 曝光
                             ui_load_scr_animation(&g_ui, &g_ui.page_exposure.expos_scr, g_ui.screen_SettingExposure_del,
                                                   NULL, photoMenu_Exposure, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
@@ -306,11 +297,7 @@ static void vedioMenu_setting_click_callback(lv_obj_t *obj)
                                           LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
 
                     break;
-                case VEDIO_LAPSE_TIME: // 缩时
-                    ui_load_scr_animation(&g_ui, &obj_Vedio_TimeLapse_s, 1, NULL, vedioMenuSetting_Lapse,
-                                          LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
 
-                    break;
                 case VEDIO_EXPOSE: // 曝光
                     ui_load_scr_animation(&g_ui, &g_ui.page_exposure.expos_scr, g_ui.screen_SettingExposure_del,
                                           NULL, photoMenu_Exposure, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
@@ -494,9 +481,6 @@ void vedioMenu_Setting(lv_ui_t *ui)
                 break;
             case VEDIO_GRAPHY: // 摄影
                 lv_label_set_text(value_label,  get_localized_string(i));
-                break;
-            case VEDIO_LAPSE_TIME: // 缩时录影
-                lv_label_set_text(value_label, "");
                 break;
             case VEDIO_ISO: // 曝光
                 lv_label_set_text(value_label, get_localized_string(i));

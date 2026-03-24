@@ -388,7 +388,7 @@ void timeLapse_Set_focusColor(void)
 static void timeLapse_Del_Complete_anim_cb(lv_anim_t* a)
 {
     delete_kb_ta_cb();
-    ui_load_scr_animation(&g_ui, &obj_vedioMenu_s, 1, NULL, vedioMenu_Setting, LV_SCR_LOAD_ANIM_NONE, 0, 0, false,
+    ui_load_scr_animation(&g_ui, &obj_Vedio_Graphy_s, 1, NULL, vedioMenu_Graphy, LV_SCR_LOAD_ANIM_NONE, 20, 20, false,
         true);
 }
 
@@ -676,7 +676,7 @@ static void vedioTimeLapse_btn_back_event_handler(lv_event_t *e)
     switch(code) {
         case LV_EVENT_CLICKED: {
             delete_kb_ta_cb();
-            ui_load_scr_animation(&g_ui, &obj_vedioMenu_s, 1, NULL, vedioMenu_Setting, LV_SCR_LOAD_ANIM_NONE, 0, 0,
+            ui_load_scr_animation(&g_ui, &obj_Vedio_Graphy_s, 1, NULL, vedioMenu_Graphy, LV_SCR_LOAD_ANIM_NONE, 20, 20,
                                   false, true);
             break;
         }
@@ -758,7 +758,7 @@ static void vedioTimeLapse_menu_callback(void)
 {
     MLOG_DBG("vedioTimeLapse_menu_callback\n");
     delete_kb_ta_cb();
-    ui_load_scr_animation(&g_ui, &obj_vedioMenu_s, 1, NULL, vedioMenu_Setting, LV_SCR_LOAD_ANIM_NONE, 0, 0,
+    ui_load_scr_animation(&g_ui, &obj_Vedio_Graphy_s, 1, NULL, vedioMenu_Graphy, LV_SCR_LOAD_ANIM_NONE, 20, 20,
         false, true);
 }
 
@@ -773,8 +773,8 @@ static void gesture_event_handler(lv_event_t *e)
             switch(dir) {
                 case LV_DIR_RIGHT: {
                     delete_kb_ta_cb();
-                    ui_load_scr_animation(&g_ui, &obj_vedioMenu_s, 1, NULL, vedioMenu_Setting, LV_SCR_LOAD_ANIM_NONE, 0,
-                                          0, false, true);
+                    ui_load_scr_animation(&g_ui, &obj_Vedio_Graphy_s, 1, NULL, vedioMenu_Graphy, LV_SCR_LOAD_ANIM_NONE, 20,
+                                          20, false, true);
                 }
                 default: break;
             }

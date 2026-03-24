@@ -18,6 +18,7 @@ typedef enum {
     PHOTO_DELAY,     // 自拍时间
     PHOTO_SHOOTMODE, // 拍摄模式
     PHOTO_PICQUAL,   // 画质
+    PHOTO_CURSOR,   // 光标
     // PHOTO_ANTISHAKE, // 防抖
     // PHOTO_AUTOFOCUS, // 自动对焦功能
     // PHOTO_FACEDEC,   // 人脸侦测功能

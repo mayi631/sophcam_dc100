@@ -102,32 +102,32 @@ static void update_top_controls_simple(void)
     
     // 1. 相机模式按钮
     lv_obj_set_pos(ui->page_photo.img_mode, x_pos, 0);
-    x_pos += 74 + 14;
+    x_pos += 76 + 14;
     
     // 2. 分辨率按钮
     lv_obj_set_pos(g_top_controls[0], x_pos, 4);
-    x_pos += 38 + 14;
+    x_pos += 40 + 14;
     
     // 3. 红光亮级按钮
     if (brightness_level > 0) {
         lv_obj_clear_flag(ui->page_photo.redlight_level, LV_OBJ_FLAG_HIDDEN);
         lv_obj_set_pos(ui->page_photo.redlight_level, x_pos, 4);
-        x_pos += 38 + 14;
+        x_pos += 40 + 14;
     } else {
         lv_obj_add_flag(ui->page_photo.redlight_level, LV_OBJ_FLAG_HIDDEN);
     }
     
     // 4. ISO级别按钮
     lv_obj_set_pos(g_top_controls[1], x_pos, 4);
-    x_pos += 38 + 14;
+    x_pos += 40 + 14;
     
     // 5. 屏幕亮度按钮
     lv_obj_set_pos(g_top_controls[2], x_pos, 4);
-    x_pos += 38 + 14;
+    x_pos += 40 + 14;
     
     // 6. 连拍按钮
     lv_obj_set_pos(g_top_controls[3], x_pos, 4);
-    x_pos += 38 + 14;
+    x_pos += 40 + 14;
     
     // 7. 延时拍摄按钮
     lv_obj_set_pos(g_top_controls[4], x_pos, 4);
@@ -613,7 +613,7 @@ void Home_Photo(lv_ui_t *ui)
     
     // 相机模式按钮
     Home_Photo_Item->img_mode = lv_imagebutton_create(Home_Photo_Item->photoscr);
-    lv_obj_set_size(Home_Photo_Item->img_mode, 74, 47);
+    lv_obj_set_size(Home_Photo_Item->img_mode, 76, 50);
     show_image(Home_Photo_Item->img_mode, "paizhaompshi.png");
     
     // 分辨率按钮
@@ -690,13 +690,13 @@ void Home_Photo(lv_ui_t *ui)
     //缩放
     lv_obj_t *imgbtn_zoomout = lv_imagebutton_create(Home_Photo_Item->photoscr);
     lv_obj_align(imgbtn_zoomout, LV_ALIGN_LEFT_MID, 12, -42);
-    lv_obj_set_size(imgbtn_zoomout, 38, 38);
+    lv_obj_set_size(imgbtn_zoomout, 42, 42);
     show_image(imgbtn_zoomout, "T.png");
     lv_obj_add_event_cb(imgbtn_zoomout, photo_zoom_event_cb, LV_EVENT_ALL, (void *)(intptr_t)2);
 
     lv_obj_t *imgbtn_zoomin = lv_imagebutton_create(Home_Photo_Item->photoscr);
     lv_obj_align(imgbtn_zoomin, LV_ALIGN_LEFT_MID, 12, 42);
-    lv_obj_set_size(imgbtn_zoomin, 38, 38);
+    lv_obj_set_size(imgbtn_zoomin, 42, 42);
     show_image(imgbtn_zoomin, "W.png");
     lv_obj_add_event_cb(imgbtn_zoomin, photo_zoom_event_cb, LV_EVENT_ALL, (void *)(intptr_t)1);
 
@@ -704,13 +704,13 @@ void Home_Photo(lv_ui_t *ui)
     // 菜单按钮
     Home_Photo_Item->img_menu = lv_imagebutton_create(Home_Photo_Item->photoscr);
     lv_obj_align(Home_Photo_Item->img_menu, LV_ALIGN_BOTTOM_LEFT, 6, 0);
-    lv_obj_set_size(Home_Photo_Item->img_menu, 40, 40);
+    lv_obj_set_size(Home_Photo_Item->img_menu, 42, 42);
     show_image(Home_Photo_Item->img_menu, "menu.png");
 
     // 滤镜
     lv_obj_t *btn_effect = lv_button_create(Home_Photo_Item->photoscr);
     lv_obj_align(btn_effect, LV_ALIGN_BOTTOM_LEFT, 60,0);
-    lv_obj_set_size(btn_effect, 40, 40);
+    lv_obj_set_size(btn_effect, 42, 42);
     lv_obj_set_style_bg_opa(btn_effect, 0, LV_PART_MAIN | LV_STATE_DEFAULT); // 透明背景
     lv_obj_set_style_pad_all(btn_effect, 0, LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(btn_effect, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -718,7 +718,7 @@ void Home_Photo(lv_ui_t *ui)
     lv_obj_add_event_cb(btn_effect, photoEffect_Select_event_cb, LV_EVENT_CLICKED, NULL);
 
     img_effect_s = lv_img_create(btn_effect);
-    lv_obj_set_size(img_effect_s, 40, 40);
+    lv_obj_set_size(img_effect_s, 42, 42);
     lv_obj_align(img_effect_s, LV_ALIGN_CENTER, 0, 0);
     lv_obj_set_style_pad_all(img_effect_s, 0, LV_STATE_DEFAULT);
     show_image(img_effect_s, "颜色特效.png");
@@ -745,13 +745,13 @@ void Home_Photo(lv_ui_t *ui)
     //相册
     Home_Photo_Item->img_album = lv_imagebutton_create(Home_Photo_Item->photoscr);
     lv_obj_align(Home_Photo_Item->img_album, LV_ALIGN_BOTTOM_RIGHT, -80, 0);
-    lv_obj_set_size(Home_Photo_Item->img_album, 40, 40);
+    lv_obj_set_size(Home_Photo_Item->img_album, 42, 42);
     show_image(Home_Photo_Item->img_album, "photo_album.png");
 
     // 退出按钮
     Home_Photo_Item->img_exit = lv_imagebutton_create(Home_Photo_Item->photoscr);
     lv_obj_align(Home_Photo_Item->img_exit, LV_ALIGN_BOTTOM_RIGHT, -6, -6);
-    lv_obj_set_size(Home_Photo_Item->img_exit, 41, 40);
+    lv_obj_set_size(Home_Photo_Item->img_exit, 42, 42);
     show_image(Home_Photo_Item->img_exit, "exit.png");
 
     // 时间

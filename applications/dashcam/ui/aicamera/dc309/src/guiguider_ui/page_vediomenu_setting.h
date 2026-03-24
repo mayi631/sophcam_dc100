@@ -15,7 +15,7 @@ typedef enum {
     VEDIO_RES,
     // VEDIO_BEAUTY,
     VEDIO_GRAPHY,
-    VEDIO_LAPSE_TIME,
+    // VEDIO_LAPSE_TIME,
     VEDIO_ISO,
     VEDIO_EXPOSE,
     VEDIO_WHITE_BLA,

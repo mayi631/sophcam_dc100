@@ -154,20 +154,20 @@ static void update_video_top_controls_layout(void)
     if (g_video_top_controls[0] && lv_obj_is_valid(g_video_top_controls[0])) {
         lv_obj_set_pos(g_video_top_controls[0], x_pos, 0);
     }
-    x_pos += 74 + 14;
+    x_pos += 76 + 14;
     
     // 2. 分辨率按钮 (38x32)
     if (g_video_top_controls[1] && lv_obj_is_valid(g_video_top_controls[1])) {
         lv_obj_set_pos(g_video_top_controls[1], x_pos, 4);
     }
-    x_pos += 38 + 14;
+    x_pos += 40 + 14;
     
     // 3. 红光亮级按钮 (38x32)
     if (g_video_top_controls[2] && lv_obj_is_valid(g_video_top_controls[2])) {
         if (brightness_level > 0) {
             lv_obj_clear_flag(g_video_top_controls[2], LV_OBJ_FLAG_HIDDEN);
             lv_obj_set_pos(g_video_top_controls[2], x_pos, 4);
-            x_pos += 38 + 14;
+            x_pos += 40 + 14;
         } else {
             lv_obj_add_flag(g_video_top_controls[2], LV_OBJ_FLAG_HIDDEN);
         }
@@ -177,7 +177,7 @@ static void update_video_top_controls_layout(void)
     if (g_video_top_controls[3] && lv_obj_is_valid(g_video_top_controls[3])) {
         lv_obj_set_pos(g_video_top_controls[3], x_pos, 4);
     }
-    x_pos += 38 + 14;
+    x_pos += 40 + 14;
     
     // 5. 屏幕亮度按钮
     if (g_video_top_controls[4] && lv_obj_is_valid(g_video_top_controls[4])) {
@@ -477,7 +477,7 @@ void Home_Vedio(lv_ui_t *ui)
 
     // 录像模式按钮
     g_video_top_controls[0] = lv_imagebutton_create(obj_vedio_s);
-    lv_obj_set_size(g_video_top_controls[0], 74, 47);
+    lv_obj_set_size(g_video_top_controls[0], 76, 50);
     show_image(g_video_top_controls[0], "shexiangmoshi.png");
     lv_obj_add_event_cb(g_video_top_controls[0], buttonVedio_All_event_handler, LV_EVENT_CLICKED, (void *)(intptr_t)2);
 
@@ -546,13 +546,13 @@ void Home_Vedio(lv_ui_t *ui)
     //缩放
     lv_obj_t *imgbtn_zoomout = lv_imagebutton_create(obj_vedio_s);
     lv_obj_align(imgbtn_zoomout, LV_ALIGN_LEFT_MID, 12, -42);
-    lv_obj_set_size(imgbtn_zoomout, 38, 38);
+    lv_obj_set_size(imgbtn_zoomout, 42, 42);
     show_image(imgbtn_zoomout, "T.png");
     lv_obj_add_event_cb(imgbtn_zoomout, photo_zoom_event_cb, LV_EVENT_ALL, (void *)(intptr_t)2);
 
     lv_obj_t *imgbtn_zoomin = lv_imagebutton_create(obj_vedio_s);
     lv_obj_align(imgbtn_zoomin, LV_ALIGN_LEFT_MID, 12, 42);
-    lv_obj_set_size(imgbtn_zoomin, 38, 38);
+    lv_obj_set_size(imgbtn_zoomin, 42, 42);
     show_image(imgbtn_zoomin, "W.png");
     lv_obj_add_event_cb(imgbtn_zoomin, photo_zoom_event_cb, LV_EVENT_ALL, (void *)(intptr_t)1);
 
@@ -560,14 +560,14 @@ void Home_Vedio(lv_ui_t *ui)
     // menu
     lv_obj_t *img_menu = lv_imagebutton_create(obj_vedio_s);
     lv_obj_align(img_menu, LV_ALIGN_BOTTOM_LEFT, 6, 0);
-    lv_obj_set_size(img_menu, 40, 40);
+    lv_obj_set_size(img_menu, 42, 42);
     show_image(img_menu, "menu.png");
     lv_obj_add_event_cb(img_menu, buttonVedio_All_event_handler, LV_EVENT_CLICKED, (void *)(intptr_t)1);
     
     // 滤镜
     lv_obj_t *btn_effect = lv_button_create(obj_vedio_s);
     lv_obj_align(btn_effect, LV_ALIGN_BOTTOM_LEFT, 60,0);
-    lv_obj_set_size(btn_effect, 40, 40);
+    lv_obj_set_size(btn_effect, 42, 42);
     lv_obj_set_style_bg_opa(btn_effect, 0, LV_PART_MAIN | LV_STATE_DEFAULT); // 透明背景
     lv_obj_set_style_pad_all(btn_effect, 0, LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(btn_effect, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -575,7 +575,7 @@ void Home_Vedio(lv_ui_t *ui)
     lv_obj_add_event_cb(btn_effect, vedioEffect_Select_event_cb, LV_EVENT_CLICKED, NULL);
 
     img_effect_s = lv_img_create(btn_effect);
-    lv_obj_set_size(img_effect_s, 40, 40);
+    lv_obj_set_size(img_effect_s, 42, 42);
     lv_obj_align(img_effect_s, LV_ALIGN_CENTER, 0, 0);
     lv_obj_set_style_pad_all(img_effect_s, 0, LV_STATE_DEFAULT);
     show_image(img_effect_s, "颜色特效.png");
@@ -593,7 +593,7 @@ void Home_Vedio(lv_ui_t *ui)
 
     lv_obj_t *album = lv_imagebutton_create(obj_vedio_s);
     lv_obj_align(album, LV_ALIGN_BOTTOM_RIGHT, -80, 0);
-    lv_obj_set_size(album, 40, 40);
+    lv_obj_set_size(album, 42, 42);
     show_image(album, "photo_album.png");
     lv_obj_add_event_cb(album, buttonVedio_All_event_handler, LV_EVENT_CLICKED, (void *)(intptr_t)4);
 
@@ -601,7 +601,7 @@ void Home_Vedio(lv_ui_t *ui)
     // 退出按钮
     lv_obj_t *img_exit = lv_imagebutton_create(obj_vedio_s);
     lv_obj_align(img_exit, LV_ALIGN_BOTTOM_RIGHT, -6, -6);
-    lv_obj_set_size(img_exit, 41, 40);
+    lv_obj_set_size(img_exit, 42, 42);
     show_image(img_exit, "exit.png");
     lv_obj_add_event_cb(img_exit, buttonVedio_All_event_handler, LV_EVENT_CLICKED, (void *)(intptr_t)3);
     

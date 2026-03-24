@@ -167,7 +167,15 @@ static void vedioGraphysetting_btn_event_handler(lv_event_t *e)
                     lv_obj_set_style_border_color(lv_obj_get_child(parent, i), lv_color_hex(0xCCCCCC), LV_PART_MAIN);
                 }
             }
-            graphy_win_Delete_anim();
+            /* 选择缩时摄影或定时拍照模式后，直接跳转到时间间隔设置页面 */
+            if (strcmp(g_vediobtn_labelGraphy, str_language_timelapse_photography[get_curr_language()]) == 0 ||
+                strcmp(g_vediobtn_labelGraphy, str_language_timed_photo[get_curr_language()]) == 0) {
+                /* 使用与其他跳转一致的页面加载动画 */
+                ui_load_scr_animation(&g_ui, &obj_Vedio_TimeLapse_s, 1, NULL, vedioMenuSetting_Lapse,
+                                      LV_SCR_LOAD_ANIM_NONE, 0, 0, false, true);
+            } else {
+                graphy_win_Delete_anim();
+            }
             break;
         }
         default: break;
@@ -196,7 +204,15 @@ static void vedioMenu_graphy_click_callback(lv_obj_t *obj)
             lv_obj_set_style_border_color(lv_obj_get_child(parent, i), lv_color_hex(0xCCCCCC), LV_PART_MAIN);
         }
     }
-    graphy_win_Delete_anim();
+    /* 选择缩时摄影或定时拍照模式后，直接跳转到时间间隔设置页面 */
+    if (strcmp(g_vediobtn_labelGraphy, str_language_timelapse_photography[get_curr_language()]) == 0 ||
+        strcmp(g_vediobtn_labelGraphy, str_language_timed_photo[get_curr_language()]) == 0) {
+        /* 使用与其他跳转一致的页面加载动画 */
+        ui_load_scr_animation(&g_ui, &obj_Vedio_TimeLapse_s, 1, NULL, vedioMenuSetting_Lapse,
+                                      LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
+    } else {
+        graphy_win_Delete_anim();
+    }
 }
 
 
