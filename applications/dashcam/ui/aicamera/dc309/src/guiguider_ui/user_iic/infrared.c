@@ -155,7 +155,7 @@ void led_on(void)
     } else if(is_video_mode == true) {
         event.arg1 = PARAM_MENU_VIDEO_EFFECT;
     }
-    event.arg2 = 1;
+    event.arg2 = 8;
     MODEMNG_SendMessage(&event);
 }
 
