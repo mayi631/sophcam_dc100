@@ -34,7 +34,6 @@ static lv_timer_t* update_result_timer = NULL;
 static lv_timer_t* read_status_timer = NULL;
 
 static lv_obj_t* text_cont = NULL;
-static lv_obj_t* corner_deco = NULL;
 
 static lv_obj_t* voice_man = NULL;
 //重新朗读文本
@@ -47,6 +46,11 @@ static bool s_is_read = false;
 static lv_obj_t* g_preview_page = NULL;      // 成像预览页面
 static lv_obj_t* g_result_page = NULL;       // 知识科普页面
 static lv_obj_t* g_preview_img = NULL;       // 预览大图
+
+// 长按定时器
+static lv_timer_t *g_zoom_longpress_timer = NULL;  // 长按定时器
+static int g_zoom_longpress_dir = 0;               // 长按方向: 0=无, 1=缩小, 2=放大
+static bool g_zoom_longpress_active = false;       // 是否正在长按
 /* 函数声明 */
 // 显示成像预览页面（新）
 static void show_photo_review_page(void);
@@ -79,7 +83,8 @@ static void photo_mode_callback(void);
 
 // UP按键处理回调函数
 static void photo_up_callback(void);
-
+//zoom处理回调函数
+static void photo_zoom_event_cb(lv_event_t *e);
 // ok按键处理回调函数
 static void photo_ok_callback(void);
 //重读
@@ -248,6 +253,141 @@ static void zoomout_key_cb(void)
     }
 }
 
+static void zoom_longpress_timer_cb(lv_timer_t *timer)
+{
+
+    if (page_ai_camera_s == NULL || !lv_obj_is_valid(page_ai_camera_s)) {
+        g_zoom_longpress_active = false;
+        if (g_zoom_longpress_timer != NULL) {
+            lv_timer_del(g_zoom_longpress_timer);
+            g_zoom_longpress_timer = NULL;
+        }
+        return;
+    }
+
+    if (!g_zoom_longpress_active) {
+        lv_timer_del(timer);
+        g_zoom_longpress_timer = NULL;
+        return;
+    }
+    
+    uint32_t new_level = get_zoom_level();
+    MESSAGE_S Msg = {0};
+    bool can_continue = false;
+    
+    switch (g_zoom_longpress_dir) {
+        case 1: // 缩小
+            if (new_level > 1) {
+                new_level--;
+                can_continue = true;
+            }
+            break;
+            
+        case 2: // 放大
+            if (new_level < ZOOM_RADIO_MAX) {
+                new_level++;
+                can_continue = true;
+            }
+            break;
+    }
+    
+    if (can_continue) {
+        set_zoom_level(new_level);
+        new_level = get_zoom_level();
+        
+        Msg.topic = EVENT_MODEMNG_LIVEVIEW_ADJUSTFOCUS;
+        Msg.arg1 = 0;
+        snprintf((char*)Msg.aszPayload, 3, "%d", new_level);
+        MODEMNG_SendMessage(&Msg);
+        update_zoom_bar(new_level);
+        
+        MLOG_DBG("长按缩放: 方向=%d, 等级=%d\n", g_zoom_longpress_dir, new_level);
+    } else {
+        // 达到边界，停止长按
+        g_zoom_longpress_active = false;
+        lv_timer_del(timer);
+        g_zoom_longpress_timer = NULL;
+    }
+}
+
+static void photo_zoom_event_cb(lv_event_t* e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    int click_index = (int)lv_event_get_user_data(e);
+    static uint32_t last_click_time = 0;
+    
+    if (page_ai_camera_s == NULL || !lv_obj_is_valid(page_ai_camera_s)) {
+        g_zoom_longpress_active = false;
+        if (g_zoom_longpress_timer != NULL) {
+            lv_timer_del(g_zoom_longpress_timer);
+            g_zoom_longpress_timer = NULL;
+        }
+        return;
+    }
+
+    switch(code) {
+        case LV_EVENT_PRESSED: {
+            // 立即执行一次缩放
+            uint32_t new_level = get_zoom_level();
+            MESSAGE_S msg = {0};
+            // bool zoom_performed = false;
+            
+            if (click_index == 1 && new_level > 1) { // 缩小
+                new_level--;
+                // zoom_performed = true;
+            } else if (click_index == 2 && new_level < ZOOM_RADIO_MAX) { // 放大
+                new_level++;
+                // zoom_performed = true;
+            }
+            
+            // if (zoom_performed) {
+                set_zoom_level(new_level);
+                new_level = get_zoom_level();
+                
+                msg.topic = EVENT_MODEMNG_LIVEVIEW_ADJUSTFOCUS;
+                msg.arg1 = 0;
+                snprintf((char*)msg.aszPayload, 3, "%d", new_level);
+                MODEMNG_SendMessage(&msg);
+                update_zoom_bar(new_level);
+                
+                MLOG_DBG("缩放按钮按下: 方向=%d, 新等级=%d\n", click_index, new_level);
+            // }
+            
+            // 记录按下时间
+            last_click_time = lv_tick_get();
+            
+            // 启动长按定时器
+            g_zoom_longpress_dir = click_index;
+            g_zoom_longpress_active = true;
+            if (g_zoom_longpress_timer == NULL) {
+                g_zoom_longpress_timer = lv_timer_create(zoom_longpress_timer_cb, 100, NULL);
+            }
+            break;
+        }
+        
+        case LV_EVENT_RELEASED: {
+            // 停止长按
+            g_zoom_longpress_active = false;
+            if (g_zoom_longpress_timer != NULL) {
+                lv_timer_del(g_zoom_longpress_timer);
+                g_zoom_longpress_timer = NULL;
+            }
+            
+            // 计算按下时间
+            uint32_t press_duration = lv_tick_get() - last_click_time;
+            
+            // 如果是短按（小于300ms），不执行额外操作
+            if (press_duration < 300) {
+                MLOG_DBG("短按释放: 持续时间=%dms\n", press_duration);
+            } else {
+                MLOG_DBG("长按释放: 持续时间=%dms\n", press_duration);
+            }
+            break;
+        }
+        default:
+        break;
+    }
+}
 
 /* 创建AI拍照页面 */
 void create_ai_camera_screen(lv_ui_t *ui)
@@ -341,6 +481,20 @@ void create_ai_camera_screen(lv_ui_t *ui)
 
     create_viewfinder(page_ai_camera_s);
     create_zoom_bar(page_ai_camera_s);
+
+    /* 添加T和W缩放按钮 */
+    lv_obj_t *imgbtn_zoomout = lv_imagebutton_create(page_ai_camera_s);
+    lv_obj_align(imgbtn_zoomout, LV_ALIGN_LEFT_MID, 12, -42);
+    lv_obj_set_size(imgbtn_zoomout, 42, 42);
+    show_image(imgbtn_zoomout, "T.png");
+    lv_obj_add_event_cb(imgbtn_zoomout, photo_zoom_event_cb, LV_EVENT_ALL, (void *)(intptr_t)2);
+
+    lv_obj_t *imgbtn_zoomin = lv_imagebutton_create(page_ai_camera_s);
+    lv_obj_align(imgbtn_zoomin, LV_ALIGN_LEFT_MID, 12, 42);
+    lv_obj_set_size(imgbtn_zoomin, 42, 42);
+    show_image(imgbtn_zoomin, "W.png");
+    lv_obj_add_event_cb(imgbtn_zoomin, photo_zoom_event_cb, LV_EVENT_ALL, (void *)(intptr_t)1);
+
     /* 拍照按键处理回调函数 */
     set_current_page_handler(takephoto_key_handler);
     takephoto_register_menu_callback(aiphoto_menu_callback);
@@ -398,7 +552,6 @@ static void cleanup_result_page(void)
     g_result_page = NULL;
     result_desc_label = NULL;
     text_cont = NULL;
-    corner_deco = NULL;
     s_reread_btn = NULL;
     s_reread_label = NULL;
 
@@ -545,7 +698,7 @@ static void show_recognition_result(void)
 
     /* 创建标题 */
     lv_obj_t *title_label = lv_label_create(header);
-    lv_label_set_text(title_label, str_language_recognition_result[get_curr_language()]);
+    lv_label_set_text(title_label, str_language_encyclopedia_doctor[get_curr_language()]);
     lv_obj_set_style_text_font(title_label, get_usr_fonts(ALI_PUHUITI_FONTPATH, MENU_FONT_SIZE), 0);
     lv_obj_set_style_text_color(title_label, lv_color_white(), 0);
     lv_obj_center(title_label);
@@ -603,7 +756,7 @@ static void show_recognition_result(void)
     /* 信纸文本容器 */
     text_cont = lv_obj_create(content);
     lv_obj_set_size(text_cont, 300, LV_PCT(90));
-    lv_obj_align(text_cont, LV_ALIGN_LEFT_MID, 280, 0);
+    lv_obj_align(text_cont, LV_ALIGN_RIGHT_MID, -20, 0);
     lv_obj_set_style_bg_color(text_cont, lv_color_hex(0xF8F5E6), LV_PART_MAIN);
     lv_obj_set_style_bg_opa(text_cont, LV_OPA_COVER, LV_PART_MAIN);
     lv_obj_set_style_border_color(text_cont, lv_color_hex(0xD3C9A1), LV_PART_MAIN);
@@ -642,13 +795,6 @@ static void show_recognition_result(void)
         lv_obj_set_style_line_width(line, 1, LV_PART_MAIN);
         lv_obj_align(line, LV_ALIGN_TOP_LEFT, 0, i * line_height);
     }
-
-    /* 羽毛笔装饰 */
-    corner_deco = lv_img_create(text_cont);
-    show_image(corner_deco, "羽毛笔.png");
-    lv_obj_set_size(corner_deco, 48, 48);
-    lv_obj_align(corner_deco, LV_ALIGN_BOTTOM_RIGHT, -5, -5);
-    lv_obj_set_style_img_opa(corner_deco, LV_OPA_50, LV_PART_MAIN);
 
     /* 音量按钮 */
     lv_obj_t *voice_style_btn = lv_btn_create(header);
@@ -697,12 +843,6 @@ static void delayed_line_adjustment(lv_timer_t *timer)
     if(line_height > 0 && height > 0) {
         int line_count = (height + line_height - 1) / line_height;
         MLOG_DBG("Line count: %d\n", line_count);
-
-        /* 调整羽毛笔位置 */
-        if(height > 300 && corner_deco && lv_obj_is_valid(corner_deco)) {
-            lv_obj_set_pos(corner_deco, 0, line_count * line_height - 40);
-            MLOG_DBG("Feather icon adjusted\n");
-        }
 
         for(int i = 0; i < line_count; i++) {
             lv_obj_t *line = lv_line_create(text_cont);

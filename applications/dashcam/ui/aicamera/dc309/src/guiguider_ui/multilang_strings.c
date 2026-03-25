@@ -720,6 +720,22 @@ const char *str_language_recognition_result[NUM_LANGUAGES] = {
     "Resultado",   // Portugues
 };
 
+const char *str_language_encyclopedia_doctor[NUM_LANGUAGES] = {
+    "百科博士",    // 简体中文
+    "百科博士",    // 繁体中文
+    "百科博士",    // 日语
+    "Wiki Dr",     // 英语
+    "Wiki Dr",     // Polski
+    "Wiki Dr",     // Nederlands
+    "Wiki Dr",     // Deutsch
+    "Wiki Dr",     // Francis
+    "Wiki Dr",     // Espanol
+    "Wiki Dr",     // Italiano
+    "Wiki Dr",     // Turkce
+    "Wiki Dr",     // Pyccknn
+    "Wiki Dr",     // Portugues
+};
+
 const char *str_language_recognizing[NUM_LANGUAGES] = {
     "识别中...",   // 简体中文
     "識別中...",   // 繁体中文

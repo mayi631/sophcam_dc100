@@ -50,6 +50,7 @@ extern const char *str_language_select_voice_tone[NUM_LANGUAGES]; // 选择音�
 extern const char *str_language_image_recognition_failed[NUM_LANGUAGES]; // 图像识别失败
 extern const char *str_language_ai_photo_recognition[NUM_LANGUAGES]; // AI拍照识别
 extern const char *str_language_recognition_result[NUM_LANGUAGES]; // 识别结果
+extern const char *str_language_encyclopedia_doctor[NUM_LANGUAGES]; // 百科博士
 extern const char *str_language_recognizing[NUM_LANGUAGES]; // 正在识别中...
 extern const char *str_language_recognition_failed_please_check_network[NUM_LANGUAGES]; // 识别失败，请检查网络
 extern const char *str_language_net_connect_failed_please_check_network[NUM_LANGUAGES];
