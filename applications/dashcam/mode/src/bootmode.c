@@ -121,6 +121,14 @@ static int32_t MODEMNG_BootStatesSettingMsgProc(MESSAGE_S* pstMsg)
             PARAM_SetMenuParam(0, PARAM_MENU_AO_VOLUME, pstMsg->arg2);
             break;
 
+        case PARAM_MENU_STATUS_LIGHT:
+            PARAM_SetMenuParam(0, PARAM_MENU_STATUS_LIGHT, pstMsg->arg2);
+            break;
+
+        case PARAM_MENU_BRIGHTNESS:
+            PARAM_SetMenuParam(0, PARAM_MENU_BRIGHTNESS, pstMsg->arg2);
+            break;
+
         case PARAM_MENU_DEFAULT:
             s32Ret = MODEMNG_SetDefaultParamFromBin();
             MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "MODEMNG_SetDefaultParamFromBin fail");

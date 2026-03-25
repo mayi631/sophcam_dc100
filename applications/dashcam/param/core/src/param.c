@@ -2625,6 +2625,38 @@ int32_t PARAM_SetAoVolume(int32_t volume)
     return 0;
 }
 
+static int32_t PARAM_SetStatusLight(int32_t Value)
+{
+    PARAM_CONTEXT_S *pstParamCtx = PARAM_GetCtx();
+
+    if (pstParamCtx->bInit != true) {
+        CVI_LOGE("param is not init!\n");
+        return PARAM_ENOTINIT;
+    }
+
+    pthread_mutex_lock(&pstParamCtx->mutexLock);
+    pstParamCtx->pstCfg->Menu.StatusLight.Current = Value;
+    pthread_mutex_unlock(&pstParamCtx->mutexLock);
+
+    return 0;
+}
+
+static int32_t PARAM_SetBrightness(int32_t Value)
+{
+    PARAM_CONTEXT_S *pstParamCtx = PARAM_GetCtx();
+
+    if (pstParamCtx->bInit != true) {
+        CVI_LOGE("param is not init!\n");
+        return PARAM_ENOTINIT;
+    }
+
+    pthread_mutex_lock(&pstParamCtx->mutexLock);
+    pstParamCtx->pstCfg->Menu.Brightness.Current = Value;
+    pthread_mutex_unlock(&pstParamCtx->mutexLock);
+
+    return 0;
+}
+
 int32_t PARAM_SetMenuParam(uint32_t CamId, PARAM_MENU_E MenuItem, int32_t Value)
 {
 
@@ -2736,6 +2768,12 @@ int32_t PARAM_SetMenuParam(uint32_t CamId, PARAM_MENU_E MenuItem, int32_t Value)
             break;
         case PARAM_MENU_AO_VOLUME:
             PARAM_SetAoVolume(Value);
+            break;
+        case PARAM_MENU_STATUS_LIGHT:
+            PARAM_SetStatusLight(Value);
+            break;
+        case PARAM_MENU_BRIGHTNESS:
+            PARAM_SetBrightness(Value);
             break;
         default:
             CVI_LOGE("not menu item\n");

@@ -359,6 +359,8 @@ typedef enum _PARAM_MENU_E {
     PARAM_MENU_ISP_EFFECT,
     PARAM_MENU_AUTO_SCREEN_OFF,
     PARAM_MENU_AO_VOLUME,
+    PARAM_MENU_STATUS_LIGHT,
+    PARAM_MENU_BRIGHTNESS,
     PARAM_MENU_BUIT
 } PARAM_MENU_E;
 
@@ -429,6 +431,8 @@ typedef struct _PARAM_MENU_S {
     PARAM_VALUESET_4X_S IspEffect;
     PARAM_VALUESET_2X_S Language;
     PARAM_VALUESET_S AutoScreenOff;
+    PARAM_VALUESET_S StatusLight;
+    PARAM_VALUESET_S Brightness;
 
     PARAM_USER_MENU_S       UserData;//             bBootFirst;
 } PARAM_MENU_S;

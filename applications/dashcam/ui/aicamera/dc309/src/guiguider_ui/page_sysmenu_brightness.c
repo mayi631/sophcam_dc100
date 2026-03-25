@@ -29,13 +29,13 @@
  extern char g_sysbtn_labellight_level[32];
  // 亮度等级定义
  brightness_level_t brightness_levels[BRIGHTNESS_LEVEL_COUNT] = {
-     {1, 36,  "亮度等级 1"},  // 36/255 ≈ 14%
-     {2, 72,  "亮度等级 2"},  // 72/255 ≈ 28%
-     {3, 108, "亮度等级 3"},  // 108/255 ≈ 42%
-     {4, 160, "亮度等级 4"},  // 160/255 ≈ 62%
-     {5, 180, "亮度等级 5"},  // 180/255 ≈ 71%
-     {6, 216, "亮度等级 6"},  // 216/255 ≈ 85%
-     {7, 252, "亮度等级 7"},  // 252/255 ≈ 99%
+     {1, 36,  "level 1"},  // 36/255 ≈ 14%
+     {2, 72,  "level 2"},  // 72/255 ≈ 28%
+     {3, 108, "level 3"},  // 108/255 ≈ 42%
+     {4, 160, "level 4"},  // 160/255 ≈ 62%
+     {5, 180, "level 5"},  // 180/255 ≈ 71%
+     {6, 216, "level 6"},  // 216/255 ≈ 85%
+     {7, 252, "level 7"},  // 252/255 ≈ 99%
  };
  
 
@@ -104,7 +104,7 @@
      }
      
      // 更新当前索引
-     snprintf(g_sysbtn_labellight_level,sizeof(g_sysbtn_labellight_level), "等级%d", level);
+     snprintf(g_sysbtn_labellight_level,sizeof(g_sysbtn_labellight_level), "level %d", level);
      // 写入亮度值
      write_brightness_value(brightness_levels[get_curr_brightness()].value);
  }
@@ -218,15 +218,22 @@
                          if(txt) strncpy(g_sysbtn_labellight_level, txt, sizeof(g_sysbtn_labellight_level));
 
                      }
-                     brightness_set_level((i/2)+1);
-                     lv_obj_add_state(lv_obj_get_child(parent, i), LV_STATE_PRESSED);
-                     lv_obj_set_style_border_color(lv_obj_get_child(parent, i), lv_color_hex(0xFF0000), LV_PART_MAIN);
-                 } else {
-                     lv_obj_clear_state(lv_obj_get_child(parent, i), LV_STATE_PRESSED);
-                     lv_obj_set_style_border_color(lv_obj_get_child(parent, i), lv_color_hex(0xCCCCCC), LV_PART_MAIN);
-                 }
-             }
-             brightness_win_Delete_anim();
+                    brightness_set_level((i/2)+1);
+
+                    MESSAGE_S Msg = {0};
+                    Msg.topic = EVENT_MODEMNG_SETTING;
+                    Msg.arg1  = PARAM_MENU_BRIGHTNESS;
+                    Msg.arg2  = i / 2; // 0-6 对应 level 1-7
+                    MODEMNG_SendMessage(&Msg);
+
+                    lv_obj_add_state(lv_obj_get_child(parent, i), LV_STATE_PRESSED);
+                    lv_obj_set_style_border_color(lv_obj_get_child(parent, i), lv_color_hex(0xFF0000), LV_PART_MAIN);
+                } else {
+                    lv_obj_clear_state(lv_obj_get_child(parent, i), LV_STATE_PRESSED);
+                    lv_obj_set_style_border_color(lv_obj_get_child(parent, i), lv_color_hex(0xCCCCCC), LV_PART_MAIN);
+                }
+            }
+            brightness_win_Delete_anim();
  
          }; break;
          default: {
@@ -272,13 +279,20 @@
                      }
                  }
              }
-             // 获取按钮标签文本
-             lv_obj_t *label = lv_obj_get_child(lv_obj_get_child(parent, i), 0);
-             if(label && lv_obj_check_type(label, &lv_label_class)) {
-                 const char *txt = lv_label_get_text(label);
-                 if(txt) strncpy(g_sysbtn_labellight_level, txt, sizeof(g_sysbtn_labellight_level));
-             }
-             lv_obj_add_state(lv_obj_get_child(parent, i), LV_STATE_PRESSED);
+            // 获取按钮标签文本
+            lv_obj_t *label = lv_obj_get_child(lv_obj_get_child(parent, i), 0);
+            if(label && lv_obj_check_type(label, &lv_label_class)) {
+                const char *txt = lv_label_get_text(label);
+                if(txt) strncpy(g_sysbtn_labellight_level, txt, sizeof(g_sysbtn_labellight_level));
+            }
+
+            MESSAGE_S Msg = {0};
+            Msg.topic = EVENT_MODEMNG_SETTING;
+            Msg.arg1  = PARAM_MENU_BRIGHTNESS;
+            Msg.arg2  = i / 2; // 0-6 对应 level 1-7
+            MODEMNG_SendMessage(&Msg);
+
+            lv_obj_add_state(lv_obj_get_child(parent, i), LV_STATE_PRESSED);
              lv_obj_set_style_border_color(lv_obj_get_child(parent, i), lv_color_hex(0xFF0000), LV_PART_MAIN);
          } else {
              lv_obj_clear_state(lv_obj_get_child(parent, i), LV_STATE_PRESSED);

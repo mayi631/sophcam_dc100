@@ -297,6 +297,18 @@ static int32_t PARAM_LoadAutoScreenOff(const char *file, PARAM_VALUESET_S *auto_
     return 0;
 }
 
+static int32_t PARAM_LoadStatusLight(const char *file, PARAM_VALUESET_S *status_light)
+{
+    APP_PARAM_LoadValueSet(file, status_light);
+    return 0;
+}
+
+static int32_t PARAM_LoadBrightness(const char *file, PARAM_VALUESET_S *brightness)
+{
+    APP_PARAM_LoadValueSet(file, brightness);
+    return 0;
+}
+
 static int32_t PARAM_LoadMenu(const char *file, PARAM_MENU_S *Menu)
 {
    int32_t  s32Ret = 0;
@@ -331,6 +343,8 @@ static int32_t PARAM_LoadMenu(const char *file, PARAM_MENU_S *Menu)
     s32Ret |= PARAM_LoadIspEffect(file, &Menu->IspEffect);
     s32Ret |= PARAM_LoadLanguage(file, &Menu->Language);
     s32Ret |= PARAM_LoadAutoScreenOff(file, &Menu->AutoScreenOff);
+    s32Ret |= PARAM_LoadStatusLight(file, &Menu->StatusLight);
+    s32Ret |= PARAM_LoadBrightness(file, &Menu->Brightness);
     if (s32Ret != 0) {
         printf("load error\n");
     }

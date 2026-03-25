@@ -14,7 +14,7 @@
 #include "mlog.h"
 #include "page_all.h"
 #include "custom.h"
-
+#include "param.h"
 UIScreenManager_t ui_Screen_Manager_s;
 
 static uint8_t homeMode_Index = 0;
@@ -181,6 +181,20 @@ void setup_ui(lv_ui_t *ui)
     // 初始化图片显示文件系统驱动
     init_image_filesystem();
     led_off();// 关闭IR_CUT
+    
+    // 根据保存的状态灯参数初始化呼吸灯
+    {
+        PARAM_CONTEXT_S* pstParamCtx = PARAM_GetCtx();
+        int32_t stlight_val = pstParamCtx->pstCfg->Menu.StatusLight.Current;
+        stlight_init_by_param(stlight_val);
+    }
+
+    // 根据保存的亮度参数设置初始亮度
+    {
+        PARAM_CONTEXT_S* pstParamCtx = PARAM_GetCtx();
+        int32_t brightness_val = pstParamCtx->pstCfg->Menu.Brightness.Current;
+        brightness_set_level(brightness_val + 1); // param 0-6, level 1-7
+    }
     setup_scr_home1(ui);
     lv_screen_load(obj_home_s);
 }

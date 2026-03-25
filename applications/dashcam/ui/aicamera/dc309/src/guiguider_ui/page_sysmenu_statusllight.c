@@ -202,6 +202,15 @@ static void stlight_off(void)
     MLOG_INFO("Screen turned on (backlight control)\n");
 }
 
+// 根据参数初始化状态灯（开机时调用）
+void stlight_init_by_param(int32_t is_on)
+{
+    if (is_on == 0) {
+        stlight_on();
+    } else {
+        stlight_off();
+    }
+}
  static void stlight_Del_Complete_anim_cb(lv_anim_t *a)
  {
      if(obj_sysMenu_statuslight_s != NULL) {
@@ -301,25 +310,31 @@ static void stlight_off(void)
                          const char *txt = lv_label_get_text(label);
                          if(txt) strncpy(g_sysbtn_labelstatuslight, txt, sizeof(g_sysbtn_labelstatuslight));
                      }
-                     if (strcmp(g_sysbtn_labelstatuslight, str_language_on[get_curr_language()]) == 0) {
-                        stlight_on();
-                     } else {
-                        stlight_off();
-                     }
+                    if (strcmp(g_sysbtn_labelstatuslight, str_language_on[get_curr_language()]) == 0) {
+                       stlight_on();
+                    } else {
+                       stlight_off();
+                    }
 
-                     lv_obj_add_state(lv_obj_get_child(parent, i), LV_STATE_PRESSED);
-                     lv_obj_set_style_border_color(lv_obj_get_child(parent, i), lv_color_hex(0xFF0000), LV_PART_MAIN);
-                 } else {
-                     lv_obj_clear_state(lv_obj_get_child(parent, i), LV_STATE_PRESSED);
-                     lv_obj_set_style_border_color(lv_obj_get_child(parent, i), lv_color_hex(0xCCCCCC), LV_PART_MAIN);
-                 }
-             }
-             stlight_win_Delete_anim();
-             break;
-         }
-         default: break;
-     }
- }
+                    MESSAGE_S Msg = {0};
+                    Msg.topic = EVENT_MODEMNG_SETTING;
+                    Msg.arg1  = PARAM_MENU_STATUS_LIGHT;
+                    Msg.arg2  = stlight_Current_Index_s / 2; // 0:ON, 1:OFF
+                    MODEMNG_SendMessage(&Msg);
+
+                    lv_obj_add_state(lv_obj_get_child(parent, i), LV_STATE_PRESSED);
+                    lv_obj_set_style_border_color(lv_obj_get_child(parent, i), lv_color_hex(0xFF0000), LV_PART_MAIN);
+                } else {
+                    lv_obj_clear_state(lv_obj_get_child(parent, i), LV_STATE_PRESSED);
+                    lv_obj_set_style_border_color(lv_obj_get_child(parent, i), lv_color_hex(0xCCCCCC), LV_PART_MAIN);
+                }
+            }
+            stlight_win_Delete_anim();
+            break;
+        }
+        default: break;
+    }
+}
  
  static void photostlight_click_callback(lv_obj_t *obj)
  {
@@ -336,20 +351,27 @@ static void stlight_off(void)
                  const char *txt = lv_label_get_text(label);
                  if(txt) strncpy(g_sysbtn_labelstatuslight, txt, sizeof(g_sysbtn_labelstatuslight));
              }
-             if (strcmp(g_sysbtn_labelstatuslight, str_language_on[get_curr_language()]) == 0) {
-                stlight_on();
-             } else {
-                stlight_off();
-             }
-             lv_obj_add_state(lv_obj_get_child(parent, i), LV_STATE_PRESSED);
-             lv_obj_set_style_border_color(lv_obj_get_child(parent, i), lv_color_hex(0xFF0000), LV_PART_MAIN);
-         } else {
-             lv_obj_clear_state(lv_obj_get_child(parent, i), LV_STATE_PRESSED);
-             lv_obj_set_style_border_color(lv_obj_get_child(parent, i), lv_color_hex(0xCCCCCC), LV_PART_MAIN);
-         }
-     }
-     stlight_win_Delete_anim();
- }
+            if (strcmp(g_sysbtn_labelstatuslight, str_language_on[get_curr_language()]) == 0) {
+               stlight_on();
+            } else {
+               stlight_off();
+            }
+
+            MESSAGE_S Msg = {0};
+            Msg.topic = EVENT_MODEMNG_SETTING;
+            Msg.arg1  = PARAM_MENU_STATUS_LIGHT;
+            Msg.arg2  = stlight_Current_Index_s / 2; // 0:ON, 1:OFF
+            MODEMNG_SendMessage(&Msg);
+
+            lv_obj_add_state(lv_obj_get_child(parent, i), LV_STATE_PRESSED);
+            lv_obj_set_style_border_color(lv_obj_get_child(parent, i), lv_color_hex(0xFF0000), LV_PART_MAIN);
+        } else {
+            lv_obj_clear_state(lv_obj_get_child(parent, i), LV_STATE_PRESSED);
+            lv_obj_set_style_border_color(lv_obj_get_child(parent, i), lv_color_hex(0xCCCCCC), LV_PART_MAIN);
+        }
+    }
+    stlight_win_Delete_anim();
+}
  
  static void photostlight_menu_callback(void)
  {

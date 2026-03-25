@@ -26,7 +26,7 @@ char g_sysbtn_labelPowerdown[32] = "关闭"; // 自动关机
 char g_sysbtn_labelVolume[32] = "开启"; // 动作音
 char g_sysbtn_labelLightfreq[32] = "50HZ"; // 光频
 char g_sysbtn_labelscreen_off[32] = "开启"; // 自动息屏
-char g_sysbtn_labellight_level[32] = "亮度等级 4"; // 亮度等级
+char g_sysbtn_labellight_level[32] = "level 4"; // 亮度等级
 char g_sysbtn_labelstatuslight[32] = "关闭"; // 状态灯
 static const char* get_localized_string(uint8_t index) {
     // 获取当前语言
@@ -46,6 +46,7 @@ static const char* get_localized_string(uint8_t index) {
         g_sysbtn_labelscreen_off,
         g_sysbtn_labelVolume,    // 索引2  
         g_sysbtn_labelLightfreq, // 索引3
+        g_sysbtn_labelstatuslight,
     };
 
     // 检查索引是否在有效范围内
@@ -416,7 +417,7 @@ void sysMenu_Setting(lv_ui_t *ui)
                 lv_label_set_text(value_label,g_sysbtn_labellight_level);
                 break;
             case SYSMENU_STALIGHT: //亮度等级
-                lv_label_set_text(value_label,g_sysbtn_labelstatuslight);
+                lv_label_set_text(value_label,get_localized_string(5));
                 break;
 
         }
