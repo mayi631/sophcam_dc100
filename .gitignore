@@ -1,61 +1,65 @@
+# 编译输出目录
 out/
-out/
-app_services/lib/
-applications/manager/lib/
-# 编译输出文件
-*.o
-*.ko
-*.obj
-*.elf
-*.bin
-*.hex
+
+# IDE配置
+.vscode/
+.idea/
+
+# 配置文件
+.config
+.config.old
+
+# 编译生成的库文件
 *.a
 *.so
-*.dll
-*.lib
-*.dylib
-*.so.*
-# 编译目录
-build/
-dist/
-out/
-bin/
-obj/
-target/
-debug/
-release/
 
-# 临时文件
-*.tmp
-*.temp
-*.swp
-*.swo
-*~
-*.bak
-*.backup
+# 编译生成的目标文件
+*.o
+*.d
+*.cmd
+built-in.o
+
+# 特定编译产物目录
+app_services/lib/
+app_services/obj/
+applications/*/lib/
+applications/*/obj/
+components/*/lib/
+components/*/obj/
+components/comps_install/
+
+# UI编译产物（仅忽略turnkey生成的build目录）
+applications/dashcam/ui/*/turnkey/build/
+applications/dashcam/ui/*/build/
+
+# OSS第三方库编译产物
+oss/awtkcode/awtk/build/
+oss/awtkcode/awtk-linux-fb/build/
+oss/ffmpeg/build/
+oss/ffmpeg/install/
+oss/lvgl/install/
+oss/lvgl/build/
+oss/csi2d/build/
+oss/thttpd/build/
+
+# 可执行文件
+**/bin/*
+!**/bin/.gitkeep
+
+# 安装目录
+install/
+**/install/arm-none-linux-musleabihf/
+
+# 构建标记
+*.stamp
+.sconsign.dblite
+.sconsign.dblite2
 
 # 日志文件
 *.log
-log/
-logs/
 
-# 系统文件
+# 临时文件
+*~
+.*.swp
 .DS_Store
 Thumbs.db
-desktop.ini
-
-# 编辑器目录
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# 依赖目录
-node_modules/
-__pycache__/
-venv/
-*.pyc
-*.pyo
-
-# 项目特定文件
-# 根据您的项目可能需要添加

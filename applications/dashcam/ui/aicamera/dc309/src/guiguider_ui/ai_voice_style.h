@@ -14,7 +14,7 @@ void voice_style_management(void);
 uint8_t get_currindex(void);
 void set_voice_style_icon(lv_obj_t *handler);
 bool get_play_switch(void);
-
+//
 #ifdef __cplusplus
 }
 #endif
