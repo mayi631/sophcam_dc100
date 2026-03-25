@@ -22,10 +22,17 @@
 #include "common/extract_thumbnail.h"
 #include "filemng.h"
 
+// 从AI预览返回函数声明
+extern void return_to_preview_with_image(const char *image_path);
+
 lv_obj_t *obj_Aibum_s; //底层容器
 
 extern int g_return_page_index ;    // 返回时需要跳转的页面索引
 extern int g_return_focus_index;  // 返回时的焦点索引
+// 从AI预览进入相册标志
+static bool g_from_ai_preview = false;
+// 设置从AI预览进入标志
+void set_from_ai_preview(bool from_ai);
 
 static lv_obj_t *btn_delete_s;
 static lv_obj_t *btn_delete_all_s;
@@ -375,6 +382,13 @@ static void childvideo_event_handler(lv_event_t *e)
         ui_load_scr_animation(ui, &obj_AibumVid_s, 1, NULL, setup_scr_screen_PhotoAlbumVid, LV_SCR_LOAD_ANIM_NONE, 0, 0,
                               false, true);
     } else {
+        // 检查是否从AI预览进入
+        if (g_from_ai_preview) {
+            // AI模式进入，视频文件不支持识别，忽略或提示
+            MLOG_DBG("AI预览只支持照片识别，忽略视频文件\n");
+            return;
+        }
+        
         // 选择模式：切换选中状态
         lv_obj_t *select_img = lv_obj_get_child(container,1);
         if(lv_obj_has_state(container, LV_STATE_CHECKED)) {
@@ -460,6 +474,39 @@ static void child_event_handler(lv_event_t *e)
                 g_album_focus_index = i;
                 break;
             }
+        }
+
+        // 检查是否从AI预览进入
+        if (g_from_ai_preview) {
+            // AI模式进入，点击选择后立即返回
+            // 获取文件名
+            char* filename = NULL;
+            void* user_data = NULL;
+            user_data = lv_obj_get_user_data(container);
+            if (user_data) {
+                filename = (char*)user_data;
+                if (filename && strlen(filename) > 0) {
+                    // 只支持照片识别
+                    if (strstr(filename, ".jpg") || strstr(filename, ".png")) {
+                        // 构建大缩略图路径（带A:前缀）
+                        g_from_ai_preview = false;
+                        MESSAGE_S Msg = { 0 };
+                        Msg.topic = EVENT_MODEMNG_MODESWITCH;
+                        Msg.arg1 = WORK_MODE_PHOTO;
+                        MODEMNG_SendMessage(&Msg);
+
+                        char large_thumb_path[256];
+                        snprintf(large_thumb_path, sizeof(large_thumb_path), "%s%s", PHOTO_ALBUM_IMAGE_PATH_L, filename);
+                        MLOG_DBG("从AI预览点击选择图片: %s\n", large_thumb_path);
+                        // 返回预览界面并更新图片
+                        return_to_preview_with_image(large_thumb_path);
+                        return;
+                    } else {
+                        MLOG_DBG("AI预览只支持照片识别，忽略视频文件\n");
+                    }
+                }
+            }
+            return;
         }
 
         // 非选择模式：跳转到图片查看页面
@@ -805,6 +852,11 @@ static void scroll_event_handler(lv_event_t *e)
 
 void init_global_vars(lv_obj_t *parent, lv_ui_t *ui)
 {
+    // 如果是从AI预览进入，强制为照片模式
+    if (g_from_ai_preview) {
+        g_is_photo_mode = true;
+    }
+    
     if(ui_common_cardstatus()) {
         if(g_is_photo_mode) {
             g_total_media_files = FILEMNG_GetDirFileCnt(g_cam_id, ALBUM_DIR_PHOTO_ID);
@@ -870,6 +922,11 @@ static void album_key_callback(int key_code, int key_value)
 
     }
     else if(key_code == KEY_MODE && key_value == 1) {
+        // 如果是AI模式进入，禁用模式切换
+        if (g_from_ai_preview) {
+            MLOG_DBG("AI模式进入，禁止切换视频模式\n");
+            return;
+        }
         // 切换照片/视频模式
         MLOG_DBG("当前图片相册模式%d\n", g_is_photo_mode);
         if(!g_is_photo_mode) {
@@ -1081,6 +1138,12 @@ void update_album_grid(lv_obj_t *parent, lv_ui_t *ui, int return_page, int retur
 
 static void screen_PhotoAlbum_btn_delete_s_event_handler(lv_event_t *e)
 {
+    // 如果是AI模式进入，禁用删除功能
+    if (g_from_ai_preview) {
+        MLOG_DBG("AI模式进入，禁止删除操作\n");
+        return;
+    }
+    
     lv_event_code_t code = lv_event_get_code(e);
     MLOG_DBG("event: %s\n", lv_event_code_get_name(code));
     switch(code) {
@@ -1363,6 +1426,12 @@ static void screen_PhotoAlbum_btn_back_event_handler(lv_event_t *e)
 
 static void screen_PhotoAlbum_btn_choose_event_handler(lv_event_t *e)
 {
+    // 如果是AI模式进入，已经自动进入多选模式，不允许再次点击
+    if (g_from_ai_preview) {
+        MLOG_DBG("AI模式进入，已自动进入多选模式\n");
+        return;
+    }
+    
     lv_event_code_t code = lv_event_get_code(e);
     MLOG_DBG("event: %s\n", lv_event_code_get_name(code));
     switch(code) {
@@ -1384,6 +1453,12 @@ static void screen_PhotoAlbum_btn_choose_event_handler(lv_event_t *e)
 
 static void screen_PhotoAlbum_btn_cancel_event_handler(lv_event_t *e)
 {
+    // 如果是AI模式进入，不允许取消选择模式
+    if (g_from_ai_preview) {
+        MLOG_DBG("AI模式进入，不允许取消选择模式\n");
+        return;
+    }
+    
     lv_event_code_t code = lv_event_get_code(e);
     MLOG_DBG("event: %s\n", lv_event_code_get_name(code));
     switch(code) {
@@ -1407,6 +1482,12 @@ static void screen_PhotoAlbum_btn_cancel_event_handler(lv_event_t *e)
 
 static void screen_PhotoAlbum_btn_phalbum_event_handler(lv_event_t *e)
 {
+    // 如果是AI模式进入，禁用模式切换
+    if (g_from_ai_preview) {
+        MLOG_DBG("AI模式进入，禁止切换模式\n");
+        return;
+    }
+    
     lv_event_code_t code = lv_event_get_code(e);
     MLOG_DBG("event: %s\n", lv_event_code_get_name(code));
     switch(code) {
@@ -1427,6 +1508,12 @@ static void screen_PhotoAlbum_btn_phalbum_event_handler(lv_event_t *e)
 
 static void screen_PhotoAlbum_btn_vialbum_event_handler(lv_event_t *e)
 {
+    // 如果是AI模式进入，禁用模式切换
+    if (g_from_ai_preview) {
+        MLOG_DBG("AI模式进入，禁止切换模式\n");
+        return;
+    }
+    
     lv_event_code_t code = lv_event_get_code(e);
     MLOG_DBG("event: %s\n", lv_event_code_get_name(code));
     switch(code) {
@@ -1687,6 +1774,11 @@ void Home_Album(lv_ui_t *ui)
 
     // Init events for screen.
     events_init_screen_PhotoAlbum(ui);
+    
+    // 如果是从AI预览进入，应用AI模式设置
+    if (g_from_ai_preview) {
+        set_from_ai_preview(true);
+    }
 }
 
 void Home_Album_from_Pic(lv_ui_t *ui)
@@ -1700,6 +1792,11 @@ void Home_Album_from_Pic(lv_ui_t *ui)
 
     // Init events for screen.
     events_init_screen_PhotoAlbum(ui);
+    
+    // 如果是从AI预览进入，应用AI模式设置
+    if (g_from_ai_preview) {
+        set_from_ai_preview(true);
+    }
 }
 
 void key_ok_enter(void)
@@ -1714,6 +1811,28 @@ void key_ok_enter(void)
             char *filename = (char *)lv_obj_get_user_data(focused_container);
             if(filename && strlen(filename) > 0) {
                 MLOG_DBG("确认键处理文件: %s\n", filename);
+                
+                // 检查是否从AI预览进入
+                if (g_from_ai_preview) {
+                    // 只支持照片识别
+                    if(strstr(filename, ".jpg") || strstr(filename, ".png")) {
+                        // 构建大缩略图路径（带A:前缀）
+                        g_from_ai_preview = false;
+                        MESSAGE_S Msg = { 0 };
+                        Msg.topic = EVENT_MODEMNG_MODESWITCH;
+                        Msg.arg1 = WORK_MODE_PHOTO;
+                        MODEMNG_SendMessage(&Msg);
+                        char large_thumb_path[256];
+                        snprintf(large_thumb_path, sizeof(large_thumb_path), "%s%s", PHOTO_ALBUM_IMAGE_PATH_L, filename);
+                        MLOG_DBG("从AI预览选择图片: %s\n", large_thumb_path);
+                        // 返回预览界面并更新图片
+                        return_to_preview_with_image(large_thumb_path);
+                        return;
+                    } else {
+                        MLOG_DBG("AI预览只支持照片识别，忽略视频文件\n");
+                    }
+                    return;
+                }
 
                 // 根据文件扩展名判断是照片还是视频
                 if(strstr(filename, ".jpg") || strstr(filename, ".png")) {
@@ -2064,6 +2183,12 @@ static void create_delete_confirmation_dialog(int total_files)
 
 static void screen_PhotoAlbum_btn_delete_all_event_handler(lv_event_t *e)
 {
+    // 如果是AI模式进入，禁用删除功能
+    if (g_from_ai_preview) {
+        MLOG_DBG("AI模式进入，禁止删除全部操作\n");
+        return;
+    }
+    
     lv_event_code_t code = lv_event_get_code(e);
     MLOG_DBG("event: %s\n", lv_event_code_get_name(code));
 
@@ -2156,6 +2281,18 @@ static bool is_valid_click(void)
 
 void album_return_cb(void)
 {
+    // 检查是否从AI预览进入
+    if (g_from_ai_preview) {
+        MLOG_DBG("从AI预览返回预览界面\n");
+        g_from_ai_preview = false;
+        MESSAGE_S Msg = { 0 };
+        Msg.topic = EVENT_MODEMNG_MODESWITCH;
+        Msg.arg1 = WORK_MODE_PHOTO;
+        MODEMNG_SendMessage(&Msg);
+        return_to_preview_with_image(NULL);
+        return;
+    }
+    
     // 返回主菜单
     if (g_last_scr_mode == 1) {
         MESSAGE_S Msg = { 0 };
@@ -2182,5 +2319,67 @@ void album_return_cb(void)
         MODEMNG_SendMessage(&Msg);
         ui_load_scr_animation(&g_ui, &obj_home_s, 1, NULL, setup_scr_home1, LV_SCR_LOAD_ANIM_NONE, 0, 0, false,
             true);
+    }
+}
+
+// 设置从AI预览进入标志
+void set_from_ai_preview(bool from_ai)
+{
+    g_from_ai_preview = from_ai;
+    MLOG_DBG("设置从AI预览进入标志: %d\n", from_ai);
+    
+    if (from_ai) {
+        // AI模式进入，自动进入多选模式
+        MLOG_DBG("AI模式进入，自动进入多选模式\n");
+        
+        // 确保为照片模式
+        g_is_photo_mode = true;
+        
+        // 自动进入多选模式：设置按钮状态
+        // 隐藏选择按钮（已经进入多选模式）
+        if (btn_choose_s && lv_obj_is_valid(btn_choose_s)) {
+            lv_obj_add_flag(btn_choose_s, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_remove_flag(btn_choose_s, LV_OBJ_FLAG_CLICKABLE);
+        }
+        
+        // 隐藏取消按钮（AI模式下不允许取消）
+        if (btn_cancel_s && lv_obj_is_valid(btn_cancel_s)) {
+            lv_obj_add_flag(btn_cancel_s, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_remove_flag(btn_cancel_s, LV_OBJ_FLAG_CLICKABLE);
+        }
+        
+        // 隐藏删除按钮（AI模式下不允许删除）
+        if (btn_delete_s && lv_obj_is_valid(btn_delete_s)) {
+            lv_obj_add_flag(btn_delete_s, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_remove_flag(btn_delete_s, LV_OBJ_FLAG_CLICKABLE);
+        }
+        if (btn_delete_all_s && lv_obj_is_valid(btn_delete_all_s)) {
+            lv_obj_add_flag(btn_delete_all_s, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_remove_flag(btn_delete_all_s, LV_OBJ_FLAG_CLICKABLE);
+        }
+        
+        // 隐藏视频切换按钮，禁用模式切换
+        if (btn_vialbum_s && lv_obj_is_valid(btn_vialbum_s)) {
+            lv_obj_add_flag(btn_vialbum_s, LV_OBJ_FLAG_HIDDEN);
+        }
+        if (btn_phalbum_s && lv_obj_is_valid(btn_phalbum_s)) {
+            lv_obj_add_flag(btn_phalbum_s, LV_OBJ_FLAG_HIDDEN);
+        }
+        
+        // 标记照片为可选状态
+        if (cont_album_grid_s && lv_obj_is_valid(cont_album_grid_s)) {
+            mark_photos_selectable(cont_album_grid_s);
+        }
+    } else {
+        // 恢复普通模式：显示切换按钮
+        if (btn_vialbum_s && lv_obj_is_valid(btn_vialbum_s)) {
+            lv_obj_clear_flag(btn_vialbum_s, LV_OBJ_FLAG_HIDDEN);
+        }
+        if (btn_phalbum_s && lv_obj_is_valid(btn_phalbum_s)) {
+            lv_obj_clear_flag(btn_phalbum_s, LV_OBJ_FLAG_HIDDEN);
+        }
+        
+        // 注意：按钮的显示/隐藏状态由相册的正常逻辑管理
+        // 我们只恢复模式切换按钮，其他按钮状态由相册逻辑处理
     }
 }

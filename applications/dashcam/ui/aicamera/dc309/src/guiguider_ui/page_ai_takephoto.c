@@ -20,6 +20,8 @@
 /* 全局变量声明 */
 char pic_thumbnail[128] = { 0 };
 char recognize_result[4096] = { 0 };
+// 从AI预览进入相册标志
+static bool s_from_ai_preview = false;
 // 底层页面控件
 lv_obj_t* page_ai_camera_s = NULL;
 // 识别物体预览控件
@@ -70,6 +72,8 @@ static void aiphoto_menu_callback(void);
 static void aiphoto_result_key_handler(int key_code, int key_value);
 //预览页面按键处理（新）
 static void aiphoto_preview_key_handler(int key_code, int key_value);
+// 从预览进入相册
+static void enter_album_from_preview(void);
 
 static void voice_value_btn_event_cb(lv_event_t *e);
 static void wifi_return_to_ai_camera(void *user_data);
@@ -107,7 +111,7 @@ static char *recognize_image(const char *image_path)
 
     char prompt[200] = {0};
     extern char g_sysbtn_labelLanguage[32];
-    snprintf(prompt, sizeof(prompt), "用50字左右的%s语言介绍一下这张图,注意抓关键信息\n",g_sysbtn_labelLanguage);
+    snprintf(prompt, sizeof(prompt), "用50字左右的%s语言介绍一下这张图,并对图中内容进行简单的知识科普,注意抓关键信息\n",g_sysbtn_labelLanguage);
     recognizer = image_recognizer_create(IMAGE_RECOGNIZE_MODEL_NAME, IMAGE_RECOGNIZE_API_KEY, IMAGE_RECOGNIZE_BASE_URL);
     ret = image_recognizer_from_file(recognizer, image_path, prompt,recognize_result, sizeof(recognize_result));
     if(ret != 0) MLOG_ERR("图像识别失败: %s\n", image_recognizer_get_error_string(ret));
@@ -535,6 +539,7 @@ static void cleanup_preview_page(void)
 {
     if(g_preview_page && lv_obj_is_valid(g_preview_page)) {
         safe_delete_obj(&g_preview_page);
+        MLOG_DBG("[AI Camera] g_preview_page deleted\n");
     }
     g_preview_page = NULL;
     g_preview_img = NULL;
@@ -557,6 +562,18 @@ static void cleanup_result_page(void)
 
     /* 复位TTS播放状态 */
     s_is_read = false;
+}
+
+static void album_entry_event_cb_handler(lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_CLICKED:
+        enter_album_from_preview();
+        break;
+    default:
+        break;
+    }
 }
 
 /* 显示成像预览页面 */
@@ -605,9 +622,16 @@ static void show_photo_review_page(void)
     if(tip_label) {
         lv_label_set_text(tip_label, str_language_press_ai_for_knowledge[get_curr_language()]);
         lv_obj_set_style_text_font(tip_label, get_usr_fonts(ALI_PUHUITI_FONTPATH, 22), 0);
-        lv_obj_set_style_text_color(tip_label, lv_color_hex(0xCCCCCC), 0);
+        lv_obj_set_style_text_color(tip_label, lv_color_hex(0x0000FF), 0);
         lv_obj_align(tip_label, LV_ALIGN_BOTTOM_MID, 0, -20);
     }
+
+    lv_obj_t *album = lv_imagebutton_create(g_preview_page);
+    lv_obj_align(album, LV_ALIGN_BOTTOM_RIGHT, -30, -10);
+    lv_obj_set_size(album, 42, 42);
+    show_image(album, "photo_album.png");
+    lv_obj_add_event_cb(album, album_entry_event_cb_handler, LV_EVENT_CLICKED, NULL);
+
 
     /* 加载预览页面 */
     lv_scr_load(g_preview_page);
@@ -673,6 +697,8 @@ static void show_recognition_result(void)
     lv_obj_set_size(g_result_page, H_RES, V_RES);
     lv_obj_set_style_bg_color(g_result_page, lv_color_hex(0x020524), 0);
     lv_obj_add_event_cb(g_result_page, gesture_result_event_handler, LV_EVENT_GESTURE, NULL);
+    lv_obj_add_style(g_result_page, &style_common_main_bg, LV_PART_MAIN | LV_STATE_DEFAULT);
+
 
     /* 创建顶部标题栏 */
     lv_obj_t *header = lv_obj_create(g_result_page);
@@ -1160,4 +1186,55 @@ static void get_read_status_cb(lv_timer_t* timer)
         s_is_read = false;
         lv_label_set_text(s_reread_label, str_language_resume_reading[get_curr_language()]);
     }
+}
+
+// 从预览进入相册
+static void enter_album_from_preview(void)
+{
+    MLOG_DBG("进入相册从AI预览\n");
+    s_from_ai_preview = true;
+    cleanup_preview_page();
+    // 设置相册标志
+    extern void set_from_ai_preview(bool from_ai);
+    set_from_ai_preview(true);
+    // 跳转到相册页面
+    MESSAGE_S Msg = { 0 };
+    Msg.topic = EVENT_MODEMNG_MODESWITCH;
+    Msg.arg1 = WORK_MODE_PLAYBACK;
+    MODEMNG_SendMessage(&Msg);
+    ui_load_scr_animation(&g_ui, &obj_Aibum_s, 1, NULL, Home_Album, LV_SCR_LOAD_ANIM_NONE, 0, 0, false, true);
+}
+
+// 从相册返回预览并更新图片
+void return_to_preview_with_image(const char *image_path)
+{
+    MLOG_DBG("从相册返回预览，图片路径: %s\n", image_path ? image_path : "NULL");
+    
+    // 重置标志
+    s_from_ai_preview = false;
+    extern void set_from_ai_preview(bool from_ai);
+    set_from_ai_preview(false);
+    
+    // 如果有新图片，更新路径
+    if (image_path && strlen(image_path) > 0) {
+        // 更新全局图片路径
+        // 注意：pic_filepath 是外部变量，我们需要更新它
+        extern char pic_filepath[128];
+        // 复制路径到 pic_filepath
+        strncpy(pic_filepath, image_path, sizeof(pic_filepath) - 1);
+        pic_filepath[sizeof(pic_filepath) - 1] = '\0';
+        
+        // 更新缩略图路径
+        char path_large[100] = {0};
+        get_thumbnail_path(pic_filepath, path_large, sizeof(path_large), PHOTO_LARGE_PATH);
+        char *rel_large = strchr(path_large, '/');
+        if (rel_large) {
+            strncpy(pic_thumbnail, rel_large, sizeof(pic_thumbnail));
+        }
+        
+        MLOG_DBG("更新图片路径: %s, 缩略图: %s\n", pic_filepath, pic_thumbnail);
+    }
+    
+    // 显示预览页面（会使用更新后的图片）
+    show_photo_review_page();
 }

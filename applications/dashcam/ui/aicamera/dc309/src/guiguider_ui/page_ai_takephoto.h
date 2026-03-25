@@ -8,6 +8,8 @@ extern "C" {
 #include "gui_guider.h"
 
 extern lv_obj_t* page_ai_camera_s;   // AI拍照页面
+void return_to_preview_with_image(const char *image_path);
+
 void create_ai_camera_screen(lv_ui_t *ui);
 
 #ifdef __cplusplus
