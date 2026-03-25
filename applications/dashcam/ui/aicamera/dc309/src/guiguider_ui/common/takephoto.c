@@ -600,7 +600,7 @@ void takephoto_key_handler(int key_code, int key_value)
                     video_effect_scr_delete();
                     MLOG_DBG("开始录像\n");
                     // 开始录像时，取消TP事件
-                    disable_touch_events(); // 屏蔽tp事件
+                    // disable_touch_events(); // 屏蔽tp事件
                     // 开始录像时，关闭音频输出
                     // UI_VOICEPLAY_DeInit(NULL);
                 } else if (is_start_video == VEDIO_STOP) {
@@ -610,7 +610,7 @@ void takephoto_key_handler(int key_code, int key_value)
                     // 通知底层 停止录像
                     Msg.topic = EVENT_MODEMNG_STOP_REC;
                     MODEMNG_SendMessage(&Msg);
-                    enable_touch_events(); // 停止录像，恢复TP事件
+                    // enable_touch_events(); // 停止录像，恢复TP事件
                     // 停止录像时，开启音频输出
                     // UI_VOICEPLAY_Init();
                 }

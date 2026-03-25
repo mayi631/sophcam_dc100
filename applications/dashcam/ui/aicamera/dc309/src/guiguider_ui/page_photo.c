@@ -728,7 +728,7 @@ void Home_Photo(lv_ui_t *ui)
         lv_obj_set_size(cursor, 180, 180);
         lv_obj_align(cursor, LV_ALIGN_CENTER, 0, 0);
         lv_obj_set_style_pad_all(cursor, 0, LV_STATE_DEFAULT);
-        show_image(cursor, cursor_image_array[get_curr_cursor()]);
+        show_image(cursor, cursor_image_array[get_curr_cursor() -1]);
     }
 
     // 菜单按钮
