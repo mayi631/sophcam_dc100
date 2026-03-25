@@ -38,7 +38,7 @@ static lv_timer_t *g_zoom_longpress_timer = NULL;  // 长按定时器
 static int g_zoom_longpress_dir = 0;               // 长按方向: 0=无, 1=缩小, 2=放大
 static bool g_zoom_longpress_active = false;       // 是否正在长按
 
-static lv_obj_t *g_video_top_controls[5];  // 存储视频页面顶部控件对象
+static lv_obj_t *g_video_top_controls[6];  // 存储视频页面顶部控件对象
 
 static void video_zoomin_key_cb(void);//w按键回调
 static void video_zoomout_key_cb(void);//t按键回调
@@ -154,20 +154,20 @@ static void update_video_top_controls_layout(void)
     if (g_video_top_controls[0] && lv_obj_is_valid(g_video_top_controls[0])) {
         lv_obj_set_pos(g_video_top_controls[0], x_pos, 0);
     }
-    x_pos += 76 + 14;
+    x_pos += 76 + 10;
     
     // 2. 分辨率按钮 (38x32)
     if (g_video_top_controls[1] && lv_obj_is_valid(g_video_top_controls[1])) {
         lv_obj_set_pos(g_video_top_controls[1], x_pos, 4);
     }
-    x_pos += 40 + 14;
+    x_pos += 40 + 10;
     
     // 3. 红光亮级按钮 (38x32)
     if (g_video_top_controls[2] && lv_obj_is_valid(g_video_top_controls[2])) {
         if (brightness_level > 0) {
             lv_obj_clear_flag(g_video_top_controls[2], LV_OBJ_FLAG_HIDDEN);
             lv_obj_set_pos(g_video_top_controls[2], x_pos, 4);
-            x_pos += 40 + 14;
+            x_pos += 40 + 10;
         } else {
             lv_obj_add_flag(g_video_top_controls[2], LV_OBJ_FLAG_HIDDEN);
         }
@@ -177,13 +177,19 @@ static void update_video_top_controls_layout(void)
     if (g_video_top_controls[3] && lv_obj_is_valid(g_video_top_controls[3])) {
         lv_obj_set_pos(g_video_top_controls[3], x_pos, 4);
     }
-    x_pos += 40 + 14;
+    x_pos += 40 + 10;
     
     // 5. 屏幕亮度按钮
     if (g_video_top_controls[4] && lv_obj_is_valid(g_video_top_controls[4])) {
         lv_obj_set_pos(g_video_top_controls[4], x_pos, 4);
     }
-    
+
+    x_pos += 40 + 10;
+    //EV值
+    if (g_video_top_controls[5] && lv_obj_is_valid(g_video_top_controls[5])) {
+        lv_obj_set_pos(g_video_top_controls[5], x_pos, 14);
+    }
+
     MLOG_DBG("视频页面顶部控件布局已更新，brightness_level=%d\n", brightness_level);
 }
 
@@ -504,6 +510,15 @@ void Home_Vedio(lv_ui_t *ui)
     lv_obj_set_size(g_video_top_controls[4], 38, 32);
     char* brightness_buf[] = { "1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png" };
     show_image(g_video_top_controls[4], brightness_buf[get_curr_brightness()]);
+
+
+    g_video_top_controls[5] = lv_imagebutton_create(obj_vedio_s);
+    lv_obj_set_size(g_video_top_controls[5], 50, 14);
+    char* ev_buf[] = { "EV+3.png", "EV+2.png", "EV+1.png", "EV0.png", "EV-1.png", "EV-2.png", "EV-3.png" };
+    show_image(g_video_top_controls[5], ev_buf[get_EV_Level()]);
+    lv_obj_set_style_image_recolor(g_video_top_controls[5], lv_color_hex(0xFFFFFF), LV_PART_MAIN);
+    lv_obj_set_style_image_recolor_opa(g_video_top_controls[5], LV_OPA_COVER, LV_PART_MAIN);
+
 
     // 初始设置红光亮级图片
     if (brightness_level > 6) {

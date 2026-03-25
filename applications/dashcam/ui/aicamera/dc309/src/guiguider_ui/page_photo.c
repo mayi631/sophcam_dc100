@@ -114,35 +114,38 @@ static void update_top_controls_simple(void)
     
     // 1. 相机模式按钮
     lv_obj_set_pos(ui->page_photo.img_mode, x_pos, 0);
-    x_pos += 76 + 14;
+    x_pos += 76 + 10;
     
     // 2. 分辨率按钮
     lv_obj_set_pos(g_top_controls[0], x_pos, 4);
-    x_pos += 40 + 14;
+    x_pos += 40 + 10;
     
     // 3. 红光亮级按钮
     if (brightness_level > 0) {
         lv_obj_clear_flag(ui->page_photo.redlight_level, LV_OBJ_FLAG_HIDDEN);
         lv_obj_set_pos(ui->page_photo.redlight_level, x_pos, 4);
-        x_pos += 40 + 14;
+        x_pos += 40 + 10;
     } else {
         lv_obj_add_flag(ui->page_photo.redlight_level, LV_OBJ_FLAG_HIDDEN);
     }
     
     // 4. ISO级别按钮
     lv_obj_set_pos(g_top_controls[1], x_pos, 4);
-    x_pos += 40 + 14;
+    x_pos += 40 + 10;
     
     // 5. 屏幕亮度按钮
     lv_obj_set_pos(g_top_controls[2], x_pos, 4);
-    x_pos += 40 + 14;
+    x_pos += 40 + 10;
     
     // 6. 连拍按钮
     lv_obj_set_pos(g_top_controls[3], x_pos, 4);
-    x_pos += 40 + 14;
+    x_pos += 40 + 10;
     
     // 7. 延时拍摄按钮
     lv_obj_set_pos(g_top_controls[4], x_pos, 4);
+    x_pos += 40 + 10;
+    //EV值
+    lv_obj_set_pos(g_top_controls[5], x_pos, 14);
 }
 
 const char *get_ai_process_result_img_data(bool is_aiprocess)
@@ -664,6 +667,14 @@ void Home_Photo(lv_ui_t *ui)
     char* delay_buf[] = { "延时 关闭.png", "延时5.png", "延时7.png", "延时10.png" };
     show_image(g_top_controls[4], delay_buf[get_self_index()]);
     
+    g_top_controls[5] = lv_imagebutton_create(Home_Photo_Item->photoscr);
+    lv_obj_set_size(g_top_controls[5], 50, 14);
+    char* ev_buf[] = { "EV+3.png", "EV+2.png", "EV+1.png", "EV0.png", "EV-1.png", "EV-2.png", "EV-3.png" };
+    show_image(g_top_controls[5], ev_buf[get_EV_Level()]);
+    lv_obj_set_style_image_recolor(g_top_controls[5], lv_color_hex(0xFFFFFF), LV_PART_MAIN);
+    lv_obj_set_style_image_recolor_opa(g_top_controls[5], LV_OPA_COVER, LV_PART_MAIN);
+
+
     // 初始设置红光亮级图片
     if (brightness_level > 6) {
         show_image(Home_Photo_Item->redlight_level, red_light_image_level[6]);
