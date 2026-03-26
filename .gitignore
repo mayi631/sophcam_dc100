@@ -36,11 +36,17 @@ oss/awtkcode/awtk/build/
 oss/ffmpeg/install/
 oss/csi2d/build/
 oss/thttpd/build/
-oss/lvgl/install/
 
-# 应用和服务的编译库
-app_services/lib/
-applications/*/lib/
+# LVGL编译产物（特定库文件）
+oss/lvgl/install/arm-none-linux-musleabihf/lib/liblvgl.a
+oss/lvgl/install/arm-none-linux-musleabihf/lib/liblvgl_demos.a
+oss/lvgl/install/arm-none-linux-musleabihf/lib/liblvgl_examples.a
+oss/lvgl/install/arm-none-linux-musleabihf/lib/liblvgl_thorvg.a
+
+# 应用和服务的特定编译库
+app_services/lib/libapp_service.a
+applications/manager/lib/libapp_mng.a
+applications/manager/lib/libapp_mng.so
 
 # 可执行文件(忽略编译输出,保留模板和配置文件)
 **/out/bin/*
