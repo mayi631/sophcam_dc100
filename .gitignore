@@ -8,6 +8,7 @@ out/
 # 编译生成的库文件
 *.a
 *.so
+*.so.*
 
 # 编译生成的目标文件
 *.o
@@ -22,7 +23,7 @@ applications/*/lib/
 applications/*/obj/
 components/*/lib/
 components/*/obj/
-components/comps_install/
+components/comps_install/*/lib/
 
 # UI编译产物（仅忽略turnkey生成的build目录）
 applications/dashcam/ui/*/turnkey/build/
@@ -38,8 +39,10 @@ oss/lvgl/build/
 oss/csi2d/build/
 oss/thttpd/build/
 
-# 可执行文件
-**/bin/*
+# 可执行文件(忽略编译输出,保留模板和配置文件)
+**/out/bin/*
+**/app_services/bin/*
+**/applications/*/bin/*
 !**/bin/.gitkeep
 
 # 安装目录

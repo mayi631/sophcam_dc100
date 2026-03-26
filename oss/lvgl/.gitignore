@@ -17,7 +17,7 @@ build/
 *.bak
 .vs/
 .config*
-config.h
+# config.h
 defconfig
 env/*
 lv_conf.h
