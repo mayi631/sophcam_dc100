@@ -5,10 +5,10 @@ out/
 .vscode/
 .idea/
 
-# 编译生成的库文件
-*.a
-*.so
-*.so.*
+# 编译生成的库文件(排除comps_install预编译库)
+**/*.a
+**/*.so
+!components/comps_install/**/*
 
 # 编译生成的目标文件
 *.o
@@ -23,7 +23,6 @@ applications/*/lib/
 applications/*/obj/
 components/*/lib/
 components/*/obj/
-components/comps_install/*/lib/
 
 # UI编译产物（仅忽略turnkey生成的build目录）
 applications/dashcam/ui/*/turnkey/build/
