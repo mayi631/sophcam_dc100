@@ -20,3 +20,4 @@ build/
 config.h
 defconfig
 env/*
+lv_conf.h
