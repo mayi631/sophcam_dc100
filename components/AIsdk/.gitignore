@@ -6,8 +6,9 @@ build/
 .vscode
 
 # install
-install/
 install_test
+!/install/
+!/install/**/include/
 
 # Prerequisites
 *.d
