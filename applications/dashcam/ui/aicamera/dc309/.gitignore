@@ -24,13 +24,21 @@ demo
 
 # Libraries
 *.lib
+!third_party/
+!third_party/**
 *.a
+!third_party/
+!third_party/**
 *.la
 *.lo
 
 # Shared objects (inc. Windows DLLs)
 *.dll
+!third_party/
+!third_party/**
 *.so
+!third_party/
+!third_party/**
 *.so.*
 *.dylib
 
