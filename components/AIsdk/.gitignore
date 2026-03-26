@@ -25,9 +25,9 @@ install_test
 *.pch
 
 # Compiled Dynamic libraries
-*.so
 *.dylib
 *.dll
+!install/**/*.so
 
 # Fortran module files
 *.mod
