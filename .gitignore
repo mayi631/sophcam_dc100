@@ -5,10 +5,16 @@ out/
 .vscode/
 .idea/
 
-# 编译生成的库文件(排除comps_install预编译库)
-**/*.a
-**/*.so
-!components/comps_install/**/*
+# 编译生成的库文件(只忽略真正编译生成的)
+out/**/*.a
+out/**/*.so
+components/AIsdk/.deps/
+components/*/build/
+oss/awtkcode/awtk-linux-fb/build/
+oss/ffmpeg/build/
+oss/lvgl/build/
+oss/csi2d/build/
+oss/thttpd/build/
 
 # 编译生成的目标文件
 *.o
@@ -17,11 +23,8 @@ out/
 built-in.o
 
 # 特定编译产物目录
-app_services/lib/
 app_services/obj/
-applications/*/lib/
 applications/*/obj/
-components/*/lib/
 components/*/obj/
 
 # UI编译产物（仅忽略turnkey生成的build目录）
@@ -30,11 +33,7 @@ applications/dashcam/ui/*/build/
 
 # OSS第三方库编译产物
 oss/awtkcode/awtk/build/
-oss/awtkcode/awtk-linux-fb/build/
-oss/ffmpeg/build/
 oss/ffmpeg/install/
-oss/lvgl/install/
-oss/lvgl/build/
 oss/csi2d/build/
 oss/thttpd/build/
 
@@ -44,9 +43,7 @@ oss/thttpd/build/
 **/applications/*/bin/*
 !**/bin/.gitkeep
 
-# 安装目录
-install/
-**/install/arm-none-linux-musleabihf/
+
 
 # 构建标记
 *.stamp
