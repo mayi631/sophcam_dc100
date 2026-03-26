@@ -332,7 +332,7 @@ void menuSetting_Resolution(lv_ui_t *ui)
 
     SettingResolution_t *SettingResolution = &ui->page_resolution;
     SettingResolution->resdel              = true;
-
+// casnnca
     // 创建主页面1 容器
     if(SettingResolution->resscr != NULL) {
         if(lv_obj_is_valid(SettingResolution->resscr)) {
