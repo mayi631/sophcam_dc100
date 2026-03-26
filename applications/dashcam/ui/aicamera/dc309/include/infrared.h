@@ -40,6 +40,12 @@ void ircut_off(void);
 //设置红外灯LED灯亮度
 void led_on_with_brightness(int levlel);
 
+/**
+ * 根据电池电量自动调整红外灯亮度档位
+ * 当电量下降时，自动降档到当前电量允许的最大档位
+ */
+void auto_adjust_redlight_by_battery(void);
+
 #ifdef __cplusplus
 }
 #endif

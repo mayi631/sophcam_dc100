@@ -316,18 +316,23 @@ int32_t do_zoom_in(int32_t key_value)
             MLOG_DBG("zoomin按键短按, 执行短按逻辑\n");
             if (g_up_callback != NULL) {
                 MLOG_DBG("BUG调试 %d %d\n",led_on_flag,brightness_level);
-                if (led_on_flag == false) {
+                // 如果红外灯未开启（亮度为0），先开启红外灯
+                if (brightness_level == 0) {
                     ircut_on();
                     led_on();
                     led_on_flag = true;
-                }
-                if (led_on_flag == true) {
-                    int8_t level = brightness_level;
-                    level += 1;
-                    if (level >= 7) {
-                        level = 7;
+                    // 开启后设置初始亮度为1档
+                    led_on_with_brightness(1);
+                } else {
+                    // 红外灯已开启，调节亮度
+                    if (led_on_flag == true) {
+                        int8_t level = brightness_level;
+                        level += 1;
+                        if (level >= 7) {
+                            level = 7;
+                        }
+                        led_on_with_brightness(level);
                     }
-                    led_on_with_brightness(level);
                 }
                 g_up_callback();
             }

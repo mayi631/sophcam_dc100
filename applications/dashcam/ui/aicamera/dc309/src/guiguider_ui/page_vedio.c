@@ -38,7 +38,7 @@ static lv_timer_t *g_zoom_longpress_timer = NULL;  // 长按定时器
 static int g_zoom_longpress_dir = 0;               // 长按方向: 0=无, 1=缩小, 2=放大
 static bool g_zoom_longpress_active = false;       // 是否正在长按
 
-static lv_obj_t *g_video_top_controls[6];  // 存储视频页面顶部控件对象
+lv_obj_t *g_video_top_controls[6];  // 存储视频页面顶部控件对象
 
 static void video_zoomin_key_cb(void);//w按键回调
 static void video_zoomout_key_cb(void);//t按键回调
@@ -146,7 +146,7 @@ static void video_var_dynamic_update(lv_timer_t *timer)
 }
 
 // 视频页面顶部控件布局更新
-static void update_video_top_controls_layout(void)
+void update_video_top_controls_layout(void)
 {
     int x_pos = 6;  // 起始X坐标
     
@@ -426,16 +426,9 @@ static void gesture_event_handler(lv_event_t *e)
 
 static void video_redlight_callback(void)
 {
-     // 更新红光亮级图片
-     if (brightness_level > 6) {
-        show_image(g_video_top_controls[2], red_light_image_level[6]);
-    } else if (brightness_level > 0) {
-        show_image(g_video_top_controls[2], red_light_image_level[brightness_level-1]);
-    }
-    
-    // 更新布局
-    update_video_top_controls_layout();
-    
+    // 调用通用的红光UI更新函数
+    extern void update_redlight_ui(void);
+    update_redlight_ui();
     MLOG_DBG("视频红光亮级更新: brightness_level=%d\n", brightness_level);
 }
 

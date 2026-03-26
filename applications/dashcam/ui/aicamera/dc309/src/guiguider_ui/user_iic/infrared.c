@@ -26,6 +26,27 @@ int bus_id = 0;		// I2C bus id
 #define LED_MAX_BRIGHTNESS 100  // 最大亮度值
 
 int red_light_level[] = {0, 64, 74, 80, 84, 90, 96, 100};
+// 外部变量声明：电池等级索引
+extern int32_t g_batter_image_index;
+// 根据电池电量获取红外灯最大允许档位
+static int8_t get_max_red_light_level(void)
+{
+    // g_batter_image_index 映射关系：
+    // 0: 充电
+    // 1: 电量在0%-25% (1/3格)
+    // 2: 电量在25%-70% (2/3格)
+    // 3: 电量在70%以上 (满电)
+    switch (g_batter_image_index) {
+        case 1: // 0%-25% 电量，最大只能开到3档
+            return 3;
+        case 2: // 25%-70% 电量，最大只能开到5档
+            return 5;
+        case 0: // 充电状态
+        case 3: // 满电
+        default:
+            return 7; // 最大7档
+    }
+}
 
 // PWM属性结构体
 static HAL_PWM_S led_pwm_attr = {0};
@@ -161,7 +182,7 @@ void led_on(void)
 
 /**
  * 打开LED灯并设置指定亮度
- * 
+ *
  * @param levlel 亮度值 (0-7)
  */
 void led_on_with_brightness(int levlel)
@@ -170,6 +191,30 @@ void led_on_with_brightness(int levlel)
         levlel = 7;
     else if (levlel <= 0)
         levlel = 0;
+
+    // 如果是要关闭红外灯（亮度为0），直接执行
+    if (levlel == 0) {
+        brightness_level = 0;
+        MLOG_DBG("红外灯已关闭\n");
+        return;
+    }
+
+    // 检查是否空格电量（电池图标索引为1表示低电量0%-25%）
+    if (g_batter_image_index == 1) {
+        MLOG_ERR("电量过低，无法开启红外灯\n");
+        led_off();  // 关闭红外灯
+        brightness_level = 0;
+        // TODO: 可以在这里添加提示用户电量低的逻辑
+        return;
+    }
+
+    // 根据电池电量限制最大亮度档位
+    int8_t max_level = get_max_red_light_level();
+    if (levlel > max_level) {
+        levlel = max_level;
+        MLOG_DBG("电池电量限制，红外灯亮度自动降档至 %d\n", levlel);
+    }
+
     if (set_led_brightness(red_light_level[levlel]) == 0) {
         brightness_level = levlel;
         MLOG_DBG("LED灯已打开，自定义亮度等级: %d\n", levlel);
@@ -233,4 +278,42 @@ void ircut_on(void)
 void ircut_off(void)
 {
     user_i2c0(0x01, 0x00);
+}
+
+/**
+ * 根据电池电量自动调整红外灯亮度档位
+ * 当电量下降时，自动降档到当前电量允许的最大档位
+ */
+void auto_adjust_redlight_by_battery(void)
+{
+    extern void update_redlight_ui(void);  // UI更新函数声明
+
+    if (brightness_level == 0) {
+        // 红外灯未开启，无需调整
+        return;
+    }
+
+    // 检查是否空格电量（电池图标索引为1表示低电量0%-10%）
+    if (g_batter_image_index == 1) {
+        MLOG_ERR("电量过低，强制关闭红外灯\n");
+        led_off();  // 强制关闭红外灯
+        ircut_off();
+        brightness_level = 0;  // 将亮度等级设置为0，确保UI能正确更新
+        // 更新UI显示
+        update_redlight_ui();
+        return;
+    }
+
+    // 获取当前电量允许的最大档位
+    int8_t max_level = get_max_red_light_level();
+
+    // 如果当前亮度超过允许的最大档位，则自动降档
+    if (brightness_level > max_level) {
+        MLOG_INFO("电池电量下降，红外灯从 %d 档自动降至 %d 档\n", brightness_level, max_level);
+        if (set_led_brightness(red_light_level[max_level]) == 0) {
+            brightness_level = max_level;
+            // 更新UI显示
+            update_redlight_ui();
+        }
+    }
 }

@@ -21,6 +21,7 @@
 #include "facep_service.h"
 #include "linux/input.h"
 #include "rtt.h"
+#include "infrared.h"
 
 // 控件状态结构体
 typedef struct {
@@ -196,6 +197,9 @@ void set_batter_image_index(int32_t index)
     }
 
     MLOG_DBG("batter index:%d, g_batter_image_index:%d\n", index, g_batter_image_index);
+
+    // 当电池电量变化时，自动调整红外灯档位
+    auto_adjust_redlight_by_battery();
 }
 
 static void photo_var_dynamic_update(lv_timer_t *timer)
@@ -525,18 +529,11 @@ static void photo_menu_callback(void)
         true);
 }
 
-// UP按键处理回调函数
+// UP/DOWN按键处理回调函数（红光亮级更新）
 static void photo_redlight_callback(void)
 {
-    lv_ui_t *ui = &g_ui;
-    // 更新红光亮级图片
-    if (brightness_level > 6) {
-        show_image(ui->page_photo.redlight_level, red_light_image_level[6]);
-    } else if (brightness_level > 0) {
-        show_image(ui->page_photo.redlight_level, red_light_image_level[brightness_level-1]);
-    }
-    // 更新布局
-    update_top_controls_simple();
+    // 调用通用的红光UI更新函数
+    update_redlight_ui();
 }
 
 // 模式切换按键处理回调函数
@@ -948,6 +945,50 @@ void register_all_key(void)
     takephoto_register_zoomout_callback(zoomout_key_cb);
     takephoto_register_before_callback(key_takephoto_before_callback);
     takephoto_power_callback(key_takephoto_power_callback);
+}
+
+// 更新红光亮级UI显示（拍照和视频模式通用）
+void update_redlight_ui(void)
+{
+    extern bool is_video_mode;
+    extern lv_obj_t *g_video_top_controls[6];  // 视频页面顶部控件
+    extern void update_video_top_controls_layout(void);  // 视频页面布局更新函数
+
+    MLOG_DBG("update_redlight_ui: brightness_level=%d g_batter_image_index:%d\n", brightness_level,g_batter_image_index);
+    if (is_video_mode) {
+        // 视频模式：更新视频页面的红光UI
+        if (g_video_top_controls[2] && lv_obj_is_valid(g_video_top_controls[2])) {
+            if (brightness_level > 0) {
+                lv_obj_clear_flag(g_video_top_controls[2], LV_OBJ_FLAG_HIDDEN);
+                if (brightness_level > 6) {
+                    show_image(g_video_top_controls[2], red_light_image_level[6]);
+                } else {
+                    show_image(g_video_top_controls[2], red_light_image_level[brightness_level-1]);
+                }
+                update_video_top_controls_layout();
+            } else {
+                lv_obj_add_flag(g_video_top_controls[2], LV_OBJ_FLAG_HIDDEN);
+                update_video_top_controls_layout();
+            }
+        }
+    } else {
+        // 拍照模式：更新拍照页面的红光UI
+        lv_ui_t *ui = &g_ui;
+        if (ui->page_photo.redlight_level && lv_obj_is_valid(ui->page_photo.redlight_level)) {
+            if (brightness_level > 0) {
+                lv_obj_clear_flag(ui->page_photo.redlight_level, LV_OBJ_FLAG_HIDDEN);
+                if (brightness_level > 6) {
+                    show_image(ui->page_photo.redlight_level, red_light_image_level[6]);
+                } else {
+                    show_image(ui->page_photo.redlight_level, red_light_image_level[brightness_level-1]);
+                }
+                update_top_controls_simple();
+            } else {
+                lv_obj_add_flag(ui->page_photo.redlight_level, LV_OBJ_FLAG_HIDDEN);
+                update_top_controls_simple();
+            }
+        }
+    }
 }
 
 

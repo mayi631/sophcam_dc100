@@ -23,6 +23,10 @@ void set_viewfinder_color(uint32_t color);
 
 void hide_all_widgets(lv_obj_t *parent);
 void restore_all_widgets(void);
+
+// 更新红光亮级UI显示
+void update_redlight_ui(void);
+
 #ifdef __cplusplus
 }
 #endif
