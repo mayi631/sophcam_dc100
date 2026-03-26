@@ -9,6 +9,7 @@ build/
 install_test
 !/install/
 !/install/**/include/
+!/install/**/lib/
 
 # Prerequisites
 *.d
@@ -35,7 +36,7 @@ install_test
 # Compiled Static libraries
 *.lai
 *.la
-*.a
+!install/**/*.a
 *.lib
 
 # Executables
