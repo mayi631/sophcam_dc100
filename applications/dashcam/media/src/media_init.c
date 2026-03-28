@@ -250,7 +250,7 @@ int32_t MEDIA_Size2VideoMediaMode(int32_t width, int32_t height,char *str)
 		media_mode = MEDIA_VIDEO_SIZE_3840X2160P25;
 	} else if (width == 2688) {
 		media_mode = MEDIA_VIDEO_SIZE_2688X1512P25;
-	} else if (width == 1920  && fps == 25) {
+	} else if (width == 1920  && fps == 30) {
 		media_mode = MEDIA_VIDEO_SIZE_1920X1080P25;
 	} else if (width == 1920 && fps == 60) {
 		media_mode = MEDIA_VIDEO_SIZE_1920X1080P60;
