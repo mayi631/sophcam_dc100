@@ -10,6 +10,15 @@ out/**/*.a
 out/**/*.so
 components/AIsdk/.deps/
 components/*/build/
+components/comps_install/arm-none-linux-musleabihf/cvi_mpi/*/*.a
+components/comps_install/arm-none-linux-musleabihf/cvi_mpi/*/*.so
+components/comps_install/arm-none-linux-musleabihf/cvi_tdl_sdk/*/*.a
+components/comps_install/arm-none-linux-musleabihf/cvi_tdl_sdk/*/*.so
+components/comps_install/arm-none-linux-musleabihf/hal/*/*.a
+components/comps_install/arm-none-linux-musleabihf/hal/*/*.so
+components/comps_install/arm-none-linux-musleabihf/mapi/*/*.a
+components/comps_install/arm-none-linux-musleabihf/mapi/*/*.so
+
 oss/awtkcode/awtk-linux-fb/build/
 oss/ffmpeg/build/
 oss/lvgl/build/
