@@ -165,7 +165,7 @@ CONFIG_STATIC=y
 # CViTek Platform Configuration
 #
 CONFIG_CVI_PLATFORM_DIR="${SRCTREE}/.."
-CONFIG_CVI_BUILD_DIRNAME="cv1842cp_dc100_spinand"
+CONFIG_CVI_BUILD_DIRNAME="cv1842cp_dc100v1_spinand"
 CONFIG_KOMOD_PATH="/system/ko"
 
 #

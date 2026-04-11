@@ -10,14 +10,12 @@ out/**/*.a
 out/**/*.so
 components/AIsdk/.deps/
 components/*/build/
-components/comps_install/arm-none-linux-musleabihf/cvi_mpi/*/*.a
-components/comps_install/arm-none-linux-musleabihf/cvi_mpi/*/*.so
-components/comps_install/arm-none-linux-musleabihf/cvi_tdl_sdk/*/*.a
-components/comps_install/arm-none-linux-musleabihf/cvi_tdl_sdk/*/*.so
-components/comps_install/arm-none-linux-musleabihf/hal/*/*.a
-components/comps_install/arm-none-linux-musleabihf/hal/*/*.so
-components/comps_install/arm-none-linux-musleabihf/mapi/*/*.a
-components/comps_install/arm-none-linux-musleabihf/mapi/*/*.so
+applications/tools/awtkres/scripts/__pycache__/*.pyc
+
+components/comps_install/arm-none-linux-musleabihf/cvi_mpi/lib/
+components/comps_install/arm-none-linux-musleabihf/cvi_tdl_sdk/lib/
+components/comps_install/arm-none-linux-musleabihf/hal/lib/
+components/comps_install/arm-none-linux-musleabihf/mapi/lib/
 
 oss/awtkcode/awtk-linux-fb/build/
 oss/ffmpeg/build/
