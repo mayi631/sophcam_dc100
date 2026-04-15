@@ -375,6 +375,7 @@ void factory_key_cb(int key_code, int key_value)
                 MLOG_ERR("恢复出厂设置失败，错误码: %d\n", s32Ret);
                 lv_label_set_text(lv_obj_get_child(obj_factory_dialog_s, 2), str_language_factory_reset_failed[get_curr_language()]);
             } else {
+                update_setting_from_param();
                 lv_label_set_text(lv_obj_get_child(obj_factory_dialog_s, 2), str_language_factory_reset_successful[get_curr_language()]);
             }
             lv_obj_add_style(lv_obj_get_child(obj_factory_dialog_s, 2), &ttf_font_34, LV_PART_MAIN | LV_STATE_DEFAULT);

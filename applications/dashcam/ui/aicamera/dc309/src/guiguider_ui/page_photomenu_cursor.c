@@ -18,7 +18,7 @@
  #include <stdio.h>
  
  #define GRID_COLS 1
- #define GRID_ROWS 25
+ #define GRID_ROWS 9
  #define GRID_MAX_OBJECTS GRID_ROWS * GRID_COLS
  static lv_obj_t *focusable_objects[GRID_MAX_OBJECTS];
  
@@ -44,12 +44,17 @@
      strncpy(g_sysbtn_labelcursor, plabel, sizeof(g_sysbtn_labelcursor));
  }
 
- static void cursor_Del_Complete_anim_cb(lv_anim_t* a)
- {
-     ui_load_scr_animation(&g_ui, &g_ui.page_photoMenu_Setting.menuscr, g_ui.screenPhotoMenuSetting_del,
-         &g_ui.screen_SettingResolution_del, photoMenu_Setting, LV_SCR_LOAD_ANIM_NONE, 0, 0, false,
-         true);
- }
+static void cursor_Del_Complete_anim_cb(lv_anim_t* a)
+{
+    if(ui_Get_PreScreen() == g_ui.page_photoMenu_Setting.menuscr) {
+        ui_load_scr_animation(&g_ui, &g_ui.page_photoMenu_Setting.menuscr, g_ui.screenPhotoMenuSetting_del,
+            &g_ui.screen_SettingResolution_del, photoMenu_Setting, LV_SCR_LOAD_ANIM_NONE, 0, 0, false,
+            true);
+    } else if(ui_Get_PreScreen() == obj_vedioMenu_s) {
+        ui_load_scr_animation(&g_ui, &obj_vedioMenu_s, 1, NULL, vedioMenu_Setting, LV_SCR_LOAD_ANIM_NONE, 0, 0, false,
+            true);
+    }
+}
 
  static void cursor_win_Delete_anim(void)
  {
@@ -68,20 +73,25 @@
      lv_anim_start(&Delete_anim);
  }
  
- static void sysMenu_cursor_btn_back_event_handler(lv_event_t *e)
- {
-     lv_event_code_t code = lv_event_get_code(e);
-     MLOG_DBG("event: %s\n", lv_event_code_get_name(code));
-     switch(code) {
-         case LV_EVENT_CLICKED: {
-            ui_load_scr_animation(&g_ui, &g_ui.page_photoMenu_Setting.menuscr, g_ui.screenPhotoMenuSetting_del,
-                &g_ui.screen_SettingResolution_del, photoMenu_Setting, LV_SCR_LOAD_ANIM_NONE, 0, 0, false,
-                true);
-             break;
-         }
-         default: break;
-     }
- }
+static void sysMenu_cursor_btn_back_event_handler(lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    MLOG_DBG("event: %s\n", lv_event_code_get_name(code));
+    switch(code) {
+        case LV_EVENT_CLICKED: {
+            if(ui_Get_PreScreen() == g_ui.page_photoMenu_Setting.menuscr) {
+                ui_load_scr_animation(&g_ui, &g_ui.page_photoMenu_Setting.menuscr, g_ui.screenPhotoMenuSetting_del,
+                    &g_ui.screen_SettingResolution_del, photoMenu_Setting, LV_SCR_LOAD_ANIM_NONE, 0, 0, false,
+                    true);
+            } else if(ui_Get_PreScreen() == obj_vedioMenu_s) {
+                ui_load_scr_animation(&g_ui, &obj_vedioMenu_s, 1, NULL, vedioMenu_Setting, LV_SCR_LOAD_ANIM_NONE, 0, 0, false,
+                    true);
+            }
+            break;
+        }
+        default: break;
+    }
+}
  
  void syamenu_cursor_SelectFocus_OK(lv_event_t *e)
  {
@@ -144,7 +154,7 @@
                      cursor_Current_Index_s = i;
                      syamenu_cursor_SelectFocus_OK(e);
                      // 获取按钮标签文本
-                     lv_obj_t *label = lv_obj_get_child(lv_obj_get_child(parent, i), 0);
+                     lv_obj_t *label = lv_obj_get_child(lv_obj_get_child(parent, i), 1);
                      if(label && lv_obj_check_type(label, &lv_label_class)) {
                          const char *txt = lv_label_get_text(label);
                          if(txt) strncpy(g_sysbtn_labelcursor, txt, sizeof(g_sysbtn_labelcursor));
@@ -204,7 +214,7 @@
                  }
              }
              // 获取按钮标签文本
-             lv_obj_t *label = lv_obj_get_child(lv_obj_get_child(parent, i), 0);
+             lv_obj_t *label = lv_obj_get_child(lv_obj_get_child(parent, i), 1);
              if(label && lv_obj_check_type(label, &lv_label_class)) {
                  const char *txt = lv_label_get_text(label);
                  if(txt) strncpy(g_sysbtn_labelcursor, txt, sizeof(g_sysbtn_labelcursor));
@@ -222,35 +232,45 @@
  }
  
  
- static void sysmenu_cursor_menu_callback(void)
- {
-     MLOG_DBG("sysmenu_cursor_menu_callback\n");
-     ui_load_scr_animation(&g_ui, &g_ui.page_photoMenu_Setting.menuscr, g_ui.screenPhotoMenuSetting_del,
-        &g_ui.screen_SettingResolution_del, photoMenu_Setting, LV_SCR_LOAD_ANIM_NONE, 0, 0, false,
-        true);
- }
+static void sysmenu_cursor_menu_callback(void)
+{
+    MLOG_DBG("sysmenu_cursor_menu_callback\n");
+    if(ui_Get_PreScreen() == g_ui.page_photoMenu_Setting.menuscr) {
+        ui_load_scr_animation(&g_ui, &g_ui.page_photoMenu_Setting.menuscr, g_ui.screenPhotoMenuSetting_del,
+           &g_ui.screen_SettingResolution_del, photoMenu_Setting, LV_SCR_LOAD_ANIM_NONE, 0, 0, false,
+           true);
+    } else if(ui_Get_PreScreen() == obj_vedioMenu_s) {
+        ui_load_scr_animation(&g_ui, &obj_vedioMenu_s, 1, NULL, vedioMenu_Setting, LV_SCR_LOAD_ANIM_NONE, 0, 0, false,
+           true);
+    }
+}
  
- static void gesture_event_handler(lv_event_t *e)
- {
-     lv_event_code_t code = lv_event_get_code(e);
-     MLOG_DBG("event: %s\n", lv_event_code_get_name(code));
-     switch(code) {
-         case LV_EVENT_GESTURE: {
-             // 获取手势方向，需要 TP 驱动支持
-             lv_dir_t dir = lv_indev_get_gesture_dir(lv_indev_active());
-             switch(dir) {
-                 case LV_DIR_RIGHT: {
-                    ui_load_scr_animation(&g_ui, &g_ui.page_photoMenu_Setting.menuscr, g_ui.screenPhotoMenuSetting_del,
-                        &g_ui.screen_SettingResolution_del, photoMenu_Setting, LV_SCR_LOAD_ANIM_NONE, 0, 0, false,
-                        true);
-                 }
-                 default: break;
-             }
-             break;
-         }
-         default: break;
-     }
- }
+static void gesture_event_handler(lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    MLOG_DBG("event: %s\n", lv_event_code_get_name(code));
+    switch(code) {
+        case LV_EVENT_GESTURE: {
+            // 获取手势方向，需要 TP 驱动支持
+            lv_dir_t dir = lv_indev_get_gesture_dir(lv_indev_active());
+            switch(dir) {
+                case LV_DIR_RIGHT: {
+                    if(ui_Get_PreScreen() == g_ui.page_photoMenu_Setting.menuscr) {
+                        ui_load_scr_animation(&g_ui, &g_ui.page_photoMenu_Setting.menuscr, g_ui.screenPhotoMenuSetting_del,
+                            &g_ui.screen_SettingResolution_del, photoMenu_Setting, LV_SCR_LOAD_ANIM_NONE, 0, 0, false,
+                            true);
+                    } else if(ui_Get_PreScreen() == obj_vedioMenu_s) {
+                        ui_load_scr_animation(&g_ui, &obj_vedioMenu_s, 1, NULL, vedioMenu_Setting, LV_SCR_LOAD_ANIM_NONE, 0, 0, false,
+                            true);
+                    }
+                }
+                default: break;
+            }
+            break;
+        }
+        default: break;
+    }
+}
  
  void photoMenu_Cursor(lv_ui_t *ui)
  {
@@ -311,23 +331,18 @@
          "cur 6",
          "cur 7",
          "cur 8",
-         "cur 9",
-         "cur 10",
-         "cur 11",
-         "cur 12",
-         "cur 13",
-         "cur 14",
-         "cur 15",
-         "cur 16",
-         "cur 17",
-         "cur 18",
-         "cur 19",
-         "cur 20",
-         "cur 21",
-         "cur 22",
-         "cur 23",
-         "cur 24",
      };
+     const char* cursor_image_array[] = {
+         "Icon_1_cross_Red_menu.png",
+         "Icon_2_cross_Red_menu.png",
+         "Icon_3_cross_RED_menu.png",
+         "Icon_4_cross_RED_menu.png",
+         "Icon_5_cross_Red_menu.png",
+         "Icon_6_cross_Red_menu.png",
+         "Icon_7_cross_Red_menu.png",
+         "Icon_8_cross_Red_menu.png",
+     };
+
      static lv_point_precise_t line_points_pool[sizeof(btn_labels) / sizeof(btn_labels[0])][2];
      for(uint8_t i = 0; i < sizeof(btn_labels) / sizeof(btn_labels[0]); i++) {
          lv_obj_t *btn = lv_button_create(settings_cont);
@@ -342,15 +357,21 @@
          lv_obj_set_style_border_color(btn, lv_color_hex(0xCCCCCC), LV_PART_MAIN);
          lv_obj_set_style_border_width(btn, 0, LV_PART_MAIN);
          lv_obj_set_style_radius(btn, 5, LV_PART_MAIN);
- 
+
+         if (i > 0) {
+             lv_obj_t* img = lv_img_create(btn);
+             lv_obj_set_size(img, 40, 40);
+             lv_obj_align(img, LV_ALIGN_LEFT_MID, 0, 0);
+             lv_obj_set_style_pad_all(img, 0, LV_STATE_DEFAULT);
+             show_image(img, cursor_image_array[i-1]);
+         }
          lv_obj_t *label = lv_label_create(btn);
          if(!label) continue; // 如果标签创建失败则跳过
  
          lv_label_set_text(label, btn_labels[i]);
          lv_obj_set_style_text_font(label, get_usr_fonts(ALI_PUHUITI_FONTPATH, MENU_FONT_SIZE), LV_PART_MAIN | LV_STATE_DEFAULT);
          lv_obj_set_style_text_color(label, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
- 
-         lv_obj_align(label, LV_ALIGN_LEFT_MID, 0, 0);
+         lv_obj_align(label, LV_ALIGN_CENTER, 0, 0);
  
          // 添加事件处理器，传入容器对象作为用户数据
          lv_obj_add_event_cb(btn, sysMenu_cursor_Select_btn_event_handler, LV_EVENT_ALL, settings_cont);

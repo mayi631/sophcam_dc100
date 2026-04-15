@@ -10,12 +10,12 @@ extern "C" {
 typedef enum {
     PHOTO_EFFECT = 0,    // 摄影效果
     PHOTO_RES,   // 分辨率
-    PHOTO_WHI,       // 白平衡
-    PHOTO_ISO,       // 感光度
-    PHOTO_EXPOSE,    // 曝光设置
+    // PHOTO_WHI,       // 白平衡
+    // PHOTO_ISO,       // 感光度
+    // PHOTO_EXPOSE,    // 曝光设置
     // PHOTO_AIMODE,    // AI设置
     // PHOTO_PICMODE,   // 场景模式
-    PHOTO_DELAY,     // 自拍时间
+    // PHOTO_DELAY,     // 自拍时间
     PHOTO_SHOOTMODE, // 拍摄模式
     PHOTO_PICQUAL,   // 画质
     PHOTO_CURSOR,   // 光标

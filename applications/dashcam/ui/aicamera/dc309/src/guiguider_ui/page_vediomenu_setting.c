@@ -47,11 +47,11 @@ struct button_setting {
 struct button_setting vedio_button_settings[] = {
     {"颜色特效", g_button_labelPho, "颜色特效_menu.png" },
     { "分辨率", g_vediobtn_labelRes, "分辨率.png" },
-    {"摄影模式", g_vediobtn_labelGraphy, "摄影.png" },
+    // {"摄影模式", g_vediobtn_labelGraphy, "摄影.png" },
     // {"缩时录像", "", "索时摄影.png" },
-    {"感光度", g_button_labelSen, "iso_菜单.png" },
-    { "曝光", g_button_labelExp, "曝光.png" },
-    { "白平衡", g_button_labelWhi, "白平衡.png" },
+    // {"感光度", g_button_labelSen, "iso_菜单.png" },
+    // { "曝光", g_button_labelExp, "曝光.png" },
+    // { "白平衡", g_button_labelWhi, "白平衡.png" },
     { "锐度", g_vediobtn_labelSharpness, "锐化.png" },
     {"光标", g_sysbtn_labelcursor, "光标.png" },
 };
@@ -62,11 +62,11 @@ void video_language_setting(void)
 {
     vedio_button_settings[VEDIO_EFFECT].button_name = str_language_color_effect[get_curr_language()];
     vedio_button_settings[VEDIO_RES].button_name = str_language_resolution[get_curr_language()];
-    vedio_button_settings[VEDIO_GRAPHY].button_name = str_language_photography[get_curr_language()];
+    // vedio_button_settings[VEDIO_GRAPHY].button_name = str_language_photography[get_curr_language()];
     // vedio_button_settings[VEDIO_LAPSE_TIME].button_name = str_language_timelapse_photography[get_curr_language()];
-    vedio_button_settings[VEDIO_ISO].button_name = str_language_iso[get_curr_language()];
-    vedio_button_settings[VEDIO_EXPOSE].button_name = str_language_exposure[get_curr_language()];
-    vedio_button_settings[VEDIO_WHITE_BLA].button_name = str_language_white_balance[get_curr_language()];
+    // vedio_button_settings[VEDIO_ISO].button_name = str_language_iso[get_curr_language()];
+    // vedio_button_settings[VEDIO_EXPOSE].button_name = str_language_exposure[get_curr_language()];
+    // vedio_button_settings[VEDIO_WHITE_BLA].button_name = str_language_white_balance[get_curr_language()];
     vedio_button_settings[VEDIO_SHARPNESS].button_name = str_language_sharpness[get_curr_language()];
     vedio_button_settings[VEDIO_CURSOR].button_name = str_language_cursor[get_curr_language()];
 }
@@ -108,11 +108,11 @@ static const char* get_localized_string(uint8_t index) {
     char* g_button_n[] = {
         g_button_labelPho,
         g_vediobtn_labelRes,
-        g_vediobtn_labelGraphy, 
+        // g_vediobtn_labelGraphy, 
         // g_vediobtn_labelTimelapse,
-        g_button_labelSen,
-        g_button_labelExp,
-        g_button_labelWhi,
+        // g_button_labelSen,
+        // g_button_labelExp,
+        // g_button_labelWhi,
         g_vediobtn_labelSharpness,
         g_sysbtn_labelcursor,
     };
@@ -133,8 +133,11 @@ static const char* get_localized_string(uint8_t index) {
             }
         }
     }
-    if(index == VEDIO_ISO) {
-        return g_button_labelSen;
+    // if(index == VEDIO_ISO) {
+    //     return g_button_labelSen;
+    // }
+    if(index == VEDIO_CURSOR ) {
+        return g_sysbtn_labelcursor;
     }
 
     return NULL;
@@ -245,20 +248,20 @@ static void ALL_Select_Item_event_handler(lv_event_t *e)
                             ui_load_scr_animation(&g_ui, &obj_vedio_Res_s, 1, NULL, vedioMenuSetting_Resolution,
                                                   LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
                             break;
-                        case VEDIO_GRAPHY: // 摄影
-                            ui_load_scr_animation(&g_ui, &obj_Vedio_Graphy_s, 1, NULL, vedioMenu_Graphy,
-                                                  LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
+                        // case VEDIO_GRAPHY: // 摄影
+                        //     ui_load_scr_animation(&g_ui, &obj_Vedio_Graphy_s, 1, NULL, vedioMenu_Graphy,
+                        //                           LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
 
-                            break;
-                        case VEDIO_EXPOSE: // 曝光
-                            ui_load_scr_animation(&g_ui, &g_ui.page_exposure.expos_scr, g_ui.screen_SettingExposure_del,
-                                                  NULL, photoMenu_Exposure, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
-                            break;
-                        case VEDIO_WHITE_BLA: // 白平衡
-                            ui_load_scr_animation(&g_ui, &g_ui.page_whitebalance.balanscr,
-                                                  g_ui.screen_SettingWhiteBalance_del, NULL, menuSetting_WhiteBalance,
-                                                  LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
-                            break;
+                        //     break;
+                        // case VEDIO_EXPOSE: // 曝光
+                        //     ui_load_scr_animation(&g_ui, &g_ui.page_exposure.expos_scr, g_ui.screen_SettingExposure_del,
+                        //                           NULL, photoMenu_Exposure, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
+                        //     break;
+                        // case VEDIO_WHITE_BLA: // 白平衡
+                        //     ui_load_scr_animation(&g_ui, &g_ui.page_whitebalance.balanscr,
+                        //                           g_ui.screen_SettingWhiteBalance_del, NULL, menuSetting_WhiteBalance,
+                        //                           LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
+                        //     break;
                         case VEDIO_SHARPNESS: // 锐度
 
                             ui_load_scr_animation(&g_ui, &obj_Vedio_Sharpness_s, 1, NULL, vedioMenu_Sharpness,
@@ -270,10 +273,10 @@ static void ALL_Select_Item_event_handler(lv_event_t *e)
                                                   g_ui.screen_SettingPhotoEffect_del, NULL, photoMenu_SettEffect,
                                                   LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
                             break;
-                        case VEDIO_ISO: // 感光度
-                            ui_load_scr_animation(&g_ui, &g_ui.page_sensitivity.iso_scr,
-                                g_ui.screen_SettingSensitivity_del, NULL,photoMenu_Sensitivity, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
-                            break;
+                        // case VEDIO_ISO: // 感光度
+                        //     ui_load_scr_animation(&g_ui, &g_ui.page_sensitivity.iso_scr,
+                        //         g_ui.screen_SettingSensitivity_del, NULL,photoMenu_Sensitivity, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
+                        //     break;
                         case VEDIO_CURSOR: // 光标
                             ui_load_scr_animation(&g_ui, &obj_sysMenu_cursor_s, 1, NULL, photoMenu_Cursor, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
                             break;
@@ -299,21 +302,21 @@ static void vedioMenu_setting_click_callback(lv_obj_t *obj)
                     ui_load_scr_animation(&g_ui, &obj_vedio_Res_s, 1, NULL, vedioMenuSetting_Resolution,
                                           LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
                     break;
-                case VEDIO_GRAPHY: // 摄影
-                    ui_load_scr_animation(&g_ui, &obj_Vedio_Graphy_s, 1, NULL, vedioMenu_Graphy,
-                                          LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
+                // case VEDIO_GRAPHY: // 摄影
+                //     ui_load_scr_animation(&g_ui, &obj_Vedio_Graphy_s, 1, NULL, vedioMenu_Graphy,
+                //                           LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
 
-                    break;
+                //     break;
 
-                case VEDIO_EXPOSE: // 曝光
-                    ui_load_scr_animation(&g_ui, &g_ui.page_exposure.expos_scr, g_ui.screen_SettingExposure_del,
-                                          NULL, photoMenu_Exposure, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
-                    break;
-                case VEDIO_WHITE_BLA: // 白平衡
-                    ui_load_scr_animation(&g_ui, &g_ui.page_whitebalance.balanscr,
-                                          g_ui.screen_SettingWhiteBalance_del, NULL, menuSetting_WhiteBalance,
-                                          LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
-                    break;
+                // case VEDIO_EXPOSE: // 曝光
+                //     ui_load_scr_animation(&g_ui, &g_ui.page_exposure.expos_scr, g_ui.screen_SettingExposure_del,
+                //                           NULL, photoMenu_Exposure, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
+                //     break;
+                // case VEDIO_WHITE_BLA: // 白平衡
+                //     ui_load_scr_animation(&g_ui, &g_ui.page_whitebalance.balanscr,
+                //                           g_ui.screen_SettingWhiteBalance_del, NULL, menuSetting_WhiteBalance,
+                //                           LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
+                //     break;
                 case VEDIO_SHARPNESS: // 锐度
 
                     ui_load_scr_animation(&g_ui, &obj_Vedio_Sharpness_s, 1, NULL, vedioMenu_Sharpness,
@@ -325,10 +328,10 @@ static void vedioMenu_setting_click_callback(lv_obj_t *obj)
                                           g_ui.screen_SettingPhotoEffect_del, NULL, photoMenu_SettEffect,
                                           LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
                     break;
-                case VEDIO_ISO: // 感光度
-                    ui_load_scr_animation(&g_ui, &g_ui.page_sensitivity.iso_scr,
-                        g_ui.screen_SettingSensitivity_del, NULL,photoMenu_Sensitivity, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
-                    break;
+                // case VEDIO_ISO: // 感光度
+                //     ui_load_scr_animation(&g_ui, &g_ui.page_sensitivity.iso_scr,
+                //         g_ui.screen_SettingSensitivity_del, NULL,photoMenu_Sensitivity, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
+                //     break;
                 case VEDIO_CURSOR: // 光标
                     ui_load_scr_animation(&g_ui, &obj_sysMenu_cursor_s, 1, NULL, photoMenu_Cursor, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
                     break;
@@ -489,18 +492,18 @@ void vedioMenu_Setting(lv_ui_t *ui)
             case VEDIO_RES: // 分辨率
                 lv_label_set_text(value_label, video_getRes_Label());
                 break;
-            case VEDIO_GRAPHY: // 摄影
-                lv_label_set_text(value_label,  get_localized_string(i));
-                break;
-            case VEDIO_ISO: // 曝光
-                lv_label_set_text(value_label, get_localized_string(i));
-                break;
-            case VEDIO_EXPOSE: // 曝光
-                lv_label_set_text(value_label, g_button_labelExp);
-                break;
-            case VEDIO_WHITE_BLA: // 白平衡
-                lv_label_set_text(value_label, get_localized_string(i));
-                break;
+            // case VEDIO_GRAPHY: // 摄影
+            //     lv_label_set_text(value_label,  get_localized_string(i));
+            //     break;
+            // case VEDIO_ISO: // 曝光
+            //     lv_label_set_text(value_label, get_localized_string(i));
+            //     break;
+            // case VEDIO_EXPOSE: // 曝光
+            //     lv_label_set_text(value_label, g_button_labelExp);
+            //     break;
+            // case VEDIO_WHITE_BLA: // 白平衡
+            //     lv_label_set_text(value_label, get_localized_string(i));
+            //     break;
             case VEDIO_SHARPNESS: // 锐度
                 lv_label_set_text(value_label, get_localized_string(i));
                 break;
@@ -508,7 +511,7 @@ void vedioMenu_Setting(lv_ui_t *ui)
                 lv_label_set_text(value_label, get_localized_string(i));
                 break;
             case VEDIO_CURSOR: // 光标
-                lv_label_set_text(value_label, g_sysbtn_labelcursor);
+                lv_label_set_text(value_label, get_localized_string(i));
                 break;
         }
     }

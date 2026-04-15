@@ -26,8 +26,20 @@ char g_sysbtn_labelPowerdown[32] = "关闭"; // 自动关机
 char g_sysbtn_labelVolume[32] = "开启"; // 动作音
 char g_sysbtn_labelLightfreq[32] = "50HZ"; // 光频
 char g_sysbtn_labelscreen_off[32] = "开启"; // 自动息屏
-char g_sysbtn_labellight_level[32] = "level 4"; // 亮度等级
+char g_sysbtn_labellight_level[32] = "等级 4"; // 亮度等级
 char g_sysbtn_labelstatuslight[32] = "关闭"; // 状态灯
+static char g_localized_light_level[32]; // 亮度等级的多语言缓存
+
+// 获取亮度等级的本地化字符串 (格式: "等级 X")，并更新全局变量
+static const char* get_localized_light_level(void) {
+    int level = get_curr_brightness() + 1; // get_curr_brightness() 返回 0-6, level 需要 1-7
+    if (level < 1) level = 4; // 安全保护
+    snprintf(g_localized_light_level, sizeof(g_localized_light_level), "%s %d", str_language_level[get_curr_language()], level);
+    // 同时更新全局变量，保持一致性
+    strncpy(g_sysbtn_labellight_level, g_localized_light_level, sizeof(g_sysbtn_labellight_level));
+    return g_localized_light_level;
+}
+
 static const char* get_localized_string(uint8_t index) {
     // 获取当前语言
     int lang = get_curr_language();
@@ -46,6 +58,7 @@ static const char* get_localized_string(uint8_t index) {
         g_sysbtn_labelscreen_off,
         g_sysbtn_labelVolume,    // 索引2  
         g_sysbtn_labelLightfreq, // 索引3
+        g_sysbtn_labellight_level,
         g_sysbtn_labelstatuslight,
     };
 
@@ -414,10 +427,10 @@ void sysMenu_Setting(lv_ui_t *ui)
                 lv_label_set_text(value_label, "");
                 break;
             case SYSMENU_LIGHTBRIGHT: //亮度等级
-                lv_label_set_text(value_label,g_sysbtn_labellight_level);
+                lv_label_set_text(value_label,get_localized_light_level());
                 break;
             case SYSMENU_STALIGHT: //亮度等级
-                lv_label_set_text(value_label,get_localized_string(5));
+                lv_label_set_text(value_label,get_localized_string(6));
                 break;
 
         }

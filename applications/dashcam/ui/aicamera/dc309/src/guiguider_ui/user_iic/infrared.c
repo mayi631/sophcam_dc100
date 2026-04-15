@@ -95,13 +95,14 @@ static int set_led_brightness(int brightness)
     // 如果PWM未初始化，先初始化
     if (!pwm_initialized) {
         if (init_led_pwm() != 0) {
+            MLOG_DBG("PWM未初始化\n");
             return -1;
         }
     }
     
     // 设置PWM占空比
     led_pwm_attr.duty_cycle = brightness;
-    
+    // MLOG_DBG("BUG调试 %d \n",led_pwm_attr.channel);
     if (HAL_PWM_Set_Param(led_pwm_attr) != 0) {
         MLOG_ERR("设置LED亮度失败: %d%%\n", brightness);
         return -1;
@@ -156,7 +157,7 @@ int user_i2c0(uint8_t reg, uint8_t value)
 }
 
 uint8_t g_curreffectindex = 0;
-
+bool statusLight_is_on = 0;
 /**
  * 打开LED灯（使用PWM控制亮度）
  * 
@@ -178,6 +179,10 @@ void led_on(void)
     }
     event.arg2 = 8;
     MODEMNG_SendMessage(&event);
+
+    statusLight_is_on = getstalight_Index();
+    stlight_init_by_param(1);
+
 }
 
 /**
@@ -219,7 +224,7 @@ void led_on_with_brightness(int levlel)
         brightness_level = levlel;
         MLOG_DBG("LED灯已打开，自定义亮度等级: %d\n", levlel);
     } else {
-        MLOG_ERR("LED灯打开失败，使用默认亮度\n");
+        MLOG_ERR("设置等级%d(%d)失败，使用默认亮度等级\n",red_light_level[levlel],levlel);
         led_on();  // 回退到默认亮度
     }
 }
@@ -232,6 +237,8 @@ void led_on_with_brightness(int levlel)
 void led_off(void)
 {
     user_i2c0(0x01, 0x00);
+    led_cleanup();
+    stlight_init_by_param(statusLight_is_on);
 
     //恢复原有特效
     extern bool is_video_mode;

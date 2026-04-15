@@ -109,7 +109,7 @@ void mark_photos_selectable(lv_obj_t *parent)
             lv_obj_clear_state(child, LV_STATE_CHECKED);
 
             // 设置选中样式（红色边框）- 使用内联样式设置
-            lv_obj_set_style_border_color(child, lv_color_hex(0x1afa29), LV_STATE_CHECKED);
+            lv_obj_set_style_border_color(child, lv_color_hex(0x035edb), LV_STATE_CHECKED);
             lv_obj_set_style_border_width(child, 3, LV_STATE_CHECKED);
             lv_obj_set_style_border_side(child, LV_BORDER_SIDE_FULL, LV_STATE_CHECKED);
 

@@ -118,6 +118,7 @@ extern const char *str_language_ultra_high_quality[NUM_LANGUAGES]; // 超高画�
 extern const char *str_language_high_quality[NUM_LANGUAGES]; // 高画质
 extern const char *str_language_quality[NUM_LANGUAGES]; // 画质
 extern const char *str_language_resolution[NUM_LANGUAGES]; // 分辨率
+extern const char *str_language_level[NUM_LANGUAGES]; // 等级
 extern const char *str_language_selftimer[NUM_LANGUAGES]; // 自拍时间
 extern const char *str_language_timer_5s[NUM_LANGUAGES]; // 定时5s
 extern const char *str_language_timer_7s[NUM_LANGUAGES]; // 定时7s
@@ -262,6 +263,15 @@ extern const char *str_language_ai_night_vision[NUM_LANGUAGES];
 extern const char *str_language_ai_recognition[NUM_LANGUAGES];
 /* 光标 - Cursor */
 extern const char *str_language_cursor[NUM_LANGUAGES];
+//等级
+extern const char *str_language_level[NUM_LANGUAGES];
+
+
+
+extern const char *str_language_confirm_delete_recent_photo[NUM_LANGUAGES];
+extern const char *str_language_confirm_delete_recent_video[NUM_LANGUAGES];
+extern const char *str_language_confirm_delete_this_photo[NUM_LANGUAGES];
+extern const char* str_language_confirm_delete_this_video[NUM_LANGUAGES];
 
 extern const char *ascii_strings[128]; // ASCII字符表
 

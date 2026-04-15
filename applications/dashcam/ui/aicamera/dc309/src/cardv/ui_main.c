@@ -768,12 +768,14 @@ void update_setting_from_param(void)
     // 状态灯
     menu_index = pstParamCtx->pstCfg->Menu.StatusLight.Current;
     setsysMenu_stlight_Index(menu_index);
+    stlight_init_by_param(menu_index);
     setsysMenu_stlight_Label(pstParamCtx->pstCfg->Menu.StatusLight.Items[menu_index].Desc);
 
     // 亮度等级
     menu_index = pstParamCtx->pstCfg->Menu.Brightness.Current;
     setsysMenu_brightness_Index(menu_index);
     setsysMenu_brightness_Label(pstParamCtx->pstCfg->Menu.Brightness.Items[menu_index].Desc);
+    brightness_set_level(menu_index + 1);
 }
 
 int UIAPP_Start(void)

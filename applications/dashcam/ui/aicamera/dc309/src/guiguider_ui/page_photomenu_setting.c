@@ -112,12 +112,13 @@ static const char* get_localized_string(uint8_t index) {
     char* g_button_n[] = {
         g_button_labelPho,
         g_button_labelRes,
-        g_button_labelWhi,
-        g_button_labelSen,
-        g_button_labelExp,
-        g_button_labelSel,
+        // g_button_labelWhi,
+        // g_button_labelSen,
+        // g_button_labelExp,
+        // g_button_labelSel,
         g_button_labelSho,
         g_button_labelPicQual,
+        g_sysbtn_labelcursor,
     };
 
     // 检查索引是否在有效范围内
@@ -138,10 +139,13 @@ static const char* get_localized_string(uint8_t index) {
         }
     }
 
-    if(index == PHOTO_ISO) {
-        return g_button_labelSen;
-    }
+    // if(index == PHOTO_ISO) {
+    //     return g_button_labelSen;
+    // }
 
+    if(index == PHOTO_CURSOR ) {
+        return g_sysbtn_labelcursor;
+    }
     return "";
 }
 
@@ -266,24 +270,24 @@ static void screen_TakePhotoSetting_All_btn_event_handler(lv_event_t *e)
                                                   g_ui.screen_SettingResolution_del, &g_ui.screenPhotoMenuSetting_del,
                                                   menuSetting_Resolution, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
                         }; break;
-                        case PHOTO_WHI: //白平衡
-                        {
-                            ui_load_scr_animation(&g_ui, &g_ui.page_whitebalance.balanscr,
-                                                  g_ui.screen_SettingWhiteBalance_del, &g_ui.screenPhotoMenuSetting_del,
-                                                  menuSetting_WhiteBalance, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
-                        }; break;
+                        // case PHOTO_WHI: //白平衡
+                        // {
+                        //     ui_load_scr_animation(&g_ui, &g_ui.page_whitebalance.balanscr,
+                        //                           g_ui.screen_SettingWhiteBalance_del, &g_ui.screenPhotoMenuSetting_del,
+                        //                           menuSetting_WhiteBalance, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
+                        // }; break;
                         case PHOTO_EFFECT: //摄影效果
                         {
                             ui_load_scr_animation(&g_ui, &g_ui.page_photoeffect.effect_scr,
                                                   g_ui.screen_SettingPhotoEffect_del, &g_ui.screenPhotoMenuSetting_del,
                                                   photoMenu_SettEffect, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
                         }; break;
-                        case PHOTO_EXPOSE: //曝光设置
-                        {
-                            ui_load_scr_animation(&g_ui, &g_ui.page_exposure.expos_scr, g_ui.screen_SettingExposure_del,
-                                                  &g_ui.screenPhotoMenuSetting_del, photoMenu_Exposure,
-                                                  LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
-                        }; break;
+                        // case PHOTO_EXPOSE: //曝光设置
+                        // {
+                        //     ui_load_scr_animation(&g_ui, &g_ui.page_exposure.expos_scr, g_ui.screen_SettingExposure_del,
+                        //                           &g_ui.screenPhotoMenuSetting_del, photoMenu_Exposure,
+                        //                           LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
+                        // }; break;
                         // case PHOTO_AIMODE: // AI设置
                         // {
                         //     ui_load_scr_animation(&g_ui, &obj_Photo_AiMode_s, 1, &g_ui.screenPhotoMenuSetting_del,
@@ -302,16 +306,16 @@ static void screen_TakePhotoSetting_All_btn_event_handler(lv_event_t *e)
                                                   &g_ui.screenPhotoMenuSetting_del, photoMenu_PictureQuality,
                                                   LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
                         }; break;
-                        case PHOTO_ISO: //感光度
-                        {
-                            ui_load_scr_animation(&g_ui, &g_ui.page_sensitivity.iso_scr,
-                                                  g_ui.screen_SettingSensitivity_del, &g_ui.screenPhotoMenuSetting_del,
-                                                  photoMenu_Sensitivity, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
-                        }; break;
-                        case PHOTO_DELAY: // 延时
-                        {
-                            ui_load_scr_animation(&g_ui, &g_ui.page_selfietime.self_scr, 1, NULL, photoMenu_SelfieTime, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
-                        }; break;
+                        // case PHOTO_ISO: //感光度
+                        // {
+                        //     ui_load_scr_animation(&g_ui, &g_ui.page_sensitivity.iso_scr,
+                        //                           g_ui.screen_SettingSensitivity_del, &g_ui.screenPhotoMenuSetting_del,
+                        //                           photoMenu_Sensitivity, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
+                        // }; break;
+                        // case PHOTO_DELAY: // 延时
+                        // {
+                        //     ui_load_scr_animation(&g_ui, &g_ui.page_selfietime.self_scr, 1, NULL, photoMenu_SelfieTime, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
+                        // }; break;
                         case PHOTO_SHOOTMODE: // 连拍
                         {
                             ui_load_scr_animation(&g_ui, &g_ui.page_shootingmode.shoot_scr, 1, NULL, photoMenu_ShootingMode, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
@@ -378,24 +382,24 @@ static void photomenu_setting_click_callback(lv_obj_t *obj)
                                             g_ui.screen_SettingResolution_del, &g_ui.screenPhotoMenuSetting_del,
                                             menuSetting_Resolution, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
                 }; break;
-                case PHOTO_WHI: //白平衡
-                {
-                    ui_load_scr_animation(&g_ui, &g_ui.page_whitebalance.balanscr,
-                                            g_ui.screen_SettingWhiteBalance_del, &g_ui.screenPhotoMenuSetting_del,
-                                            menuSetting_WhiteBalance, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
-                }; break;
+                // case PHOTO_WHI: //白平衡
+                // {
+                //     ui_load_scr_animation(&g_ui, &g_ui.page_whitebalance.balanscr,
+                //                             g_ui.screen_SettingWhiteBalance_del, &g_ui.screenPhotoMenuSetting_del,
+                //                             menuSetting_WhiteBalance, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
+                // }; break;
                 case PHOTO_EFFECT: //摄影效果
                 {
                     ui_load_scr_animation(&g_ui, &g_ui.page_photoeffect.effect_scr,
                                             g_ui.screen_SettingPhotoEffect_del, &g_ui.screenPhotoMenuSetting_del,
                                             photoMenu_SettEffect, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
                 }; break;
-                case PHOTO_EXPOSE: //曝光设置
-                {
-                    ui_load_scr_animation(&g_ui, &g_ui.page_exposure.expos_scr, g_ui.screen_SettingExposure_del,
-                                            &g_ui.screenPhotoMenuSetting_del, photoMenu_Exposure,
-                                            LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
-                }; break;
+                // case PHOTO_EXPOSE: //曝光设置
+                // {
+                //     ui_load_scr_animation(&g_ui, &g_ui.page_exposure.expos_scr, g_ui.screen_SettingExposure_del,
+                //                             &g_ui.screenPhotoMenuSetting_del, photoMenu_Exposure,
+                //                             LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
+                // }; break;
                 // case PHOTO_AIMODE: // AI设置
                 // {
                 //     ui_load_scr_animation(&g_ui, &obj_Photo_AiMode_s, 1, &g_ui.screenPhotoMenuSetting_del,
@@ -414,16 +418,16 @@ static void photomenu_setting_click_callback(lv_obj_t *obj)
                                             &g_ui.screenPhotoMenuSetting_del, photoMenu_PictureQuality,
                                             LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
                 }; break;
-                case PHOTO_ISO: //感光度
-                {
-                    ui_load_scr_animation(&g_ui, &g_ui.page_sensitivity.iso_scr,
-                                            g_ui.screen_SettingSensitivity_del, &g_ui.screenPhotoMenuSetting_del,
-                                            photoMenu_Sensitivity, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
-                }; break;
-                case PHOTO_DELAY: // 延时
-                {
-                    ui_load_scr_animation(&g_ui, &g_ui.page_selfietime.self_scr, 1, NULL, photoMenu_SelfieTime, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
-                }; break;
+                // case PHOTO_ISO: //感光度
+                // {
+                //     ui_load_scr_animation(&g_ui, &g_ui.page_sensitivity.iso_scr,
+                //                             g_ui.screen_SettingSensitivity_del, &g_ui.screenPhotoMenuSetting_del,
+                //                             photoMenu_Sensitivity, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
+                // }; break;
+                // case PHOTO_DELAY: // 延时
+                // {
+                //     ui_load_scr_animation(&g_ui, &g_ui.page_selfietime.self_scr, 1, NULL, photoMenu_SelfieTime, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
+                // }; break;
                 case PHOTO_SHOOTMODE: // 连拍
                 {
                     ui_load_scr_animation(&g_ui, &g_ui.page_shootingmode.shoot_scr, 1, NULL, photoMenu_ShootingMode, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
@@ -565,10 +569,10 @@ void photoMenu_Setting(lv_ui_t *ui)
     const char *btn_labels[] = {
                                 str_language_color_effect[get_curr_language()],
                                 str_language_resolution[get_curr_language()],
-                                str_language_white_balance[get_curr_language()],
-                                str_language_iso[get_curr_language()],
-                                str_language_exposure_settings[get_curr_language()],
-                                str_language_delay[get_curr_language()],
+                                // str_language_white_balance[get_curr_language()],
+                                // str_language_iso[get_curr_language()],
+                                // str_language_exposure_settings[get_curr_language()],
+                                // str_language_delay[get_curr_language()],
                                 str_language_burst_shot[get_curr_language()],
                                 str_language_quality[get_curr_language()],
                                 str_language_cursor[get_curr_language()],
@@ -577,10 +581,10 @@ void photoMenu_Setting(lv_ui_t *ui)
     const char* btn_img[] = { 
         "颜色特效_menu.png",
         "分辨率.png",
-        "白平衡.png",
-        "iso_菜单.png",
-        "曝光.png",
-        "延时_menu.png",
+        // "白平衡.png",
+        // "iso_菜单.png",
+        // "曝光.png",
+        // "延时_menu.png",
         "连拍_menu.png",
         "画质.png",
         "光标.png", };
@@ -650,29 +654,29 @@ void photoMenu_Setting(lv_ui_t *ui)
             case PHOTO_RES: // 分辨率
                 lv_label_set_text(value_label, photo_getRes_Label());
                 break;
-            case PHOTO_WHI: // 白平衡
-                lv_label_set_text(value_label, get_localized_string(i));
-                break;
+            // case PHOTO_WHI: // 白平衡
+            //     lv_label_set_text(value_label, get_localized_string(i));
+            //     break;
             case PHOTO_EFFECT: // 摄影效果
                 lv_label_set_text(value_label, get_localized_string(i));
                 break;
-            case PHOTO_ISO: // 感光度
-                lv_label_set_text(value_label, get_localized_string(i));
-                break;
-            case PHOTO_EXPOSE: // 曝光设置
-                lv_label_set_text(value_label, g_button_labelExp);
-                break;
+            // case PHOTO_ISO: // 感光度
+            //     lv_label_set_text(value_label, get_localized_string(i));
+            //     break;
+            // case PHOTO_EXPOSE: // 曝光设置
+            //     lv_label_set_text(value_label, g_button_labelExp);
+            //     break;
             case PHOTO_SHOOTMODE: // 连拍
                 lv_label_set_text(value_label, get_localized_string(i));
                 break;
-            case PHOTO_DELAY: // 延时
-                lv_label_set_text(value_label, get_localized_string(i));
-                break;
+            // case PHOTO_DELAY: // 延时
+            //     lv_label_set_text(value_label, get_localized_string(i));
+            //     break;
             case PHOTO_PICQUAL: // 画质
                 lv_label_set_text(value_label, get_localized_string(i));
                 break;
             case PHOTO_CURSOR: // 光标
-                lv_label_set_text(value_label, g_sysbtn_labelcursor);
+                lv_label_set_text(value_label, get_localized_string(i));
                 break;
         }
     }

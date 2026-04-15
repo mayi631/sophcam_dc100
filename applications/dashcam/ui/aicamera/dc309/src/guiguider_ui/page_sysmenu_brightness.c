@@ -27,16 +27,16 @@
  static uint8_t brightness_Current_Index_s = 3 * 2;
  
  extern char g_sysbtn_labellight_level[32];
- // 亮度等级定义
- brightness_level_t brightness_levels[BRIGHTNESS_LEVEL_COUNT] = {
-     {1, 36,  "level 1"},  // 36/255 ≈ 14%
-     {2, 72,  "level 2"},  // 72/255 ≈ 28%
-     {3, 108, "level 3"},  // 108/255 ≈ 42%
-     {4, 160, "level 4"},  // 160/255 ≈ 62%
-     {5, 180, "level 5"},  // 180/255 ≈ 71%
-     {6, 216, "level 6"},  // 216/255 ≈ 85%
-     {7, 252, "level 7"},  // 252/255 ≈ 99%
- };
+// 亮度等级定义
+brightness_level_t brightness_levels[BRIGHTNESS_LEVEL_COUNT] = {
+    {1, 36,  ""},  // 36/255 ≈ 14%
+    {2, 72,  ""},  // 72/255 ≈ 28%
+    {3, 108, ""},  // 108/255 ≈ 42%
+    {4, 160, ""},  // 160/255 ≈ 62%
+    {5, 180, ""},  // 180/255 ≈ 71%
+    {6, 216, ""},  // 216/255 ≈ 85%
+    {7, 252, ""},  // 252/255 ≈ 99%
+};
  
 
  uint8_t get_curr_brightness(void)
@@ -49,6 +49,14 @@
      brightness_Current_Index_s = index * 2;
  }
  
+
+ void brightness_language_setting(void)
+{
+    for (uint8_t i = 0; i < BRIGHTNESS_LEVEL_COUNT; i++) {
+        snprintf(brightness_levels[i].label, sizeof(brightness_levels[i].label), "%s %d", str_language_level[get_curr_language()], i + 1);
+    }
+}
+
 
  // 写亮度值到系统文件
  static int write_brightness_value(int value)
@@ -104,7 +112,7 @@
      }
      
      // 更新当前索引
-     snprintf(g_sysbtn_labellight_level,sizeof(g_sysbtn_labellight_level), "level %d", level);
+     snprintf(g_sysbtn_labellight_level, sizeof(g_sysbtn_labellight_level), "%s %d", str_language_level[get_curr_language()], level);
      // 写入亮度值
      write_brightness_value(brightness_levels[get_curr_brightness()].value);
  }
@@ -335,6 +343,7 @@
             break;
          }
      }
+     brightness_language_setting();
 
      // Write codes resscr
      brightness_scr = lv_obj_create(NULL);

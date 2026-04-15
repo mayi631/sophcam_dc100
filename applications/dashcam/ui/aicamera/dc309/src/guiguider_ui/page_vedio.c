@@ -173,22 +173,22 @@ void update_video_top_controls_layout(void)
         }
     }
     
-    // 4. ISO级别按钮
-    if (g_video_top_controls[3] && lv_obj_is_valid(g_video_top_controls[3])) {
-        lv_obj_set_pos(g_video_top_controls[3], x_pos, 4);
-    }
-    x_pos += 40 + 10;
+    // // 4. ISO级别按钮
+    // if (g_video_top_controls[3] && lv_obj_is_valid(g_video_top_controls[3])) {
+    //     lv_obj_set_pos(g_video_top_controls[3], x_pos, 4);
+    // }
+    // x_pos += 40 + 10;
     
     // 5. 屏幕亮度按钮
     if (g_video_top_controls[4] && lv_obj_is_valid(g_video_top_controls[4])) {
         lv_obj_set_pos(g_video_top_controls[4], x_pos, 4);
     }
 
-    x_pos += 40 + 10;
-    //EV值
-    if (g_video_top_controls[5] && lv_obj_is_valid(g_video_top_controls[5])) {
-        lv_obj_set_pos(g_video_top_controls[5], x_pos, 14);
-    }
+    // x_pos += 40 + 10;
+    // //EV值
+    // if (g_video_top_controls[5] && lv_obj_is_valid(g_video_top_controls[5])) {
+    //     lv_obj_set_pos(g_video_top_controls[5], x_pos, 14);
+    // }
 
     MLOG_DBG("视频页面顶部控件布局已更新，brightness_level=%d\n", brightness_level);
 }
@@ -489,14 +489,14 @@ void Home_Vedio(lv_ui_t *ui)
     g_video_top_controls[2] = lv_imagebutton_create(obj_vedio_s);
     lv_obj_set_size(g_video_top_controls[2], 38, 32);
     
-    // ISO级别按钮
-    g_video_top_controls[3] = lv_imagebutton_create(obj_vedio_s);
-    lv_obj_set_size(g_video_top_controls[3], 38, 32);
-    char* iso_buf[] = {
-        "ISO.png", "ISO 100.png", "ISO 200.png", "ISO 400.png",
-        "ISO 800.png", "ISO 1600.png", "ISO 3200.png", "ISO 6400.png",
-    };
-    show_image(g_video_top_controls[3], iso_buf[get_iso_index()]);
+    // // ISO级别按钮
+    // g_video_top_controls[3] = lv_imagebutton_create(obj_vedio_s);
+    // lv_obj_set_size(g_video_top_controls[3], 38, 32);
+    // char* iso_buf[] = {
+    //     "ISO.png", "ISO 100.png", "ISO 200.png", "ISO 400.png",
+    //     "ISO 800.png", "ISO 1600.png", "ISO 3200.png", "ISO 6400.png",
+    // };
+    // show_image(g_video_top_controls[3], iso_buf[get_iso_index()]);
 
     // 屏幕亮度按钮
     g_video_top_controls[4] = lv_imagebutton_create(obj_vedio_s);
@@ -505,12 +505,12 @@ void Home_Vedio(lv_ui_t *ui)
     show_image(g_video_top_controls[4], brightness_buf[get_curr_brightness()]);
 
 
-    g_video_top_controls[5] = lv_imagebutton_create(obj_vedio_s);
-    lv_obj_set_size(g_video_top_controls[5], 50, 14);
-    char* ev_buf[] = { "EV+3.png", "EV+2.png", "EV+1.png", "EV0.png", "EV-1.png", "EV-2.png", "EV-3.png" };
-    show_image(g_video_top_controls[5], ev_buf[get_EV_Level()]);
-    lv_obj_set_style_image_recolor(g_video_top_controls[5], lv_color_hex(0xFFFFFF), LV_PART_MAIN);
-    lv_obj_set_style_image_recolor_opa(g_video_top_controls[5], LV_OPA_COVER, LV_PART_MAIN);
+    // g_video_top_controls[5] = lv_imagebutton_create(obj_vedio_s);
+    // lv_obj_set_size(g_video_top_controls[5], 50, 14);
+    // char* ev_buf[] = { "EV+3.png", "EV+2.png", "EV+1.png", "EV0.png", "EV-1.png", "EV-2.png", "EV-3.png" };
+    // show_image(g_video_top_controls[5], ev_buf[get_EV_Level()]);
+    // lv_obj_set_style_image_recolor(g_video_top_controls[5], lv_color_hex(0xFFFFFF), LV_PART_MAIN);
+    // lv_obj_set_style_image_recolor_opa(g_video_top_controls[5], LV_OPA_COVER, LV_PART_MAIN);
 
 
     // 初始设置红光亮级图片

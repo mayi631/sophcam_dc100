@@ -8,7 +8,7 @@
 typedef struct {
     int level;         // 亮度等级 (1-7)
     int value;         // 对应亮度值 (0-255)
-    const char *label; // 等级标签
+    char label[32];    // 等级标签 (固定大小数组)
 } brightness_level_t;
 extern lv_obj_t *brightness_scr;
 // 亮度等级数组

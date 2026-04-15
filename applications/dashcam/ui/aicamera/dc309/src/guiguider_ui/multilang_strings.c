@@ -1808,6 +1808,22 @@ const char *str_language_resolution[NUM_LANGUAGES] = {
     "Resolução",     // Portugues
 };
 
+const char *str_language_level[NUM_LANGUAGES] = {
+    "等级",          // 简体中文
+    "等級",          // 繁体中文
+    "等級",          // 日语
+    "Level",         // 英语
+    "Poziom",        // Polski
+    "Niveau",        // Nederlands
+    "Level",         // Deutsch
+    "Niveau",        // Francis
+    "Nivel",         // Espanol
+    "Livello",       // Italiano
+    "Seviye",        // Turkce
+    "Уровень",       // Pyccknn
+    "Nível",         // Portugues
+};
+
 const char *str_language_selftimer[NUM_LANGUAGES] = {
     "自拍时间",      // 简体中文
     "自拍時間",      // 繁体中文
@@ -4050,6 +4066,70 @@ const char *str_language_cursor[NUM_LANGUAGES] = {
     "İmleç",           // Turkce
     "Курсор",          // Pyccknn
     "Cursor",          // Portugues
+};
+
+const char *str_language_confirm_delete_recent_photo[NUM_LANGUAGES] = {
+    "确认删除最近拍摄的照片?",  // 简体中文
+    "確認刪除最近拍攝的照片?",  // 繁体中文
+    "最近撮影した写真を削除しますか?",  // 日语
+    "Confirm delete recent photo?",  // 英语
+    "Potwierdzić usunięcie ostatniego zdjęcia?",  // Polski
+    "Bevestig verwijderen recente foto?",  // Nederlands
+    "Löschen des letzten Fotos bestätigen?",  // Deutsch
+    "Confirmer la suppression de la photo récente?",  // Francis
+    "¿Confirmar eliminar foto reciente?",  // Espanol
+    "Confermare l'eliminazione della foto recente?",  // Italiano
+    "Son fotoğrafı silmeyi onaylıyor musunuz?",  // Turkce
+    "Подтвердить удаление последней фотографии?",  // Pyccknn
+    "Confirmar exclusão da foto recente?"  // Portugues
+};
+
+const char *str_language_confirm_delete_recent_video[NUM_LANGUAGES] = {
+    "确认删除最近拍摄的视频?",  // 简体中文
+    "確認刪除最近拍攝的影片?",  // 繁体中文
+    "最近撮影した動画を削除しますか?",  // 日语
+    "Confirm delete recent video?",  // 英语
+    "Potwierdzić usunięcie ostatniego wideo?",  // Polski
+    "Bevestig verwijderen recente video?",  // Nederlands
+    "Löschen des letzten Videos bestätigen?",  // Deutsch
+    "Confirmer la suppression de la vidéo récente?",  // Francis
+    "¿Confirmar eliminar video reciente?",  // Espanol
+    "Confermare l'eliminazione del video recente?",  // Italiano
+    "Son videoyu silmeyi onaylıyor musunuz?",  // Turkce
+    "Подтвердить удаление последнего видео?",  // Pyccknn
+    "Confirmar exclusão do vídeo recente?"  // Portugues
+};
+
+const char *str_language_confirm_delete_this_photo[NUM_LANGUAGES] = {
+    "是否删除这张照片?",  // 简体中文
+    "是否刪除這張照片?",  // 繁体中文
+    "この写真を削除しますか?",  // 日语
+    "Delete this photo?",  // 英语
+    "Usunąć to zdjęcie?",  // Polski
+    "Deze foto verwijderen?",  // Nederlands
+    "Dieses Foto löschen?",  // Deutsch
+    "Supprimer cette photo?",  // Francis
+    "¿Eliminar esta foto?",  // Espanol
+    "Eliminare questa foto?",  // Italiano
+    "Bu fotoğrafı silmek istiyor musunuz?",  // Turkce
+    "Удалить эту фотографию?",  // Pyccknn
+    "Excluir esta foto?"  // Portugues
+};
+
+const char* str_language_confirm_delete_this_video[NUM_LANGUAGES] = {
+    "是否删除这个视频?", // 简体中文
+    "是否刪除這個影片?", // 繁体中文
+    "この動画を削除しますか?", // 日语
+    "Delete this video?", // 英语
+    "Usunąć to wideo?", // Polski
+    "Deze video verwijderen?", // Nederlands
+    "Dieses Video löschen?", // Deutsch
+    "Supprimer cette vidéo?", // Francis
+    "¿Eliminar este video?", // Espanol
+    "Eliminare questo video?", // Italiano
+    "Bu videoyu silmek istiyor musunuz?", // Turkce
+    "Удалить это видео?", // Pyccknn
+    "Excluir este vídeo?" // Portugues
 };
 
 // ASCII字符串数组

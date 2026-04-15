@@ -272,7 +272,7 @@ void create_simple_delete_dialog(const char *file_name)
 
     // 创建弹窗容器
     simple_dialog = lv_obj_create(lv_scr_act());
-    lv_obj_set_size(simple_dialog, 640, 480);
+    lv_obj_set_size(simple_dialog, 640, 360);
     lv_obj_set_style_bg_opa(simple_dialog, 255, LV_PART_MAIN | LV_STATE_DEFAULT); // 不透明度 0~255，255 完全不透明
     lv_obj_set_style_bg_color(simple_dialog, lv_color_hex(0), 0);
     lv_obj_set_style_radius(simple_dialog, 0, 0);
@@ -293,12 +293,12 @@ void create_simple_delete_dialog(const char *file_name)
 
     // 提示文本
     lv_obj_t *label = lv_label_create(simple_dialog_scrll);
-    if(!is_video_mode)
-        lv_label_set_text(label, "确认删除最近拍摄的照片？");
+    if (!is_video_mode)
+        lv_label_set_text(label, str_language_confirm_delete_recent_photo[get_curr_language()]);
     else
-        lv_label_set_text(label, "确认删除最近拍摄的视频？");
-    if(file_name != NULL) {
-        lv_label_set_text(label, strcmp(dot, ".mov") ? "是否删除这张照片?" : "是否删除这个视频?");
+        lv_label_set_text(label, str_language_confirm_delete_recent_video[get_curr_language()]);
+    if (file_name != NULL) {
+        lv_label_set_text(label, strcmp(dot, ".mov") ? str_language_confirm_delete_this_photo[get_curr_language()] : str_language_confirm_delete_this_video[get_curr_language()]);
     }
 
     lv_obj_set_style_text_color(label, lv_color_white(), 0);
@@ -313,7 +313,7 @@ void create_simple_delete_dialog(const char *file_name)
     lv_obj_set_style_pad_all(confirm_btn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     lv_obj_t *confirm_label = lv_label_create(confirm_btn);
-    lv_label_set_text(confirm_label, "确认");
+    lv_label_set_text(confirm_label, str_language_confirm[get_curr_language()]);
     lv_obj_add_style(confirm_label, &ttf_font_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_center(confirm_label);
     lv_obj_add_event_cb(confirm_btn, simple_confirm_cb, LV_EVENT_CLICKED, NULL);
@@ -326,7 +326,7 @@ void create_simple_delete_dialog(const char *file_name)
     lv_obj_set_style_pad_all(cancel_btn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     lv_obj_t *cancel_label = lv_label_create(cancel_btn);
-    lv_label_set_text(cancel_label, "取消");
+    lv_label_set_text(cancel_label, str_language_cancel[get_curr_language()]);
     lv_obj_add_style(cancel_label, &ttf_font_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_center(cancel_label);
     lv_obj_add_event_cb(cancel_btn, simple_cancel_cb, LV_EVENT_CLICKED, NULL);
