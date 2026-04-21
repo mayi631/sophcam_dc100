@@ -21,6 +21,7 @@ void video_setRes_Index(uint8_t index);
 void video_setRes_Label(const char* plabel);
 char* video_getRes_Label(void);
 char* video_getRes_Icon(void);
+const char* video_getRes_IconByIndex(uint8_t index);
 void vedioMenuSetting_Resolution(lv_ui_t *ui);
 #ifdef __cplusplus
 }

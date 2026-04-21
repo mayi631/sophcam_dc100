@@ -84,6 +84,11 @@ static lv_point_t g_touch_end_point = {0, 0};    // 触摸结束点
 static uint32_t g_touch_start_time = 0;          // 触摸开始时间
 static bool g_is_touching = false;                // 是否正在触摸
 static bool g_is_scrolling = false;               // 是否正在滚动
+#define MAX_SELECTED_FILES 64
+static uint8_t g_selected_count = 0;
+static lv_obj_t *g_selected_photos[MAX_SELECTED_FILES];
+static char *g_selected_filenames[MAX_SELECTED_FILES];
+
 #define TOUCH_THRESHOLD 10                        // 触摸移动阈值（像素）
 #define TOUCH_TIME_THRESHOLD 200                  // 触摸时间阈值（毫秒）
 
@@ -93,6 +98,7 @@ static void touch_event_handler(lv_event_t *e);
 static bool is_valid_click(void);
 void album_return_cb(void);
 static void screen_PhotoAlbum_btn_delete_all_event_handler(lv_event_t *e);
+static void create_delete_selected_dialog(int selected_count);
 // 2. 为容器con2中的照片添加可选状态
 void mark_photos_selectable(lv_obj_t *parent)
 {
@@ -598,7 +604,7 @@ static void load_page(int page_index)
             lv_obj_set_style_radius(img_container, 0, LV_PART_MAIN);
             if(i-start_index == g_album_focus_index)
             {
-                lv_obj_set_style_border_color(img_container, lv_color_hex(0x1afa29), LV_STATE_CHECKED);
+                lv_obj_set_style_border_color(img_container, lv_color_hex(0x035edb), LV_STATE_CHECKED);
                 lv_obj_set_style_border_width(img_container, 3, LV_STATE_CHECKED);
                 lv_obj_set_style_border_side(img_container, LV_BORDER_SIDE_FULL, LV_STATE_CHECKED);
                 lv_obj_add_state(img_container, LV_STATE_CHECKED);
@@ -945,7 +951,7 @@ static void album_key_callback(int key_code, int key_value)
             lv_obj_set_style_border_width(btn_vialbum_s, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
         }
     }
-    else if(key_code == KEY_UP && key_value == 1) {
+    else if(key_code == KEY_LEFT && key_value == 1) {
         // 上键逻辑
         if(g_album_focus_index >= 3) {
             g_album_focus_index -= 3;
@@ -960,7 +966,7 @@ static void album_key_callback(int key_code, int key_value)
             g_album_focus_index = 0;
         }
     }
-    else if(key_code == KEY_DOWN && key_value == 1) {
+    else if(key_code == KEY_RIGHT && key_value == 1) {
         // 下键逻辑
         if(g_album_focus_index + 3 <= max_valid_index) {
             g_album_focus_index += 3;
@@ -974,7 +980,7 @@ static void album_key_callback(int key_code, int key_value)
             g_album_focus_index = max_valid_index;
         }
     }
-    else if(key_code == KEY_LEFT && key_value == 1) {
+    else if(key_code == KEY_UP && key_value == 1) {
         // 左键逻辑
         if(g_album_focus_index > 0) {
             g_album_focus_index--;
@@ -989,7 +995,7 @@ static void album_key_callback(int key_code, int key_value)
             g_album_focus_index = 0;
         }
     }
-    else if(key_code == KEY_RIGHT && key_value == 1) {
+    else if(key_code == KEY_DOWN && key_value == 1) {
         // 右键逻辑
         if(g_album_focus_index < max_valid_index) {
             g_album_focus_index++;
@@ -1138,274 +1144,23 @@ void update_album_grid(lv_obj_t *parent, lv_ui_t *ui, int return_page, int retur
 
 static void screen_PhotoAlbum_btn_delete_s_event_handler(lv_event_t *e)
 {
-    // 如果是AI模式进入，禁用删除功能
-    if (g_from_ai_preview) {
-        MLOG_DBG("AI模式进入，禁止删除操作\n");
-        return;
+    if(g_from_ai_preview) return;
+    if(lv_event_get_code(e) != LV_EVENT_CLICKED) return;
+    
+    uint32_t child_cnt = lv_obj_get_child_cnt(cont_album_grid_s);
+    g_selected_count = 0;
+    
+    for(uint32_t i = 0; i < child_cnt && g_selected_count < MAX_SELECTED_FILES; i++) {
+        lv_obj_t *child = lv_obj_get_child(cont_album_grid_s, i);
+        if(lv_obj_has_state(child, LV_STATE_CHECKED)) {
+            g_selected_photos[g_selected_count] = child;
+            g_selected_filenames[g_selected_count] = lv_obj_get_user_data(child);
+            g_selected_count++;
+        }
     }
     
-    lv_event_code_t code = lv_event_get_code(e);
-    MLOG_DBG("event: %s\n", lv_event_code_get_name(code));
-    switch(code) {
-        case LV_EVENT_CLICKED: {
-            lv_obj_t *parent   = cont_album_grid_s;
-            uint32_t child_cnt = lv_obj_get_child_cnt(parent);
-
-            lv_obj_t *selected_photos[child_cnt]; // 存储选中对象指针
-            const char *selected_filenames[child_cnt]; // 存储选中文件名
-            uint32_t selected_count = 0;
-
-            // 保存删除前的状态
-            int saved_current_page = g_current_page;
-            int saved_focus_index = g_album_focus_index;
-            MLOG_DBG("删除前状态: 页面=%d, 焦点索引=%d\n", saved_current_page, saved_focus_index);
-
-            // 第一次遍历：收集选中项和文件名
-            for(uint32_t i = 0; i < child_cnt; i++) {
-                lv_obj_t *child = lv_obj_get_child(parent, i);
-                if(lv_obj_has_state(child, LV_STATE_CHECKED)) {
-                    selected_photos[selected_count] = child;
-
-                    // 从用户数据中获取文件名（适用于图片和视频）
-                    void *user_data = lv_obj_get_user_data(child);
-                    if(user_data) {
-                        selected_filenames[selected_count] = (char *)user_data;
-                        MLOG_DBG("选中文件: %s\n", selected_filenames[selected_count]);
-                    } else {
-                        selected_filenames[selected_count] = NULL;
-                        MLOG_DBG("警告：无法从用户数据获取文件名\n");
-                    }
-                    selected_count++;
-                }
-            }
-
-            // 如果没有选中任何文件，直接返回
-            if(selected_count == 0) {
-                MLOG_DBG("没有选中任何文件，无需删除\n");
-                return;
-            }
-
-            // 第二次遍历：批量删除（避免索引错乱）
-            for(uint32_t i = 0; i < selected_count; i++) {
-                // 删除文件系统中的文件
-                if(selected_filenames[i]) {
-                    char cmd[512];
-
-                    if(g_is_photo_mode) {
-                        // 删除小缩略图文件 - 移除 "A:" 前缀
-                        const char *real_path_small = strchr(PHOTO_ALBUM_IMAGE_PATH_S, '/');
-                        if(real_path_small) {
-                            snprintf(cmd, sizeof(cmd), "rm -f %s%s", real_path_small, selected_filenames[i]);
-                            MLOG_DBG("执行命令: %s\n", cmd);
-                            system(cmd);
-                        }
-
-                        // 删除大缩略图文件 - 移除 "A:" 前缀
-                        const char *real_path_large = strchr(PHOTO_ALBUM_IMAGE_PATH_L, '/');
-                        if(real_path_large) {
-                            snprintf(cmd, sizeof(cmd), "rm -f %s%s", real_path_large, selected_filenames[i]);
-                            MLOG_DBG("执行命令: %s\n", cmd);
-                            system(cmd);
-                        }
-
-                        // 删除原图文件 - 移除 "A:" 前缀
-                        const char *real_path = strchr(PHOTO_ALBUM_IMAGE_PATH, '/');
-                        if(real_path) {
-                            char fullfilepath[FILEMNG_PATH_MAX_LEN];
-                            snprintf(fullfilepath, sizeof(fullfilepath), "%s%s", real_path, selected_filenames[i]);
-                            snprintf(cmd, sizeof(cmd), "rm -f %s%s", real_path, selected_filenames[i]);
-                            MLOG_DBG("执行命令: %s\n", cmd);
-                            system(cmd);
-                            FILEMNG_DelFile(g_cam_id, fullfilepath);
-                        }
-                    } else if(!g_is_photo_mode) {
-                        // 分割文件名和扩展名
-                        char *dot = strrchr(selected_filenames[i], '.');
-                        if(!dot) {
-                            MLOG_ERR("No extension in filename: %s\n", selected_filenames[i]);
-                            return;
-                        }
-                        char new_filename[256] = {0};
-                        snprintf(new_filename, sizeof(new_filename), "%.*s", (int)(dot - selected_filenames[i]),
-                                 selected_filenames[i]);
-
-                        // 删除小缩略图文件 - 移除 "A:" 前缀
-                        const char *real_movie_path_small = strchr(PHOTO_ALBUM_VIDEO_THUMB_PATH_S, '/');
-                        if(real_movie_path_small) {
-                            snprintf(cmd, sizeof(cmd), "rm -f %s%s.jpg", real_movie_path_small, new_filename);
-                            MLOG_DBG("执行命令: %s\n", cmd);
-                            system(cmd);
-                        }
-
-                        // 删除大缩略图文件 - 移除 "A:" 前缀
-                        const char *real_movie_path_large = strchr(PHOTO_ALBUM_VIDEO_THUMB_PATH_L, '/');
-                        if(real_movie_path_large) {
-                            snprintf(cmd, sizeof(cmd), "rm -f %s%s.jpg", real_movie_path_large, new_filename);
-                            MLOG_DBG("执行命令: %s\n", cmd);
-                            system(cmd);
-                        }
-
-                        // 删除视频原文件 - 移除 "A:" 前缀
-                        const char *movie0_path = strchr(PHOTO_ALBUM_MOVIE_PATH, '/');
-                        if(movie0_path) {
-                            char movie0filepath[FILEMNG_PATH_MAX_LEN];
-                            snprintf(movie0filepath, sizeof(movie0filepath), "%s%s", movie0_path,
-                                     selected_filenames[i]);
-                            snprintf(cmd, sizeof(cmd), "rm -f %s%s.mov", movie0_path, new_filename);
-                            MLOG_DBG("执行命令: %s\n", cmd);
-                            system(cmd);
-                            FILEMNG_DelFile(g_cam_id, movie0filepath);
-                        }
-                    }
-
-                    // 从全局文件名数组中移除已删除的文件
-                    for(int j = 0; j < g_total_media_files; j++) {
-                        if(g_all_filenames[j] && strcmp(g_all_filenames[j], selected_filenames[i]) == 0) {
-                            free(g_all_filenames[j]);
-                            g_all_filenames[j] = NULL;
-                            // 将后面的文件名前移
-                            for(int k = j; k < g_total_media_files - 1; k++) {
-                                g_all_filenames[k] = g_all_filenames[k + 1];
-                            }
-                            g_total_media_files--;
-                            break;
-                        }
-                    }
-                }
-
-                // 删除UI控件
-                if(selected_photos[i] && lv_obj_is_valid(selected_photos[i])) {
-                    // 释放用户数据中的内存
-                    void *user_data = lv_obj_get_user_data(selected_photos[i]);
-                    if(user_data) {
-                        free(user_data);
-                    }
-                    lv_obj_del(selected_photos[i]);
-                }
-            }
-
-            // 重新计算总页数
-            g_total_pages = (g_total_media_files + g_images_per_page - 1) / g_images_per_page;
-            // MLOG_DBG("删除后总文件数: %d, 总页数: %d\n", g_total_media_files, g_total_pages);
-
-            // 调整当前页面索引，确保不越界
-            if (g_current_page >= g_total_pages) {
-                g_current_page = (g_total_pages > 0) ? g_total_pages - 1 : 0;
-                // MLOG_DBG("调整当前页面索引为: %d\n", g_current_page);
-            }
-
-            // 调整焦点索引，确保不越界
-            int current_page_item_count = g_total_media_files - (g_current_page * g_images_per_page);
-            if (current_page_item_count > g_images_per_page) {
-                current_page_item_count = g_images_per_page;
-            }
-            if (g_album_focus_index >= current_page_item_count) {
-                g_album_focus_index = (current_page_item_count > 0) ? current_page_item_count - 1 : 0;
-                // MLOG_DBG("调整焦点索引为: %d\n", g_album_focus_index);
-            }
-
-            // 重新加载当前页面（而不是第0页）
-            lv_obj_clean(parent);
-            load_page(g_current_page);
-
-            // 恢复焦点位置
-            if (current_page_item_count > 0) {
-                // 确保焦点索引在有效范围内
-                if (g_album_focus_index < 0) g_album_focus_index = 0;
-                if (g_album_focus_index >= current_page_item_count) {
-                    g_album_focus_index = current_page_item_count - 1;
-                }
-                
-                // 设置焦点状态
-                for(uint8_t i = 0; i < current_page_item_count; i++) {
-                    lv_obj_t *container = lv_obj_get_child(parent, i);
-                    if(i == g_album_focus_index) {
-                        lv_obj_add_state(container, LV_STATE_CHECKED);
-                        // MLOG_DBG("恢复焦点到索引 %d\n", i);
-                    } else {
-                        if(lv_obj_has_state(container, LV_STATE_CHECKED)) {
-                            lv_obj_clear_state(container, LV_STATE_CHECKED);
-                        }
-                    }
-                }
-            }
-
-            // 如果当前页面没有项目了，且不是第0页，则自动跳到上一页
-            if (current_page_item_count == 0 && g_current_page > 0) {
-                g_current_page--;
-                // MLOG_DBG("当前页无项目，自动跳到上一页: %d\n", g_current_page);
-                lv_obj_clean(parent);
-                load_page(g_current_page);
-                
-                // 设置焦点到新页面的最后一个项目
-                int new_page_item_count = g_total_media_files - (g_current_page * g_images_per_page);
-                if (new_page_item_count > g_images_per_page) {
-                    new_page_item_count = g_images_per_page;
-                }
-                if (new_page_item_count > 0) {
-                    g_album_focus_index = new_page_item_count - 1;
-                    for(uint8_t i = 0; i < new_page_item_count; i++) {
-                        lv_obj_t *container = lv_obj_get_child(parent, i);
-                        if(i == g_album_focus_index) {
-                            lv_obj_add_state(container, LV_STATE_CHECKED);
-                            // MLOG_DBG("设置焦点到新页面最后一个项目: %d\n", i);
-                        }
-                    }
-                }
-            }
-
-            if(g_total_pages > 0) {
-                // 重新计算滑动条高度（确保均匀分布）
-                g_slider_height = 420 / g_total_pages; // 总高度420像素除以总页数
-
-                // 确保滑动条高度不会太小
-                if(g_slider_height < 20) {
-                    g_slider_height = 20; // 最小高度
-                }
-                if(g_slider_height > 420) {
-                    g_slider_height = 420; // 最大高度
-                }
-
-                MLOG_DBG("重新计算滑动条: 总页数=%d, 滑动条高度=%d, 当前页=%d\n", g_total_pages, g_slider_height,
-                         g_current_page);
-            } else {
-                g_slider_height = 0; // 没有页面时高度为0
-            }
-
-            // 更新滑动条大小和位置
-            if(scrollbar_slider_s && lv_obj_is_valid(scrollbar_slider_s)) {
-                // 首先更新滑动条大小
-                lv_obj_set_size(scrollbar_slider_s, 12, g_slider_height);
-
-                // 然后计算并设置滑动条位置
-                int slider_y_pos = 60 + (g_slider_height * g_current_page);
-
-                // 确保位置不会超出边界
-                if(slider_y_pos < 60) {
-                    slider_y_pos = 60;
-                }
-                if(slider_y_pos > 480) { // 480是屏幕高度
-                    slider_y_pos = 480 - g_slider_height;
-                }
-
-                lv_obj_set_pos(scrollbar_slider_s, 625, slider_y_pos);
-
-                MLOG_DBG("滑动条位置更新: x=625, y=%d, 高度=%d\n", slider_y_pos, g_slider_height);
-            }
-
-            // 退出选择模式
-            lv_obj_add_flag(btn_cancel_s, LV_OBJ_FLAG_HIDDEN);
-            lv_obj_remove_flag(btn_cancel_s, LV_OBJ_FLAG_CLICKABLE);
-            lv_obj_remove_flag(btn_choose_s, LV_OBJ_FLAG_HIDDEN);
-            lv_obj_add_flag(btn_choose_s, LV_OBJ_FLAG_CLICKABLE);
-            lv_obj_remove_flag(btn_delete_s, LV_OBJ_FLAG_CLICKABLE);
-            lv_obj_add_flag(btn_delete_s, LV_OBJ_FLAG_HIDDEN);
-            lv_obj_remove_flag(btn_delete_all_s, LV_OBJ_FLAG_CLICKABLE);
-            lv_obj_add_flag(btn_delete_all_s, LV_OBJ_FLAG_HIDDEN);
-            break;
-        }
-        default: break;
-    }
+    if(g_selected_count == 0) return;
+    create_delete_selected_dialog(g_selected_count);
 }
 
 static void screen_PhotoAlbum_btn_back_event_handler(lv_event_t *e)
@@ -1499,6 +1254,19 @@ static void screen_PhotoAlbum_btn_phalbum_event_handler(lv_event_t *e)
                 create_album_grid(cont_album_grid_s, ui);
                 lv_obj_set_style_border_width(btn_phalbum_s, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
                 lv_obj_set_style_border_width(btn_vialbum_s, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+                // 退出选择模式
+                lv_obj_add_flag(btn_cancel_s, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_remove_flag(btn_cancel_s, LV_OBJ_FLAG_CLICKABLE);
+                lv_obj_remove_flag(btn_choose_s, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(btn_choose_s, LV_OBJ_FLAG_CLICKABLE);
+                lv_obj_remove_flag(btn_delete_s, LV_OBJ_FLAG_CLICKABLE);
+                lv_obj_add_flag(btn_delete_s, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_remove_flag(btn_delete_all_s, LV_OBJ_FLAG_CLICKABLE);
+                lv_obj_add_flag(btn_delete_all_s, LV_OBJ_FLAG_HIDDEN);
+                // 标记照片为不可选状态
+                mark_photos_unselectable(cont_album_grid_s);
+
             }
             break;
         }
@@ -1525,6 +1293,19 @@ static void screen_PhotoAlbum_btn_vialbum_event_handler(lv_event_t *e)
                 create_album_grid(cont_album_grid_s, ui);
                 lv_obj_set_style_border_width(btn_phalbum_s, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
                 lv_obj_set_style_border_width(btn_vialbum_s, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+
+                // 退出选择模式
+                lv_obj_add_flag(btn_cancel_s, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_remove_flag(btn_cancel_s, LV_OBJ_FLAG_CLICKABLE);
+                lv_obj_remove_flag(btn_choose_s, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(btn_choose_s, LV_OBJ_FLAG_CLICKABLE);
+                lv_obj_remove_flag(btn_delete_s, LV_OBJ_FLAG_CLICKABLE);
+                lv_obj_add_flag(btn_delete_s, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_remove_flag(btn_delete_all_s, LV_OBJ_FLAG_CLICKABLE);
+                lv_obj_add_flag(btn_delete_all_s, LV_OBJ_FLAG_HIDDEN);
+                // 标记照片为不可选状态
+                mark_photos_unselectable(cont_album_grid_s);
             }
             break;
         }
@@ -2125,6 +1906,148 @@ static void modal_background_click_cb(lv_event_t *e)
     lv_obj_del(modal_bg);
 }
 
+// 删除选中文件
+static void do_delete_selected_files(void)
+{
+    for(uint8_t i = 0; i < g_selected_count; i++) {
+        if(g_selected_filenames[i]) {
+            if(g_is_photo_mode) {
+                char cmd[256];
+                const char *p = strchr(PHOTO_ALBUM_IMAGE_PATH_S, '/');
+                if(p) { snprintf(cmd, sizeof(cmd), "rm -f %s%s", p, g_selected_filenames[i]); system(cmd); }
+                p = strchr(PHOTO_ALBUM_IMAGE_PATH_L, '/');
+                if(p) { snprintf(cmd, sizeof(cmd), "rm -f %s%s", p, g_selected_filenames[i]); system(cmd); }
+                p = strchr(PHOTO_ALBUM_IMAGE_PATH, '/');
+                if(p) {
+                    char fullpath[FILEMNG_PATH_MAX_LEN];
+                    snprintf(fullpath, sizeof(fullpath), "%s%s", p, g_selected_filenames[i]);
+                    snprintf(cmd, sizeof(cmd), "rm -f %s", fullpath);
+                    system(cmd);
+                    FILEMNG_DelFile(g_cam_id, fullpath);
+                }
+            } else {
+                char *dot = strrchr(g_selected_filenames[i], '.');
+                if(dot) {
+                    char name[256]; snprintf(name, sizeof(name), "%.*s", (int)(dot - g_selected_filenames[i]), g_selected_filenames[i]);
+                    char cmd[256];
+                    const char *p = strchr(PHOTO_ALBUM_VIDEO_THUMB_PATH_S, '/');
+                    if(p) { snprintf(cmd, sizeof(cmd), "rm -f %s%s.jpg", p, name); system(cmd); }
+                    p = strchr(PHOTO_ALBUM_VIDEO_THUMB_PATH_L, '/');
+                    if(p) { snprintf(cmd, sizeof(cmd), "rm -f %s%s.jpg", p, name); system(cmd); }
+                    p = strchr(PHOTO_ALBUM_MOVIE_PATH, '/');
+                    if(p) {
+                        char fullpath[FILEMNG_PATH_MAX_LEN];
+                        snprintf(fullpath, sizeof(fullpath), "%s%s", p, g_selected_filenames[i]);
+                        snprintf(cmd, sizeof(cmd), "rm -f %s%s.mov", p, name);
+                        system(cmd);
+                        FILEMNG_DelFile(g_cam_id, fullpath);
+                    }
+                }
+            }
+            // 从全局数组移除
+            for(int j = 0; j < g_total_media_files; j++) {
+                if(g_all_filenames[j] && strcmp(g_all_filenames[j], g_selected_filenames[i]) == 0) {
+                    free(g_all_filenames[j]);
+                    for(int k = j; k < g_total_media_files - 1; k++) g_all_filenames[k] = g_all_filenames[k + 1];
+                    g_total_media_files--;
+                    break;
+                }
+            }
+        }
+        if(g_selected_photos[i] && lv_obj_is_valid(g_selected_photos[i])) lv_obj_del(g_selected_photos[i]);
+    }
+    g_selected_count = 0;
+}
+
+// 确认删除选中回调
+static void confirm_delete_selected_cb(lv_event_t *e)
+{
+    lv_obj_del(lv_event_get_user_data(e));
+    do_delete_selected_files();
+    // 刷新UI
+    g_total_pages = (g_total_media_files + g_images_per_page - 1) / g_images_per_page;
+    if(g_current_page >= g_total_pages) g_current_page = (g_total_pages > 0) ? g_total_pages - 1 : 0;
+    lv_obj_clean(g_current_parent);
+    load_page(g_current_page);
+    // 更新滑动条
+    g_slider_height = (g_total_pages > 0) ? (420 / g_total_pages) : 0;
+    if(g_slider_height < 20) g_slider_height = 20;
+    if(scrollbar_slider_s && lv_obj_is_valid(scrollbar_slider_s)) {
+        lv_obj_set_size(scrollbar_slider_s, 12, g_slider_height);
+        int y = 60 + (g_slider_height * g_current_page);
+        if(y > 480 - g_slider_height) y = 480 - g_slider_height;
+        lv_obj_set_pos(scrollbar_slider_s, 625, y);
+    }
+
+    // 退出选择模式
+    lv_obj_add_flag(btn_cancel_s, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_remove_flag(btn_cancel_s, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_remove_flag(btn_choose_s, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(btn_choose_s, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_remove_flag(btn_delete_s, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_add_flag(btn_delete_s, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_remove_flag(btn_delete_all_s, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_add_flag(btn_delete_all_s, LV_OBJ_FLAG_HIDDEN);
+    // 标记照片为不可选状态
+    mark_photos_unselectable(cont_album_grid_s);
+}
+
+// 创建删除选中确认对话框
+static void create_delete_selected_dialog(int selected_count)
+{
+    lv_obj_t *modal_bg = lv_obj_create(lv_scr_act());
+    lv_obj_set_size(modal_bg, LV_PCT(100), LV_PCT(100));
+    lv_obj_set_style_bg_color(modal_bg, lv_color_hex(0x000000), 0);
+    lv_obj_set_style_bg_opa(modal_bg, LV_OPA_50, 0);
+    lv_obj_set_style_border_width(modal_bg, 0, 0);
+
+    lv_obj_t *dialog = lv_obj_create(modal_bg);
+    lv_obj_set_size(dialog, 400, 200);
+    lv_obj_center(dialog);
+    lv_obj_set_style_bg_color(dialog, lv_color_hex(0x2D2D2D), 0);
+    lv_obj_set_style_radius(dialog, 10, 0);
+    lv_obj_set_style_border_width(dialog, 2, 0);
+    lv_obj_set_style_border_color(dialog, lv_color_hex(0x444444), 0);
+
+    lv_obj_t *label = lv_label_create(dialog);
+    if(g_is_photo_mode) {
+        lv_label_set_text_fmt(label, str_language_confirm_delete_all_photos[get_curr_language()], selected_count);
+    } else {
+        lv_label_set_text_fmt(label, str_language_confirm_delete_all_videos[get_curr_language()], selected_count);
+    }
+    lv_obj_set_style_text_color(label, lv_color_white(), 0);
+    lv_obj_set_style_text_font(label, get_usr_fonts(ALI_PUHUITI_FONTPATH, 20), 0);
+    lv_obj_align(label, LV_ALIGN_TOP_MID, 0, 30);
+    lv_obj_set_style_text_align(label, LV_TEXT_ALIGN_CENTER, 0);
+
+    lv_obj_t *confirm_btn = lv_btn_create(dialog);
+    lv_obj_set_size(confirm_btn, 120, 40);
+    lv_obj_align(confirm_btn, LV_ALIGN_BOTTOM_LEFT, 40, -30);
+    lv_obj_t *confirm_label = lv_label_create(confirm_btn);
+    lv_label_set_text(confirm_label, str_language_confirm[get_curr_language()]);
+    lv_obj_center(confirm_label);
+    lv_obj_set_style_text_font(confirm_label, get_usr_fonts(ALI_PUHUITI_FONTPATH, 20), 0);
+    lv_obj_set_style_bg_color(confirm_btn, lv_color_hex(0x0080FF), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(confirm_btn, lv_color_hex(0x0070DD), LV_PART_MAIN | LV_STATE_PRESSED);
+
+    lv_obj_t *cancel_btn = lv_btn_create(dialog);
+    lv_obj_set_size(cancel_btn, 120, 40);
+    lv_obj_align(cancel_btn, LV_ALIGN_BOTTOM_RIGHT, -40, -30);
+    lv_obj_t *cancel_label = lv_label_create(cancel_btn);
+    lv_label_set_text(cancel_label, str_language_cancel[get_curr_language()]);
+    lv_obj_center(cancel_label);
+    lv_obj_set_style_text_font(cancel_label, get_usr_fonts(ALI_PUHUITI_FONTPATH, 20), 0);
+    lv_obj_set_style_bg_color(cancel_btn, lv_color_hex(0x404040), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(cancel_btn, lv_color_hex(0x505050), LV_PART_MAIN | LV_STATE_PRESSED);;
+    lv_obj_set_style_border_width(cancel_btn, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_color(cancel_btn, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
+
+
+    lv_obj_add_event_cb(confirm_btn, confirm_delete_selected_cb, LV_EVENT_CLICKED, modal_bg);
+    lv_obj_add_event_cb(cancel_btn, cancel_delete_cb, LV_EVENT_CLICKED, modal_bg);
+    lv_obj_add_event_cb(modal_bg, modal_background_click_cb, LV_EVENT_CLICKED, modal_bg);
+}
+
 // 创建删除确认对话框
 static void create_delete_confirmation_dialog(int total_files)
 {
@@ -2147,9 +2070,11 @@ static void create_delete_confirmation_dialog(int total_files)
 
     // 添加提示文本
     lv_obj_t *label = lv_label_create(dialog);
-    lv_label_set_text_fmt(label, "确定要删除所有%d个%s吗？",
-                         total_files,
-                         g_is_photo_mode ? "照片" : "视频");
+    if (g_is_photo_mode) {
+        lv_label_set_text_fmt(label, str_language_confirm_delete_all_photos[get_curr_language()], total_files);
+    } else {
+        lv_label_set_text_fmt(label, str_language_confirm_delete_all_videos[get_curr_language()], total_files);
+    }
     lv_obj_set_style_text_color(label, lv_color_white(), 0);
     lv_obj_set_style_text_font(label, get_usr_fonts(ALI_PUHUITI_FONTPATH, 20), 0);
     lv_obj_align(label, LV_ALIGN_TOP_MID, 0, 30);
@@ -2160,21 +2085,24 @@ static void create_delete_confirmation_dialog(int total_files)
     lv_obj_set_size(confirm_btn, 120, 40);
     lv_obj_align(confirm_btn, LV_ALIGN_BOTTOM_LEFT, 40, -30);
     lv_obj_t *confirm_label = lv_label_create(confirm_btn);
-    lv_label_set_text(confirm_label, "确认");
+    lv_label_set_text(confirm_label, str_language_confirm[get_curr_language()]);
     lv_obj_center(confirm_label);
     lv_obj_set_style_text_font(confirm_label, get_usr_fonts(ALI_PUHUITI_FONTPATH, 20), 0);
-    lv_obj_set_style_bg_color(confirm_btn, lv_color_hex(0xFF3B30), 0);
+    lv_obj_set_style_bg_color(confirm_btn, lv_color_hex(0x0080FF), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(confirm_btn, lv_color_hex(0x0070DD), LV_PART_MAIN | LV_STATE_PRESSED);
 
     // 创建取消按钮
     lv_obj_t *cancel_btn = lv_btn_create(dialog);
     lv_obj_set_size(cancel_btn, 120, 40);
     lv_obj_align(cancel_btn, LV_ALIGN_BOTTOM_RIGHT, -40, -30);
     lv_obj_t *cancel_label = lv_label_create(cancel_btn);
-    lv_label_set_text(cancel_label, "取消");
+    lv_label_set_text(cancel_label, str_language_cancel[get_curr_language()]);
     lv_obj_center(cancel_label);
     lv_obj_set_style_text_font(cancel_label, get_usr_fonts(ALI_PUHUITI_FONTPATH, 20), 0);
-    lv_obj_set_style_bg_color(cancel_btn, lv_color_hex(0x4CD964), 0);
-
+    lv_obj_set_style_bg_color(cancel_btn, lv_color_hex(0x404040), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(cancel_btn, lv_color_hex(0x505050), LV_PART_MAIN | LV_STATE_PRESSED);
+    lv_obj_set_style_border_width(cancel_btn, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_color(cancel_btn, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
     // 添加按钮事件
     lv_obj_add_event_cb(confirm_btn, confirm_delete_all_cb, LV_EVENT_CLICKED, modal_bg);
     lv_obj_add_event_cb(cancel_btn, cancel_delete_cb, LV_EVENT_CLICKED, modal_bg);

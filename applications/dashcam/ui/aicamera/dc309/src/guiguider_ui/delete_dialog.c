@@ -305,11 +305,11 @@ void create_simple_delete_dialog(const char *file_name)
     lv_obj_add_style(label, &ttf_font_18, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_align(label, LV_ALIGN_TOP_MID, 0, 20);
 
-    // 确认按钮
+    // 确认按钮 - 蓝色背景
     lv_obj_t *confirm_btn = lv_btn_create(simple_dialog_scrll);
     lv_obj_set_size(confirm_btn, 100, 35);
     lv_obj_align(confirm_btn, LV_ALIGN_BOTTOM_LEFT, 30, -20);
-    lv_obj_set_style_bg_color(confirm_btn, lv_color_hex(0xFF5555), 0);
+    lv_obj_set_style_bg_color(confirm_btn, lv_color_hex(0x0080FF), 0);
     lv_obj_set_style_pad_all(confirm_btn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     lv_obj_t *confirm_label = lv_label_create(confirm_btn);
@@ -318,11 +318,13 @@ void create_simple_delete_dialog(const char *file_name)
     lv_obj_center(confirm_label);
     lv_obj_add_event_cb(confirm_btn, simple_confirm_cb, LV_EVENT_CLICKED, NULL);
 
-    // 取消按钮
+    // 取消按钮 - 灰底白框
     lv_obj_t *cancel_btn = lv_btn_create(simple_dialog_scrll);
     lv_obj_set_size(cancel_btn, 100, 35);
     lv_obj_align(cancel_btn, LV_ALIGN_BOTTOM_RIGHT, -30, -20);
     lv_obj_set_style_bg_color(cancel_btn, lv_color_hex(0x555555), 0);
+    lv_obj_set_style_border_width(cancel_btn, 2, 0);
+    lv_obj_set_style_border_color(cancel_btn, lv_color_hex(0xFFFFFF), 0);
     lv_obj_set_style_pad_all(cancel_btn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     lv_obj_t *cancel_label = lv_label_create(cancel_btn);

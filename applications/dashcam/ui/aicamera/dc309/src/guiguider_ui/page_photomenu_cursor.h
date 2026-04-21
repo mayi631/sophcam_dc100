@@ -11,7 +11,7 @@ uint8_t get_curr_cursor(void);
 void cursor_Index(uint8_t index);
 void cursor_Label(char* plabel);
 void photoMenu_Cursor(lv_ui_t *ui);
-
+void reset_curcor(void);
 #ifdef __cplusplus
 }
 #endif

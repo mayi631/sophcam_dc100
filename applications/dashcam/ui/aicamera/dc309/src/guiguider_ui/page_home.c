@@ -129,11 +129,16 @@ static void home_click_callback(lv_obj_t* obj)
         // 显示黑色背景色，盖掉开机logo。后续送流的时候，会盖掉背景色。
         system("devmem 0x0a094094 32 0x00010028");
     }
-    
+    set_update_text_color(true);
     if (obj_index >= 0) {
         switch (obj_index) {
         case 0: // 动物识别
         {
+            ui_load_scr_animation(&g_ui, &g_ui.page_photo.photoscr, g_ui.screenHomePhoto_del, NULL, Home_Photo, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
+            MESSAGE_S Msg = { 0 };
+            Msg.topic = EVENT_MODEMNG_MODESWITCH;
+            Msg.arg1 = WORK_MODE_PHOTO;
+            MODEMNG_SendMessage(&Msg);
             MLOG_DBG("进入动物识别页面\n");
             // 添加动物识别页面的跳转逻辑
         } break;
@@ -279,6 +284,8 @@ void setup_scr_home1(lv_ui_t* ui)
     }
 
     // 初始化焦点组
+    // home页面不需要更新文字颜色
+    set_update_text_color(false);
     lv_obj_t* target_obj = focusable_objects[curr_focus_index];
     init_focus_group(obj_home_s, GRID_COLS, GRID_ROWS, focusable_objects, GRID_MAX_OBJECTS, home_click_callback, target_obj);
     lv_obj_add_state(target_obj, LV_STATE_FOCUS_KEY);

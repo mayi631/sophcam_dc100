@@ -17,7 +17,10 @@
  #include "style_common.h"
  #include "ui_common.h"
  #include <stdio.h>
- #include "hal_pwm.h"
+ #include <hal_gpio.h>
+ #include <fcntl.h>
+ #include <unistd.h>
+ #include <string.h>
 #include <math.h>
 
  #define GRID_COLS 1
@@ -30,11 +33,8 @@
  
  static uint8_t stlight_Current_Index_s = 2;
  
-// 呼吸灯线程相关
-static HAL_PWM_S pwmAttr = {0};
-static pthread_t breathing_led_thread = 0;
-static volatile bool breathing_led_running = false;
-static volatile bool breathing_led_thread_active = false;
+// 状态灯GPIO控制相关
+#define STATUS_LED_GPIO_NUM     HAL_GPIOB_27   // GPIOB27
 
 
  uint8_t getstalight_Index(void)
@@ -53,153 +53,77 @@ static volatile bool breathing_led_thread_active = false;
      strncpy(g_sysbtn_labelstatuslight, plabel, sizeof(g_sysbtn_labelstatuslight));
  }
  
-// 呼吸灯线程函数
-static void* breathing_led_thread_func(void* arg)
+
+
+/**
+ * @brief 通过GPIO控制状态灯
+ * @param gpio_num GPIO编号
+ * @param is_open true=打开状态灯, false=关闭状态灯
+ * @return 0=成功, -1=失败
+ */
+static int32_t status_led_by_gpio(uint32_t gpio_num, bool is_open)
 {
-    UNUSED(arg);
-    prctl(PR_SET_NAME, "breathing_led", 0, 0, 0);
+    int32_t fd = -1;
+    char path[64] = { 0 };
 
-    breathing_led_thread_active = true;
-    MLOG_INFO("Breathing LED thread started\n");
-
-    // 配置 PWM 参数
-    pwmAttr.group = 2;          // PWM 组
-    pwmAttr.channel = 3;        // PWM 通道
-    pwmAttr.period = 100;   // 周期（单位：纳秒）
-    pwmAttr.duty_cycle = 0; // 占空比（单位：纳秒）
-
-    // 初始化 PWM
-    if (HAL_PWM_Init(pwmAttr) != 0) {
-        MLOG_ERR("PWM 初始化失败\n");
-        breathing_led_thread_active = false;
-        return NULL;
+    fd = open("/sys/class/gpio/export", O_WRONLY);
+    if (fd < 0) {
+        MLOG_ERR("open /sys/class/gpio/export failed\n");
+        return -1;
     }
-    MLOG_INFO("PWM 初始化成功\n");
+    snprintf(path, sizeof(path), "%d", gpio_num);
+    write(fd, path, strlen(path));
+    close(fd);
 
-
-    // 呼吸灯参数
-    const int BREATHING_PERIOD_MS = 2000;  // 一个呼吸周期2秒
-    const int UPDATE_INTERVAL_MS = 20;      // 每20ms更新一次
-    const int STEPS = BREATHING_PERIOD_MS / UPDATE_INTERVAL_MS;  // 一个周期内的步数
-
-    while (breathing_led_running) {
-        // 使用正弦波实现平滑的呼吸效果
-        for (int i = 0; i < STEPS && breathing_led_running; i++) {
-            // 计算当前步的亮度 (0-100)
-            // 使用sin函数生成0-1的波形，然后映射到1-100（避免完全熄灭）
-            double angle = (double)i * 2.0 * M_PI / STEPS;
-            double brightness = (sin(angle) + 1.0) / 2.0;  // 0-1
-            pwmAttr.duty_cycle = (int)(brightness * 99.0 + 1.0);  // 1-100
-
-            // 控制Linux PWM15的占空比，实现呼吸灯效果
-            HAL_PWM_Set_Param(pwmAttr);
-
-            // 等待更新间隔
-            usleep(UPDATE_INTERVAL_MS * 1000);
-        }
+    memset(path, 0, sizeof(path));
+    snprintf(path, sizeof(path), "/sys/class/gpio/gpio%d/direction", gpio_num);
+    fd = open(path, O_WRONLY);
+    if (fd < 0) {
+        MLOG_ERR("open gpio direction failed\n");
+        return -1;
     }
+    write(fd, "out", 3);
+    close(fd);
 
-    // 禁用 PWM
-    if(HAL_PWM_Deinit(pwmAttr) != 0) MLOG_ERR("PWM 反初始化失败\n");
-
-    breathing_led_thread_active = false;
-    MLOG_INFO("Breathing LED thread stopped\n");
-
-    return NULL;
-}
-
-// 启动呼吸灯线程
-static int start_breathing_led_thread(void)
-{
-    // 如果线程已经在运行，直接返回
-    if (breathing_led_thread_active) {
-        MLOG_DBG("Breathing LED thread is already running\n");
-        return 0;
-    }
-
-    // 如果线程已创建但未激活，等待其结束并清理
-    if (breathing_led_thread != 0) {
-        breathing_led_running = false;
-        pthread_join(breathing_led_thread, NULL);
-        breathing_led_thread = 0;
-        breathing_led_thread_active = false;
-    }
-
-    // 设置运行标志
-    breathing_led_running = true;
-    breathing_led_thread_active = false;  // 先设为false，线程启动后会设为true
-
-    // 创建线程
-    int ret = pthread_create(&breathing_led_thread, NULL, breathing_led_thread_func, NULL);
-    if (ret != 0) {
-        MLOG_ERR("Failed to create breathing LED thread: %d\n", ret);
-        breathing_led_running = false;
-        breathing_led_thread = 0;
+    memset(path, 0, sizeof(path));
+    snprintf(path, sizeof(path), "/sys/class/gpio/gpio%d/value", gpio_num);
+    fd = open(path, O_RDWR);
+    if (fd < 0) {
+        MLOG_ERR("open gpio value failed\n");
         return -1;
     }
 
-    // 等待线程启动（等待线程设置breathing_led_thread_active为true）
-    int wait_count = 0;
-    while (!breathing_led_thread_active && wait_count < 50) {
-        usleep(20000);  // 每次等待20ms
-        wait_count++;
-    }
-
-    if (breathing_led_thread_active) {
-        MLOG_INFO("Breathing LED thread created and started successfully\n");
-        return 0;
+    if (is_open) {
+        write(fd, "1", 1);  // 高电平 - 灯亮
     } else {
-        MLOG_ERR("Breathing LED thread failed to start within timeout\n");
-        breathing_led_running = false;
-        if (breathing_led_thread != 0) {
-            pthread_cancel(breathing_led_thread);
-            pthread_join(breathing_led_thread, NULL);
-            breathing_led_thread = 0;
-        }
-        return -1;
+        write(fd, "0", 1);  // 低电平 - 灯灭
     }
+
+    close(fd);
+
+    return 0;
 }
 
-// 停止呼吸灯线程
-static void stop_breathing_led_thread(void)
+/**
+ * @brief 设置状态灯开关状态
+ * @param on true=打开, false=关闭
+ */
+static void status_led_set(bool on)
 {
-    if (!breathing_led_thread_active && breathing_led_thread == 0) {
-        return;
-    }
-
-    // 设置停止标志，通知线程退出
-    breathing_led_running = false;
-
-    // 等待线程结束
-    if (breathing_led_thread != 0) {
-        void* thread_result = NULL;
-        int ret = pthread_join(breathing_led_thread, &thread_result);
-        if (ret != 0) {
-            MLOG_ERR("Failed to join breathing LED thread: %d\n", ret);
-        }
-        breathing_led_thread = 0;
-    }
-
-    // 确保呼吸灯关闭
-    HAL_PWM_Deinit(pwmAttr);
-    breathing_led_thread_active = false;
-
-    MLOG_INFO("Breathing LED thread stopped and resources released\n");
+    status_led_by_gpio(STATUS_LED_GPIO_NUM, on);
+    MLOG_DBG("Status LED %s\n", on ? "ON" : "OFF");
 }
 
 // 开启状态灯
 static void stlight_on(void)
 {
-    // 启动呼吸灯线程
-    start_breathing_led_thread();
+    status_led_set(true);
 }
 
 // 关闭状态灯
 static void stlight_off(void)
 {
-    // 停止呼吸灯线程
-    stop_breathing_led_thread();
-    MLOG_INFO("Screen turned on (backlight control)\n");
+    status_led_set(false);
 }
 
 // 根据参数初始化状态灯（开机时调用）

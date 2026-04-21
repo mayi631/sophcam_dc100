@@ -29,7 +29,7 @@ int red_light_level[] = {0, 64, 74, 80, 84, 90, 96, 100};
 // 外部变量声明：电池等级索引
 extern int32_t g_batter_image_index;
 // 根据电池电量获取红外灯最大允许档位
-static int8_t get_max_red_light_level(void)
+int8_t get_max_red_light_level(void)
 {
     // g_batter_image_index 映射关系：
     // 0: 充电

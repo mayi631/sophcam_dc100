@@ -10,6 +10,10 @@
 #include "ui_common.h"
 #include "common/takephoto.h"
 #include "indev.h"
+#include "icon_select_popup.h"
+#include "page_vediomenu_res.h"
+#include "page_sysmenu_brightness.h"
+#include "infrared.h"
 
 lv_obj_t *label_Vedio_Durtime_s; //录像时长
 lv_obj_t *obj_vedio_s;           //底层窗口
@@ -49,6 +53,215 @@ static void video_right_callback(void);
 
 static void photo_zoom_event_cb(lv_event_t* e);
 
+// 前向声明
+extern void update_video_top_controls_layout(void);
+extern void brightness_set_level(int level);
+
+// 检查是否在视频页面
+static bool is_in_video_page(void)
+{
+    return (obj_vedio_s != NULL &&
+            lv_obj_is_valid(obj_vedio_s) &&
+            lv_screen_active() == obj_vedio_s);
+}
+
+// 视频分辨率选择回调
+static void icon_select_video_res_callback(uint32_t index, void *user_data)
+{
+    MLOG_DBG("视频分辨率选择: index=%d\n", index);
+    
+    // 设置新的分辨率索引
+    video_setRes_Index(index);
+    
+    // 更新UI显示
+    if (g_video_top_controls[1] && lv_obj_is_valid(g_video_top_controls[1])) {
+        const char *icon = video_getRes_Icon();
+        if (icon != NULL) {
+            show_image(g_video_top_controls[1], icon);
+        }
+    }
+    
+    // 发送消息更新分辨率参数
+    MESSAGE_S Msg = {0};
+    Msg.topic = EVENT_MODEMNG_SETTING;
+    Msg.arg1 = PARAM_MENU_VIDEO_SIZE;
+    Msg.arg2 = index;
+    MODEMNG_SendMessage(&Msg);
+}
+
+// 分辨率按钮点击回调
+static void video_res_btn_click_cb(lv_event_t *e)
+{
+    if (!is_in_video_page()) {
+        MLOG_DBG("不在视频页面，忽略点击\n");
+        return;
+    }
+    
+    // 如果弹窗已存在且是同一类型，则关闭
+    if (is_icon_select_popup_exists()) {
+        delete_icon_select_popup();
+        return;
+    }
+    
+    // 构建分辨率选项数组
+    PARAM_MENU_S menu_param = {0};
+    PARAM_GetMenuParam(&menu_param);
+    
+    static icon_select_item_t video_res_items[6];
+    static char video_res_labels[6][16];
+    uint8_t item_count = menu_param.VideoSize.ItemCnt;
+    if (item_count > 6) item_count = 6;
+    
+    for (uint8_t i = 0; i < item_count; i++) {
+        video_res_items[i].icon = video_getRes_IconByIndex(i);
+        snprintf(video_res_labels[i], sizeof(video_res_labels[i]), "%s",
+                 menu_param.VideoSize.Items[i].Desc);
+        video_res_items[i].label = video_res_labels[i];
+    }
+    
+    // 创建弹窗
+    create_icon_select_popup(obj_vedio_s, ICON_SELECT_VIDEO_RESOLUTION,
+                              video_res_items, item_count,
+                              video_getRes_Index(),
+                              icon_select_video_res_callback, NULL);
+}
+
+// 红外灯亮度选择回调
+static void icon_select_video_redlight_callback(uint32_t index, void *user_data)
+{
+    MLOG_DBG("视频红外灯亮度选择: index=%d\n", index);
+
+    // 如果要开启红外灯（亮度>0），检查电量
+    if (index > 0) {
+        // 检查是否空格电量（电池图标索引为1表示低电量0%-25%）
+        if (g_batter_image_index == 1) {
+            MLOG_ERR("电量过低，无法开启红外灯\n");
+            // 可以在这里添加提示用户电量低的逻辑
+            return;
+        }
+    }
+
+    // 设置亮度级别 (0-7)
+    brightness_level = index;
+
+    // 实际设置红外灯亮度
+    if (index == 0) {
+        led_off();
+        ircut_off();
+    } else {
+        // 根据电池电量限制最大亮度档位
+        int8_t max_level = get_max_red_light_level();
+        if (brightness_level > max_level) {
+            brightness_level = max_level;
+            MLOG_DBG("电池电量限制，红外灯亮度自动降档至 %d\n", brightness_level);
+        }
+        led_on_with_brightness(brightness_level);
+    }
+
+    // 更新UI显示
+    if (g_video_top_controls[2] && lv_obj_is_valid(g_video_top_controls[2])) {
+        if (brightness_level > 6) {
+            show_image(g_video_top_controls[2], red_light_image_level[6]);
+        } else if (brightness_level > 0) {
+            show_image(g_video_top_controls[2], red_light_image_level[brightness_level - 1]);
+        }
+    }
+
+    // 更新布局
+    update_video_top_controls_layout();
+}
+
+// 红外灯亮度按钮点击回调
+static void video_redlight_btn_click_cb(lv_event_t *e)
+{
+    if (!is_in_video_page()) {
+        MLOG_DBG("不在视频页面，忽略点击\n");
+        return;
+    }
+    
+    // 如果弹窗已存在且是同一类型，则关闭
+    if (is_icon_select_popup_exists()) {
+        delete_icon_select_popup();
+        return;
+    }
+    
+    // 构建红外灯亮度选项数组
+    static icon_select_item_t redlight_items[8];
+    static char redlight_labels[8][8];
+    
+    for (uint8_t i = 0; i < 8; i++) {
+        if (i == 0) {
+            redlight_items[i].icon = "guanbi.png";  // 关闭图标
+            snprintf(redlight_labels[i], sizeof(redlight_labels[i]), "关闭");
+        } else {
+            redlight_items[i].icon = (i > 6) ? red_light_image_level[6] : red_light_image_level[i - 1];
+            snprintf(redlight_labels[i], sizeof(redlight_labels[i]), "等级%d", i);
+        }
+        redlight_items[i].label = redlight_labels[i];
+    }
+    
+    // 创建弹窗
+    create_icon_select_popup(obj_vedio_s, ICON_SELECT_REDLIGHT,
+                              redlight_items, 8,
+                              brightness_level,
+                              icon_select_video_redlight_callback, NULL);
+}
+
+// 屏幕亮度选择回调
+static void icon_select_video_brightness_callback(uint32_t index, void *user_data)
+{
+    MLOG_DBG("视频屏幕亮度选择: index=%d\n", index);
+
+    // 设置屏幕亮度 (0-6)
+    setsysMenu_brightness_Index(index);
+    brightness_set_level(index + 1);  // level 是 1-7
+
+    // 更新UI显示
+    if (g_video_top_controls[4] && lv_obj_is_valid(g_video_top_controls[4])) {
+        char* brightness_buf[] = { "1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png" };
+        show_image(g_video_top_controls[4], brightness_buf[get_curr_brightness()]);
+    }
+
+    // 发送消息更新亮度参数
+    MESSAGE_S Msg = {0};
+    Msg.topic = EVENT_MODEMNG_SETTING;
+    Msg.arg1 = PARAM_MENU_BRIGHTNESS;
+    Msg.arg2 = index;
+    MODEMNG_SendMessage(&Msg);
+}
+
+// 屏幕亮度按钮点击回调
+static void video_brightness_btn_click_cb(lv_event_t *e)
+{
+    if (!is_in_video_page()) {
+        MLOG_DBG("不在视频页面，忽略点击\n");
+        return;
+    }
+    
+    // 如果弹窗已存在且是同一类型，则关闭
+    if (is_icon_select_popup_exists()) {
+        delete_icon_select_popup();
+        return;
+    }
+    
+    // 构建屏幕亮度选项数组
+    static icon_select_item_t brightness_items[7];
+    static char brightness_labels[7][8];
+    char* brightness_buf[] = { "1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png" };
+    
+    for (uint8_t i = 0; i < 7; i++) {
+        brightness_items[i].icon = brightness_buf[i];
+        snprintf(brightness_labels[i], sizeof(brightness_labels[i]), "等级%d", i + 1);
+        brightness_items[i].label = brightness_labels[i];
+    }
+    
+    // 创建弹窗
+    create_icon_select_popup(obj_vedio_s, ICON_SELECT_BRIGHTNESS,
+                              brightness_items, 7,
+                              get_curr_brightness(),
+                              icon_select_video_brightness_callback, NULL);
+}
+
 // 清理视频页面资源的通用函数
 static void cleanup_vedio_page_resources(void)
 {
@@ -73,6 +286,8 @@ static void cleanup_vedio_page_resources(void)
     delete_zoom_bar();//销毁zoombar
     // 释放缩放相关资源
     delete_zoombar_timer_handler();
+    // 删除图标选择弹窗
+    delete_icon_select_popup();
 }
 
 //参数动态更新回调
@@ -254,6 +469,7 @@ static void buttonVedio_All_event_handler(lv_event_t* e)
                 // 复位缩放
                 set_zoom_level(1);
                 is_video_mode = false;
+                reset_effect();
                 ui_load_scr_animation(&g_ui, &obj_home_s, 1, NULL, setup_scr_home1, LV_SCR_LOAD_ANIM_NONE, 0, 0, false,
                                       true);
             } else if(Click_index == 4) {
@@ -374,6 +590,7 @@ static void video_long_menu_callback(void)
     // 复位缩放
     set_zoom_level(1);
     is_video_mode = false;
+    reset_effect();
     ui_load_scr_animation(&g_ui, &obj_home_s, 1, NULL, setup_scr_home1, LV_SCR_LOAD_ANIM_NONE, 0, 0, false, true);
 }
 
@@ -411,6 +628,7 @@ static void gesture_event_handler(lv_event_t *e)
                     // 复位缩放
                     set_zoom_level(1);
                     is_video_mode = false;
+                    reset_effect();
                     ui_load_scr_animation(&g_ui, &obj_home_s, 1, NULL, setup_scr_home1, LV_SCR_LOAD_ANIM_NONE, 0, 0,
                                           false, true);
                     cleanup_vedio_page_resources();
@@ -484,10 +702,12 @@ void Home_Vedio(lv_ui_t *ui)
     g_video_top_controls[1] = lv_imagebutton_create(obj_vedio_s);
     lv_obj_set_size(g_video_top_controls[1], 38, 32);
     show_image(g_video_top_controls[1], video_getRes_Icon());
+    lv_obj_add_event_cb(g_video_top_controls[1], video_res_btn_click_cb, LV_EVENT_CLICKED, NULL);  // 添加点击事件
 
     // 红光亮级按钮
     g_video_top_controls[2] = lv_imagebutton_create(obj_vedio_s);
     lv_obj_set_size(g_video_top_controls[2], 38, 32);
+    lv_obj_add_event_cb(g_video_top_controls[2], video_redlight_btn_click_cb, LV_EVENT_CLICKED, NULL);  // 添加点击事件
     
     // // ISO级别按钮
     // g_video_top_controls[3] = lv_imagebutton_create(obj_vedio_s);
@@ -503,6 +723,7 @@ void Home_Vedio(lv_ui_t *ui)
     lv_obj_set_size(g_video_top_controls[4], 38, 32);
     char* brightness_buf[] = { "1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png" };
     show_image(g_video_top_controls[4], brightness_buf[get_curr_brightness()]);
+    lv_obj_add_event_cb(g_video_top_controls[4], video_brightness_btn_click_cb, LV_EVENT_CLICKED, NULL);  // 添加点击事件
 
 
     // g_video_top_controls[5] = lv_imagebutton_create(obj_vedio_s);
@@ -571,7 +792,7 @@ void Home_Vedio(lv_ui_t *ui)
         lv_obj_align(cursor, LV_ALIGN_CENTER, 0, 0);
         lv_obj_set_style_pad_all(cursor, 0, LV_STATE_DEFAULT);
         extern const char *cursor_image_array[];
-        show_image(cursor, cursor_image_array[get_curr_cursor()]);
+        show_image(cursor, cursor_image_array[get_curr_cursor() -1]);
     }
 
     // menu

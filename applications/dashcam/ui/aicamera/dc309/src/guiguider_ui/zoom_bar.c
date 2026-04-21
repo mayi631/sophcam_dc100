@@ -82,11 +82,19 @@ void create_zoom_bar(lv_obj_t *parent)
     lv_obj_set_size(zoom_bar.cont, 50, 200); // 宽度50，高度200（竖向）
     lv_obj_align(zoom_bar.cont, LV_ALIGN_RIGHT_MID, -20, 0); // 右侧居中，距离右边20像素
     lv_obj_set_style_bg_opa(zoom_bar.cont, LV_OPA_20, 0);
-    lv_obj_set_style_bg_color(zoom_bar.cont, lv_color_black(), 0);
+    lv_obj_set_style_bg_color(zoom_bar.cont, lv_color_hex(0x808080), 0);
     lv_obj_set_style_border_width(zoom_bar.cont, 0, 0);
     lv_obj_set_style_radius(zoom_bar.cont, 10, 0);
     lv_obj_add_flag(zoom_bar.cont, LV_OBJ_FLAG_HIDDEN); // 初始隐藏
     lv_obj_set_style_pad_all(zoom_bar.cont, 0, 0);
+    // 无边框
+    lv_obj_set_style_border_width(zoom_bar.cont, 0, 0);
+    // 禁用滚动
+    lv_obj_set_scrollbar_mode(zoom_bar.cont, LV_SCROLLBAR_MODE_OFF);
+    //添加阴影效果
+    lv_obj_set_style_shadow_width(zoom_bar.cont, 10, 0);
+    lv_obj_set_style_shadow_color(zoom_bar.cont, lv_color_white(), 0);
+    lv_obj_set_style_shadow_opa(zoom_bar.cont, LV_OPA_30, 0);
 
     // 创建进度条（竖向）
     zoom_bar.bar = lv_bar_create(zoom_bar.cont);

@@ -28,7 +28,7 @@ void photoMenu_SettEffect(lv_ui_t *ui);
 uint8_t geteffect_index(void);
 
 void seteffect_index(uint8_t index);
-
+void reset_effect(void);
 #ifdef __cplusplus
 }
 #endif

@@ -18,7 +18,7 @@ typedef enum {
 uint8_t get_shootmode(bool mode);
 void set_shootmode(uint8_t index);
 void photoMenu_ShootingMode(lv_ui_t *ui);
-
+void reset_shootmode(void);
 #ifdef __cplusplus
 }
 #endif

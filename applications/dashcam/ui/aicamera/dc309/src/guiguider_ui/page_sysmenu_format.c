@@ -260,12 +260,12 @@ void sysMenu_Format_Sure(void)
 
     lv_obj_add_event_cb(btn_cancel, sysMenu_Format_OK_Cancel_btn_event_handler, LV_EVENT_CLICKED, NULL);
 
-    // 创建确定按钮
+    // 创建确定按钮 - 蓝色背景
     lv_obj_t *btn_ok = lv_btn_create(btn_cont);
     lv_obj_set_size(btn_ok, 160, 50);
     lv_obj_align(btn_ok, LV_ALIGN_BOTTOM_RIGHT, -20,  -6);
-    lv_obj_set_style_bg_color(btn_ok, lv_color_hex(0xE53935), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(btn_ok, lv_color_hex(0xC62828), LV_PART_MAIN | LV_STATE_PRESSED);
+    lv_obj_set_style_bg_color(btn_ok, lv_color_hex(0x0080FF), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(btn_ok, lv_color_hex(0x0070DD), LV_PART_MAIN | LV_STATE_PRESSED);
     lv_obj_set_style_radius(btn_ok, 15, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(btn_ok, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(btn_ok, 0, LV_PART_MAIN | LV_STATE_DEFAULT);

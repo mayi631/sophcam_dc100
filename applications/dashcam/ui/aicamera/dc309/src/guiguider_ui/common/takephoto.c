@@ -318,6 +318,9 @@ int32_t do_zoom_in(int32_t key_value)
                 MLOG_DBG("BUG调试 %d %d\n",led_on_flag,brightness_level);
                 // 如果红外灯未开启（亮度为0），先开启红外灯并设置初始亮度为1档
                 if (brightness_level == 0) {
+                    if (get_max_red_light_level() == 3) {
+                        return 0;
+                    }
                     ircut_on();
                     led_on();
                     led_on_flag = true;
@@ -325,7 +328,7 @@ int32_t do_zoom_in(int32_t key_value)
                 } else {
                     // 红外灯已开启，调节亮度，循环到0-7
                     int8_t level = brightness_level + 1;
-                    if (level > 7) {
+                    if (level > get_max_red_light_level()) {
                         level = 0;  // 超过7级循环回第0级（关闭）
                         led_off();
                         ircut_off();

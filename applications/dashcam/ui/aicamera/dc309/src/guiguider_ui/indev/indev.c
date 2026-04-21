@@ -152,6 +152,7 @@ static int g_current_row = 0;
 static int g_current_col = 0;
 static int g_current_focus_index = 0;
 static void (*g_click_callback)(lv_obj_t *obj) = NULL;
+static bool g_update_text_color = false; // 是否更新文字颜色
 
 /**
  * @brief 初始化导航状态
@@ -224,6 +225,22 @@ lv_group_t* init_focus_group(lv_obj_t *parent, int grid_cols, int grid_rows,
                 lv_obj_add_style(focusable_objects[i], &style_focus_blue, LV_STATE_FOCUS_KEY);
             }
         }
+
+        for (uint8_t i = 0; i < g_grid_cols * g_grid_rows; i++) {
+            if (g_focusable_objects[i] == NULL || !g_update_text_color)
+                break;
+            for (uint8_t j = 0; j < lv_obj_get_child_cnt(g_focusable_objects[i]); j++) {
+                lv_obj_t* child = lv_obj_get_child(g_focusable_objects[i], j);
+                if (child != NULL && lv_obj_check_type(child, &lv_label_class)) {
+                    // 非焦点对象：白字
+                    if (initial_focus_obj != g_focusable_objects[i]) {
+                        lv_obj_set_style_text_color(child, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
+                    } else {
+                        lv_obj_set_style_text_color(child, lv_color_hex(0x035edb), LV_PART_MAIN | LV_STATE_DEFAULT);
+                    }
+                }
+            }
+        }
     }
 
     return focus_group;
@@ -243,6 +260,12 @@ static void cleanup_focus_group(void)
 void set_focus_index(int index)
 {
     g_current_focus_index = index;
+}
+
+// 设置是否更新文字颜色
+void set_update_text_color(bool enable)
+{
+    g_update_text_color = enable;
 }
 
 /**
@@ -277,6 +300,14 @@ void handle_grid_navigation(int key_code, int key_value)
                 if (g_focusable_objects[g_current_focus_index]) {
                     lv_group_focus_obj(g_focusable_objects[g_current_focus_index]);
                 }
+            } else {
+                // 第一行第一列，循环到最后一行最后一列
+                g_current_row = g_grid_rows - 1;
+                g_current_col = g_grid_cols - 1;
+                g_current_focus_index = g_current_row * g_grid_cols + g_current_col;
+                if (g_focusable_objects[g_current_focus_index]) {
+                    lv_group_focus_obj(g_focusable_objects[g_current_focus_index]);
+                }
             }
             break;
         case KEY_DOWN: // KEY_RIGHT
@@ -292,6 +323,14 @@ void handle_grid_navigation(int key_code, int key_value)
                 g_current_row++;
                 g_current_col = 0;
                 g_current_focus_index = g_current_row * g_grid_cols + g_current_col;
+                if (g_focusable_objects[g_current_focus_index]) {
+                    lv_group_focus_obj(g_focusable_objects[g_current_focus_index]);
+                }
+            } else {
+                // 最后一行最后一列，循环到第一行第一列
+                g_current_row = 0;
+                g_current_col = 0;
+                g_current_focus_index = 0;
                 if (g_focusable_objects[g_current_focus_index]) {
                     lv_group_focus_obj(g_focusable_objects[g_current_focus_index]);
                 }
@@ -319,6 +358,38 @@ void handle_grid_navigation(int key_code, int key_value)
             }
             break;
     }
+
+    // 如果不需要更新文字颜色则跳过
+    if (!g_update_text_color) {
+        return;
+    }
+
+    // extern lv_color_t g_color_blue;
+    for(uint8_t i = 0; i < g_grid_cols * g_grid_rows; i++)
+    {
+        if (g_focusable_objects[i] == NULL)
+            continue;
+        for (uint8_t j = 0; j < lv_obj_get_child_cnt(g_focusable_objects[i]); j++) {
+            lv_obj_t* child = lv_obj_get_child(g_focusable_objects[i], j);
+            if (child != NULL && lv_obj_check_type(child, &lv_label_class)) {
+                // 非焦点对象：白字
+                if (i != g_current_focus_index) {
+                    lv_obj_set_style_text_color(child, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
+                }
+            }
+        }
+    }
+    // 焦点对象：蓝字
+    if (g_focusable_objects[g_current_focus_index] == NULL)
+        return;
+    for (uint8_t j = 0; j < lv_obj_get_child_cnt(g_focusable_objects[g_current_focus_index]); j++) {
+        lv_obj_t* child = lv_obj_get_child(g_focusable_objects[g_current_focus_index], j);
+        if (child != NULL && lv_obj_check_type(child, &lv_label_class)) {
+            lv_obj_set_style_text_color(child, lv_color_hex(0x035edb), LV_PART_MAIN | LV_STATE_DEFAULT);
+        }
+    }
+
+
 }
 
 // 长按菜单按键检测定时器回调函数

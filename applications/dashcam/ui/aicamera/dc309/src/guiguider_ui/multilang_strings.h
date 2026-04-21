@@ -272,6 +272,8 @@ extern const char *str_language_confirm_delete_recent_photo[NUM_LANGUAGES];
 extern const char *str_language_confirm_delete_recent_video[NUM_LANGUAGES];
 extern const char *str_language_confirm_delete_this_photo[NUM_LANGUAGES];
 extern const char* str_language_confirm_delete_this_video[NUM_LANGUAGES];
+extern const char* str_language_confirm_delete_all_photos[NUM_LANGUAGES];
+extern const char* str_language_confirm_delete_all_videos[NUM_LANGUAGES];
 
 extern const char *ascii_strings[128]; // ASCII字符表
 

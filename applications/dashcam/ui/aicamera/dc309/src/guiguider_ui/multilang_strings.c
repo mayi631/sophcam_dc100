@@ -4132,6 +4132,38 @@ const char* str_language_confirm_delete_this_video[NUM_LANGUAGES] = {
     "Excluir este vídeo?" // Portugues
 };
 
+const char* str_language_confirm_delete_all_photos[NUM_LANGUAGES] = {
+    "确定要删除所有%d个照片吗?", // 简体中文
+    "確定要刪除所有%d個照片嗎?", // 繁体中文
+    "すべての%d枚の写真を削除しますか?", // 日语
+    "Delete all %d photos?", // 英语
+    "Usunąć wszystkie %d zdjęcia?", // Polski
+    "Alle %d foto's verwijderen?", // Nederlands
+    "Alle %d Fotos löschen?", // Deutsch
+    "Supprimer toutes les %d photos?", // Francis
+    "¿Eliminar las %d fotos?", // Espanol
+    "Eliminare tutte le %d foto?", // Italiano
+    "Tüm %d fotoğrafları silmek istiyor musunuz?", // Turkce
+    "Удалить все %d фото?", // Pyccknn
+    "Excluir todas as %d fotos?" // Portugues
+};
+
+const char* str_language_confirm_delete_all_videos[NUM_LANGUAGES] = {
+    "确定要删除所有%d个视频吗?", // 简体中文
+    "確定要刪除所有%d個影片嗎?", // 繁体中文
+    "すべての%d本の動画を削除しますか?", // 日语
+    "Delete all %d videos?", // 英语
+    "Usunąć wszystkie %d filmy?", // Polski
+    "Alle %d video's verwijderen?", // Nederlands
+    "Alle %d Videos löschen?", // Deutsch
+    "Supprimer toutes les %d vidéos?", // Francis
+    "¿Eliminar los %d videos?", // Espanol
+    "Eliminare tutti i %d video?", // Italiano
+    "Tüm %d videoları silmek istiyor musunuz?", // Turkce
+    "Удалить все %d видео?", // Pyccknn
+    "Excluir todos os %d vídeos?" // Portugues
+};
+
 // ASCII字符串数组
 const char *ascii_strings[128] = {
     "",   // 0

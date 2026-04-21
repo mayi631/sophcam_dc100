@@ -48,6 +48,8 @@ void led_cleanup(void);
  */
 void auto_adjust_redlight_by_battery(void);
 
+int8_t get_max_red_light_level(void);
+
 #ifdef __cplusplus
 }
 #endif

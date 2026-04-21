@@ -34,6 +34,8 @@
 #include <linux/input.h>
 #include "cvi_comm_gfbg.h"
 
+extern char g_button_labelSho[32];  // 连拍模式标签，在page_photomenu_setting.c中定义
+
 #define USE_DOUBLE_FB 0
 #define BYEBYE_IMAGE_PATH "S:/BYEBYE.jpg"
 typedef struct {
@@ -419,6 +421,8 @@ static const char *getenv_default(const char *name, const char *dflt)
     return getenv(name) ?: dflt;
 }
 
+static void global_touch_click_listener(lv_event_t * e);
+
 static void lv_linux_disp_init(void)
 {
     const char *device = getenv_default("LV_LINUX_FBDEV_DEVICE", FB_DEV_NAME);
@@ -432,9 +436,41 @@ static void lv_linux_disp_init(void)
     global_touch_indev = lv_evdev_create(LV_INDEV_TYPE_POINTER, TOUCH_PANEL_EVENT_PATH);
     lv_indev_set_display(global_touch_indev, disp);
 
+    // 注册全局触摸点击事件监听器 - 每次触摸点击都触发按键音
+    lv_indev_add_event_cb(global_touch_indev, global_touch_click_listener, LV_EVENT_CLICKED,NULL);
+
     // lv_obj_set_style_bg_opa(lv_screen_active(), LV_OPA_TRANSP, LV_PART_MAIN);
     // lv_obj_set_style_bg_opa(lv_layer_bottom(), LV_OPA_TRANSP, LV_PART_MAIN);
     // lv_obj_set_style_bg_opa(lv_screen_active(), LV_OPA_0, LV_PART_MAIN);
+}
+
+// 全局触摸点击事件监听器 - 用于触发按键音
+static void global_touch_click_listener(lv_event_t * e)
+{
+    // 获取触摸点坐标
+    lv_point_t touch_point;
+    lv_indev_get_point(lv_indev_active(), &touch_point);
+    
+    // 通过触摸点坐标查找被点击的对象
+    lv_obj_t *btn_clicked = lv_indev_search_obj(lv_scr_act(), &touch_point);
+    
+    // 先检查对象是否为 NULL
+    if (btn_clicked == NULL) {
+        return;
+    }
+    
+    // 只有当点击的是 button 或 imagebutton 时才触发按键音
+    // 使用 &&：既不是 button 也不是 imagebutton 时才返回
+    if (!lv_obj_check_type(btn_clicked, &lv_button_class) && 
+        !lv_obj_check_type(btn_clicked, &lv_imagebutton_class)) {
+        return;
+    }
+
+    if (getaction_audio_Index()) {
+        EVENT_S stEvent = { 0 };
+        stEvent.topic = EVENT_UI_TOUCH;
+        EVENTHUB_Publish(&stEvent);
+    }
 }
 
 // 全局硬件按键管理
@@ -776,6 +812,14 @@ void update_setting_from_param(void)
     setsysMenu_brightness_Index(menu_index);
     setsysMenu_brightness_Label(pstParamCtx->pstCfg->Menu.Brightness.Items[menu_index].Desc);
     brightness_set_level(menu_index + 1);
+
+    // 连拍模式
+    reset_shootmode();
+
+    //颜色特效
+    reset_effect();
+
+    reset_curcor();
 }
 
 int UIAPP_Start(void)

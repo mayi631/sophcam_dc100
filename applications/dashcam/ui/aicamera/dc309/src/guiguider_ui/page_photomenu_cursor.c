@@ -44,6 +44,12 @@
      strncpy(g_sysbtn_labelcursor, plabel, sizeof(g_sysbtn_labelcursor));
  }
 
+void reset_curcor(void)
+{
+    cursor_Index(0);
+    strncpy(g_sysbtn_labelcursor, str_language_off[get_curr_language()], sizeof(g_sysbtn_labelcursor));
+}
+
 static void cursor_Del_Complete_anim_cb(lv_anim_t* a)
 {
     if(ui_Get_PreScreen() == g_ui.page_photoMenu_Setting.menuscr) {

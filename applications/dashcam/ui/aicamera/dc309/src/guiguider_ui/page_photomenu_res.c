@@ -19,7 +19,7 @@
 #include <stdio.h>
 
 #define GRID_COLS 1
-#define GRID_ROWS 6
+#define GRID_ROWS 7
 #define GRID_MAX_OBJECTS GRID_ROWS * GRID_COLS
 
 static lv_obj_t *focusable_objects[GRID_MAX_OBJECTS];
@@ -37,6 +37,7 @@ static const res_to_icon_t photo_Res_Icons[] = {
     // {.w = 4000, .h = 3000, .icon_c = "12M.png"},
     {.w = 3840, .h = 2160, .icon_c = "8M.png"},
     {.w = 2688, .h = 1512, .icon_c = "4M.png"},
+    {.w = 2688, .h = 1512, .icon_c = "2M.png"},
     // {.w = 1920, .h = 1080, .icon_c = "2m.png"},
     // {.w = 640, .h = 480, .icon_c = "vga2.png"},
 };
@@ -84,6 +85,28 @@ char* photo_getRes_Icon(void)
     }
     MLOG_ERR("no icon found with width %d\n", width);
     return NULL;
+}
+
+// 根据宽度获取图标索引
+int get_photo_res_icon_index_by_width(int width)
+{
+    int icons_num = sizeof(photo_Res_Icons) / sizeof(res_to_icon_t);
+    for (int i = 0; i < icons_num; i++) {
+        if (width == photo_Res_Icons[i].w) {
+            return i;
+        }
+    }
+    return -1;  // 未找到
+}
+
+// 根据索引获取分辨率图标
+const char* photo_getRes_IconByIndex(uint8_t index)
+{
+    int icons_num = sizeof(photo_Res_Icons) / sizeof(res_to_icon_t);
+    if (index >= icons_num) {
+        return "8M.png";  // 默认图标
+    }
+    return photo_Res_Icons[index].icon_c;
 }
 
 static void res_Del_Complete_anim_cb(lv_anim_t *a)

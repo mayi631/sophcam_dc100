@@ -22,6 +22,9 @@
 #include "linux/input.h"
 #include "rtt.h"
 #include "infrared.h"
+#include "icon_select_popup.h"
+#include "page_photomenu_res.h"
+#include "page_sysmenu_brightness.h"
 
 // 控件状态结构体
 typedef struct {
@@ -103,6 +106,12 @@ void continue_take_photo(void);
 
 static void restore_icon_on_any_key(void);
 
+// 图标选择弹窗回调声明（LVGL事件回调格式）
+static void icon_select_res_callback(lv_event_t *e);
+static void icon_select_redlight_callback(lv_event_t *e);
+static void icon_select_brightness_callback(lv_event_t *e);
+static void icon_select_shootmode_callback(lv_event_t *e);
+
 bool get_is_photo_back(void)
 {
     return is_photo_back;
@@ -147,12 +156,9 @@ static void update_top_controls_simple(void)
     // 6. 连拍按钮
     lv_obj_set_pos(g_top_controls[3], x_pos, 4);
     x_pos += 40 + 10;
-    
-    // // 7. 延时拍摄按钮
-    // lv_obj_set_pos(g_top_controls[4], x_pos, 4);
-    // x_pos += 40 + 10;
-    // //EV值
-    // lv_obj_set_pos(g_top_controls[5], x_pos, 14);
+    if (get_shootmode(0) == 0) {
+        lv_obj_add_flag(g_top_controls[3], LV_OBJ_FLAG_HIDDEN);
+    }
 }
 
 const char *get_ai_process_result_img_data(bool is_aiprocess)
@@ -484,6 +490,8 @@ static void buttonPhoto_All_event_handler(lv_event_t* e)
                 led_off();
                 ircut_off();
                 led_on_flag = false;
+
+                reset_effect();
                 break;
             case 3: //相册
                 release_HomePhoto_resources(ui);
@@ -510,6 +518,12 @@ static void events_init_HomePhoto(lv_ui_t *ui)
     lv_obj_add_event_cb(ui->page_photo.img_exit, buttonPhoto_All_event_handler, LV_EVENT_CLICKED, (void *)(intptr_t)9);
     lv_obj_add_event_cb(ui->page_photo.img_album, buttonPhoto_All_event_handler, LV_EVENT_CLICKED, (void *)(intptr_t)3);
     lv_obj_add_event_cb(ui->page_photo.img_menu, buttonPhoto_All_event_handler, LV_EVENT_CLICKED, (void *)(intptr_t)0);
+    
+    // 添加图标选择弹窗点击事件
+    lv_obj_add_event_cb(g_top_controls[0], icon_select_res_callback, LV_EVENT_CLICKED, NULL);  // 分辨率
+    lv_obj_add_event_cb(ui->page_photo.redlight_level, icon_select_redlight_callback, LV_EVENT_CLICKED, NULL);  // 红外灯亮度
+    lv_obj_add_event_cb(g_top_controls[2], icon_select_brightness_callback, LV_EVENT_CLICKED, NULL);  // 屏幕亮度
+    lv_obj_add_event_cb(g_top_controls[3], icon_select_shootmode_callback, LV_EVENT_CLICKED, NULL);  // 连拍模式
 }
 
 // 资源释放函数
@@ -523,6 +537,7 @@ static void release_HomePhoto_resources(lv_ui_t *ui)
     wifi_check_dialog_close(); // wifi是否开启检查对话框销毁
     delete_batter_tips_mbox(); // 低电量不允许开wifi弹窗销毁
     destroy_voice_input_popup(); // ai语音自定义弹窗销毁
+    delete_icon_select_popup(); // 图标选择弹窗销毁（停止隐藏动画）
 
     if(date_timer_s != NULL) {
         lv_timer_del(date_timer_s);
@@ -617,7 +632,7 @@ static void gesture_event_handler(lv_event_t *e)
                         release_HomePhoto_resources(&g_ui);
                         ui_load_scr_animation(&g_ui, &obj_home_s, 1, NULL, setup_scr_home1, LV_SCR_LOAD_ANIM_NONE, 0, 0,
                                               false, true);
-
+                        reset_effect();
                         brightness_level = 0;
                         led_off();
                         ircut_off();
@@ -757,7 +772,7 @@ void Home_Photo(lv_ui_t *ui)
         lv_obj_set_size(cursor, 180, 180);
         lv_obj_align(cursor, LV_ALIGN_CENTER, 0, 0);
         lv_obj_set_style_pad_all(cursor, 0, LV_STATE_DEFAULT);
-        show_image(cursor, cursor_image_array[get_curr_cursor() -1]);
+        show_image(cursor, cursor_image_array[get_curr_cursor() - 1]);
     }
 
     // 菜单按钮
@@ -1042,6 +1057,274 @@ void update_redlight_ui(void)
     }
 }
 
+// ========== 图标选择弹窗回调实现 ==========
+
+// 分辨率选择项回调（内部）
+static void icon_select_res_on_select(uint32_t index, void *user_data)
+{
+    PARAM_MENU_S menu_param = {0};
+    PARAM_GetMenuParam(&menu_param);
+    
+    // 安全检查
+    if (menu_param.PhotoSize.ItemCnt == 0 || menu_param.PhotoSize.Items == NULL) {
+        return;
+    }
+    if (index >= menu_param.PhotoSize.ItemCnt) {
+        return;
+    }
+    
+    // 检查标签是否有效
+    const char* label = menu_param.PhotoSize.Items[index].Desc;
+    if (label == NULL) {
+        label = "Unknown";
+    }
+    
+    // 发送设置消息
+    MESSAGE_S event = {0};
+    event.topic = EVENT_MODEMNG_SETTING;
+    event.arg1 = PARAM_MENU_PHOTO_SIZE;
+    event.arg2 = index;
+    MODEMNG_SendMessage(&event);
+    
+    // 更新UI
+    photo_setRes_Index(index);
+    photo_setRes_Label(label);
+    
+    // 检查 g_top_controls[0] 是否有效
+    if (g_top_controls[0] != NULL && lv_obj_is_valid(g_top_controls[0])) {
+        show_image(g_top_controls[0], photo_getRes_Icon());
+    }
+    
+    // 复位缩放
+    set_zoom_level(1);
+    
+    MLOG_INFO("Resolution changed to: %s\n", label);
+}
+
+// 分辨率选择弹窗事件
+static void icon_select_res_callback(lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    if (code != LV_EVENT_CLICKED) return;
+    
+    // 检查父对象是否有效
+    if (g_ui.page_photo.photoscr == NULL || !lv_obj_is_valid(g_ui.page_photo.photoscr)) {
+        return;
+    }
+    
+    if (is_icon_select_popup_exists()) {
+        delete_icon_select_popup();
+        return;
+    }
+
+    PARAM_MENU_S menu_param = {0};
+    PARAM_GetMenuParam(&menu_param);
+    
+    // 检查菜单项是否有效
+    if (menu_param.PhotoSize.ItemCnt == 0 || menu_param.PhotoSize.Items == NULL) {
+        return;
+    }
+    
+    // 构建分辨率选项
+    static icon_select_item_t res_items[PARAM_MENU_ITEM_MAX];
+    uint32_t item_count = 0;
+    
+    for (uint32_t i = 0; i < menu_param.PhotoSize.ItemCnt && i < PARAM_MENU_ITEM_MAX; i++) {
+        int width = menu_param.PhotoSize.Items[i].Value;
+        int icon_idx = get_photo_res_icon_index_by_width(width);
+        res_items[i].icon = photo_getRes_IconByIndex(icon_idx >= 0 ? icon_idx : 0);
+        res_items[i].label = (menu_param.PhotoSize.Items[i].Desc != NULL) ? 
+                             menu_param.PhotoSize.Items[i].Desc : "Unknown";
+        item_count++;
+    }
+    
+    if (item_count == 0) return;
+    
+    // 创建弹窗
+    create_icon_select_popup(g_ui.page_photo.photoscr, ICON_SELECT_RESOLUTION,
+                            res_items, item_count,
+                            photo_getRes_Index(),
+                            icon_select_res_on_select, NULL);
+}
+
+// 红外灯亮度选择项回调（内部）
+static void icon_select_redlight_on_select(uint32_t index, void *user_data)
+{
+    if (index >= 7) {  // 红光有7个档位
+        return;
+    }
+    
+    // 更新红光等级
+    brightness_level = index + 1;
+    
+    // 更新UI显示
+    if (brightness_level > 0) {
+        lv_obj_clear_flag(g_ui.page_photo.redlight_level, LV_OBJ_FLAG_HIDDEN);
+        if (brightness_level > 6) {
+            show_image(g_ui.page_photo.redlight_level, red_light_image_level[6]);
+        } else {
+            show_image(g_ui.page_photo.redlight_level, red_light_image_level[brightness_level - 1]);
+        }
+    } else {
+        lv_obj_add_flag(g_ui.page_photo.redlight_level, LV_OBJ_FLAG_HIDDEN);
+    }
+    
+    // 应用红光设置
+    update_redlight_ui();
+    
+    MLOG_INFO("Red light level changed to: %d\n", brightness_level);
+}
+
+// 红外灯亮度选择弹窗事件
+static void icon_select_redlight_callback(lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    if (code != LV_EVENT_CLICKED) return;
+    
+    // 检查父对象是否有效
+    if (g_ui.page_photo.photoscr == NULL || !lv_obj_is_valid(g_ui.page_photo.photoscr)) {
+        return;
+    }
+    
+    if (is_icon_select_popup_exists()) {
+        delete_icon_select_popup();
+        return;
+    }
+
+    // 构建红光亮度选项
+    static icon_select_item_t redlight_items[7];
+    static char redlight_labels[7][32];
+    
+    for (int i = 0; i < 7; i++) {
+        // 检查图标是否有效
+        if (red_light_image_level[i] != NULL) {
+            redlight_items[i].icon = red_light_image_level[i];
+            // 标签使用图标名称（去掉.png后缀）
+            size_t len = strlen(red_light_image_level[i]);
+            if (len > 4) {
+                strncpy(redlight_labels[i], red_light_image_level[i], len - 4);
+                redlight_labels[i][len - 4] = '\0';
+            } else {
+                snprintf(redlight_labels[i], sizeof(redlight_labels[i]), "Level %d", i + 1);
+            }
+        } else {
+            redlight_items[i].icon = "1.png";  // 默认图标
+            snprintf(redlight_labels[i], sizeof(redlight_labels[i]), "Level %d", i + 1);
+        }
+        redlight_items[i].label = redlight_labels[i];
+    }
+    
+    // 创建弹窗
+    create_icon_select_popup(g_ui.page_photo.photoscr, ICON_SELECT_REDLIGHT,
+                            redlight_items, 7,
+                            (brightness_level > 0 ? brightness_level - 1 : 0),
+                            icon_select_redlight_on_select, NULL);
+}
+
+// 屏幕亮度选择项回调（内部）
+static void icon_select_brightness_on_select(uint32_t index, void *user_data)
+{
+    if (index >= BRIGHTNESS_LEVEL_COUNT) {
+        return;
+    }
+    
+    // 更新亮度
+    setsysMenu_brightness_Index(index);
+    brightness_set_level(index + 1);
+    
+    // 更新UI
+    char* brightness_buf[] = {"1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png"};
+    show_image(g_top_controls[2], brightness_buf[index]);
+    
+    MLOG_INFO("Brightness level changed to: %d\n", index + 1);
+}
+
+// 屏幕亮度选择弹窗事件
+static void icon_select_brightness_callback(lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    if (code != LV_EVENT_CLICKED) return;
+    
+    // 检查父对象是否有效
+    if (g_ui.page_photo.photoscr == NULL || !lv_obj_is_valid(g_ui.page_photo.photoscr)) {
+        return;
+    }
+    
+    if (is_icon_select_popup_exists()) {
+        delete_icon_select_popup();
+        return;
+    }
+
+    // 构建屏幕亮度选项
+    static icon_select_item_t brightness_items[BRIGHTNESS_LEVEL_COUNT];
+    char* brightness_buf[] = {"1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png"};
+    char brightness_labels[BRIGHTNESS_LEVEL_COUNT][32];
+    
+    for (int i = 0; i < BRIGHTNESS_LEVEL_COUNT; i++) {
+        brightness_items[i].icon = brightness_buf[i];
+        snprintf(brightness_labels[i], sizeof(brightness_labels[i]), "Level %d", i + 1);
+        brightness_items[i].label = brightness_labels[i];
+    }
+    
+    // 创建弹窗
+    create_icon_select_popup(g_ui.page_photo.photoscr, ICON_SELECT_BRIGHTNESS,
+                            brightness_items, BRIGHTNESS_LEVEL_COUNT,
+                            get_curr_brightness(),
+                            icon_select_brightness_on_select, NULL);
+}
+
+// 连拍模式选择项回调（内部）
+static void icon_select_shootmode_on_select(uint32_t index, void *user_data)
+{
+    extern void set_shootmode(uint8_t mode);
+    
+    // 更新连拍模式
+    set_shootmode(index);
+    
+    // 更新UI
+    char* continue_buf[] = {"连拍关闭.png", "连拍3.png", "连拍5.png", "连拍7.png"};
+    if (index == 0) {
+        lv_obj_add_flag(g_top_controls[3], LV_OBJ_FLAG_HIDDEN);
+    } else {
+        lv_obj_clear_flag(g_top_controls[3], LV_OBJ_FLAG_HIDDEN);
+        show_image(g_top_controls[3], continue_buf[index]);
+    }
+    
+    MLOG_INFO("Shoot mode changed to: %d\n", index);
+}
+
+// 连拍模式选择弹窗事件
+static void icon_select_shootmode_callback(lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    if (code != LV_EVENT_CLICKED) return;
+    
+    // 检查父对象是否有效
+    if (g_ui.page_photo.photoscr == NULL || !lv_obj_is_valid(g_ui.page_photo.photoscr)) {
+        return;
+    }
+    
+    if (is_icon_select_popup_exists()) {
+        delete_icon_select_popup();
+        return;
+    }
+    
+    // 构建连拍模式选项
+    static icon_select_item_t shootmode_items[4];
+    char* continue_buf[] = {"连拍关闭.png", "连拍3.png", "连拍5.png", "连拍7.png"};
+    char shootmode_labels[4][32] = {"关闭", "3张", "5张", "7张"};
+    
+    for (int i = 0; i < 4; i++) {
+        shootmode_items[i].icon = continue_buf[i];
+        shootmode_items[i].label = shootmode_labels[i];
+    }
+    
+    // 创建弹窗
+    create_icon_select_popup(g_ui.page_photo.photoscr, ICON_SELECT_SHOOTMODE,
+                            shootmode_items, 4,
+                            get_shootmode(0),
+                            icon_select_shootmode_on_select, NULL);
+}
 
 // 渐隐动画完成回调
 void photoanimCompleted_objDel_cb(lv_anim_t *a)

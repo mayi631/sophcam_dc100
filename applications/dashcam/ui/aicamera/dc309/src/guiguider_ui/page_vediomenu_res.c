@@ -82,6 +82,16 @@ char* video_getRes_Icon(void)
     return NULL;
 }
 
+// 根据索引获取视频分辨率图标
+const char* video_getRes_IconByIndex(uint8_t index)
+{
+    int icons_num = sizeof(video_Res_Icons) / sizeof(res_to_icon_t);
+    if (index >= icons_num) {
+        return "FHD.png";  // 默认图标
+    }
+    return video_Res_Icons[index].icon_c;
+}
+
 static void vedioRes_Del_Complete_anim_cb(lv_anim_t *a)
 {
     ui_load_scr_animation(&g_ui, &obj_vedioMenu_s, 1, NULL, vedioMenu_Setting, LV_SCR_LOAD_ANIM_NONE, 0, 0, false,

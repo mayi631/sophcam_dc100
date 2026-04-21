@@ -27,6 +27,8 @@ void photo_setRes_Index(uint8_t index);
 void photo_setRes_Label(const char* plabel);
 char* photo_getRes_Label(void);
 char* photo_getRes_Icon(void);
+int get_photo_res_icon_index_by_width(int width);
+const char* photo_getRes_IconByIndex(uint8_t index);
 #ifdef __cplusplus
 }
 #endif

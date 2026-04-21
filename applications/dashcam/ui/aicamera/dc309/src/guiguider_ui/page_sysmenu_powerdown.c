@@ -33,17 +33,10 @@ void setpoweroff_Index(uint8_t index)
     powerDown_Current_Index_s = index * 2;
 }
 
-static void powerDown_Del_Complete_anim_cb(lv_anim_t *a)
+static void powerDown_Del_Complete_anim_cb(lv_anim_t* a)
 {
-    if(obj_sysMenu_PowerDown_s != NULL) {
-        if(lv_obj_is_valid(obj_sysMenu_PowerDown_s)) {
-            lv_obj_del(obj_sysMenu_PowerDown_s);
-        } else {
-        }
-        obj_sysMenu_PowerDown_s = NULL;
-        ui_load_scr_animation(&g_ui, &obj_sysMenu_Setting_s, 1, NULL, sysMenu_Setting, LV_SCR_LOAD_ANIM_NONE, 0, 0,
-                              false, true);
-    }
+    ui_load_scr_animation(&g_ui, &obj_sysMenu_Setting_s, 1, NULL, sysMenu_Setting, LV_SCR_LOAD_ANIM_NONE, 0, 0,
+        false, true);
 }
 
 static void powerDown_win_Delete_anim(void)
