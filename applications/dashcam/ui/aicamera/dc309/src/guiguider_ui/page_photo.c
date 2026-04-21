@@ -68,7 +68,7 @@ static lv_obj_t *img_effect_s = NULL;  //特效图标
 static bool is_photo_back = true;
 
 const char *batter_image_big[] = {"充电.png", "电池1.png", "电池2.png", "电池满.png"};
-char *red_light_image_level[] = {"IR  1.png", "IR 2.png", "IR 3.png", "IR 4.png","IR 5.png", "IR 6.png", "IR 7.png"};
+char *red_light_image_level[] = {"IR 1.png", "IR 2.png", "IR 3.png", "IR 4.png","IR 5.png", "IR 6.png", "IR 7.png"};
 
 // 光标图片数组 [光标类型][颜色: 0=Green, 1=Red, 2=Yellow]
 const char* cursor_image_array[] = {
@@ -677,12 +677,12 @@ void Home_Photo(lv_ui_t *ui)
     
     // 分辨率按钮
     g_top_controls[0] = lv_imagebutton_create(Home_Photo_Item->photoscr);
-    lv_obj_set_size(g_top_controls[0], 38, 32);
+    lv_obj_set_size(g_top_controls[0], 40, 40);
     show_image(g_top_controls[0], photo_getRes_Icon());
     
     // 红光亮级按钮
     Home_Photo_Item->redlight_level = lv_imagebutton_create(Home_Photo_Item->photoscr);
-    lv_obj_set_size(Home_Photo_Item->redlight_level, 38, 32);
+    lv_obj_set_size(Home_Photo_Item->redlight_level, 40, 40);
     
     // ISO级别按钮
     // g_top_controls[1] = lv_imagebutton_create(Home_Photo_Item->photoscr);
@@ -695,13 +695,13 @@ void Home_Photo(lv_ui_t *ui)
     
     // 屏幕亮度按钮
     g_top_controls[2] = lv_imagebutton_create(Home_Photo_Item->photoscr);
-    lv_obj_set_size(g_top_controls[2], 38, 32);
+    lv_obj_set_size(g_top_controls[2], 40, 40);
     char* brightness_buf[] = { "1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png" };
     show_image(g_top_controls[2], brightness_buf[get_curr_brightness()]);
     
     // 连拍按钮
     g_top_controls[3] = lv_imagebutton_create(Home_Photo_Item->photoscr);
-    lv_obj_set_size(g_top_controls[3], 38, 33);
+    lv_obj_set_size(g_top_controls[3], 40, 40);
     char* continue_buf[] = { "连拍关闭.png", "连拍3.png", "连拍5.png", "连拍7.png" };
     show_image(g_top_controls[3], continue_buf[get_shootmode(0)]);
     
@@ -741,7 +741,7 @@ void Home_Photo(lv_ui_t *ui)
     // SD卡状态
     Home_Photo_Item->img_sdonline = lv_imagebutton_create(Home_Photo_Item->photoscr);
     lv_obj_align(Home_Photo_Item->img_sdonline, LV_ALIGN_TOP_RIGHT, -58, 0);
-    lv_obj_set_size(Home_Photo_Item->img_sdonline, 38, 32);
+    lv_obj_set_size(Home_Photo_Item->img_sdonline, 40, 40);
     if(ui_common_cardstatus()) {
         show_image(Home_Photo_Item->img_sdonline, "icon_card_online.png");
     } else {
@@ -751,19 +751,19 @@ void Home_Photo(lv_ui_t *ui)
     // 电池状态
     Home_Photo_Item->img_batter = lv_imagebutton_create(Home_Photo_Item->photoscr);
     lv_obj_align(Home_Photo_Item->img_batter, LV_ALIGN_TOP_RIGHT, -8, 2);
-    lv_obj_set_size(Home_Photo_Item->img_batter, 38, 32);
+    lv_obj_set_size(Home_Photo_Item->img_batter, 40, 40);
     show_image(Home_Photo_Item->img_batter,"充电.png");
 
     //缩放
     lv_obj_t *imgbtn_zoomout = lv_imagebutton_create(Home_Photo_Item->photoscr);
     lv_obj_align(imgbtn_zoomout, LV_ALIGN_LEFT_MID, 12, -42);
-    lv_obj_set_size(imgbtn_zoomout, 42, 42);
+    lv_obj_set_size(imgbtn_zoomout, 40, 40);
     show_image(imgbtn_zoomout, "T.png");
     lv_obj_add_event_cb(imgbtn_zoomout, photo_zoom_event_cb, LV_EVENT_ALL, (void *)(intptr_t)2);
 
     lv_obj_t *imgbtn_zoomin = lv_imagebutton_create(Home_Photo_Item->photoscr);
     lv_obj_align(imgbtn_zoomin, LV_ALIGN_LEFT_MID, 12, 42);
-    lv_obj_set_size(imgbtn_zoomin, 42, 42);
+    lv_obj_set_size(imgbtn_zoomin, 40, 40);
     show_image(imgbtn_zoomin, "W.png");
     lv_obj_add_event_cb(imgbtn_zoomin, photo_zoom_event_cb, LV_EVENT_ALL, (void *)(intptr_t)1);
 
@@ -778,13 +778,13 @@ void Home_Photo(lv_ui_t *ui)
     // 菜单按钮
     Home_Photo_Item->img_menu = lv_imagebutton_create(Home_Photo_Item->photoscr);
     lv_obj_align(Home_Photo_Item->img_menu, LV_ALIGN_BOTTOM_LEFT, 6, 0);
-    lv_obj_set_size(Home_Photo_Item->img_menu, 42, 42);
+    lv_obj_set_size(Home_Photo_Item->img_menu, 40, 40);
     show_image(Home_Photo_Item->img_menu, "menu.png");
 
     // 滤镜
     lv_obj_t *btn_effect = lv_button_create(Home_Photo_Item->photoscr);
     lv_obj_align(btn_effect, LV_ALIGN_BOTTOM_LEFT, 60,0);
-    lv_obj_set_size(btn_effect, 42, 42);
+    lv_obj_set_size(btn_effect, 40, 40);
     lv_obj_set_style_bg_opa(btn_effect, 0, LV_PART_MAIN | LV_STATE_DEFAULT); // 透明背景
     lv_obj_set_style_pad_all(btn_effect, 0, LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(btn_effect, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -792,7 +792,7 @@ void Home_Photo(lv_ui_t *ui)
     lv_obj_add_event_cb(btn_effect, photoEffect_Select_event_cb, LV_EVENT_CLICKED, NULL);
 
     img_effect_s = lv_img_create(btn_effect);
-    lv_obj_set_size(img_effect_s, 42, 42);
+    lv_obj_set_size(img_effect_s, 40, 40);
     lv_obj_align(img_effect_s, LV_ALIGN_CENTER, 0, 0);
     lv_obj_set_style_pad_all(img_effect_s, 0, LV_STATE_DEFAULT);
     show_image(img_effect_s, "颜色特效.png");
@@ -819,13 +819,13 @@ void Home_Photo(lv_ui_t *ui)
     //相册
     Home_Photo_Item->img_album = lv_imagebutton_create(Home_Photo_Item->photoscr);
     lv_obj_align(Home_Photo_Item->img_album, LV_ALIGN_BOTTOM_RIGHT, -80, 0);
-    lv_obj_set_size(Home_Photo_Item->img_album, 42, 42);
+    lv_obj_set_size(Home_Photo_Item->img_album, 40, 40);
     show_image(Home_Photo_Item->img_album, "photo_album.png");
 
     // 退出按钮
     Home_Photo_Item->img_exit = lv_imagebutton_create(Home_Photo_Item->photoscr);
     lv_obj_align(Home_Photo_Item->img_exit, LV_ALIGN_BOTTOM_RIGHT, -6, -6);
-    lv_obj_set_size(Home_Photo_Item->img_exit, 42, 42);
+    lv_obj_set_size(Home_Photo_Item->img_exit, 40, 40);
     show_image(Home_Photo_Item->img_exit, "exit.png");
 
     // 时间

@@ -54,6 +54,7 @@ static lv_timer_t *g_zoom_longpress_timer = NULL;  // 长按定时器
 static int g_zoom_longpress_dir = 0;               // 长按方向: 0=无, 1=缩小, 2=放大
 static bool g_zoom_longpress_active = false;       // 是否正在长按
 /* 函数声明 */
+static void album_entry_event_cb_handler(lv_event_t *e);
 // 显示成像预览页面（新）
 static void show_photo_review_page(void);
 // 显示知识科普页面
@@ -499,6 +500,14 @@ void create_ai_camera_screen(lv_ui_t *ui)
     show_image(imgbtn_zoomin, "W.png");
     lv_obj_add_event_cb(imgbtn_zoomin, photo_zoom_event_cb, LV_EVENT_ALL, (void *)(intptr_t)1);
 
+
+    lv_obj_t *album = lv_imagebutton_create(page_ai_camera_s);
+    lv_obj_align(album, LV_ALIGN_BOTTOM_RIGHT, -30, -10);
+    lv_obj_set_size(album, 42, 42);
+    show_image(album, "photo_album.png");
+    lv_obj_add_event_cb(album, album_entry_event_cb_handler, LV_EVENT_CLICKED, NULL);
+
+
     /* 拍照按键处理回调函数 */
     set_current_page_handler(takephoto_key_handler);
     takephoto_register_menu_callback(aiphoto_menu_callback);
@@ -625,13 +634,6 @@ static void show_photo_review_page(void)
         lv_obj_set_style_text_color(tip_label, lv_color_hex(0x0000FF), 0);
         lv_obj_align(tip_label, LV_ALIGN_BOTTOM_MID, 0, -20);
     }
-
-    lv_obj_t *album = lv_imagebutton_create(g_preview_page);
-    lv_obj_align(album, LV_ALIGN_BOTTOM_RIGHT, -30, -10);
-    lv_obj_set_size(album, 42, 42);
-    show_image(album, "photo_album.png");
-    lv_obj_add_event_cb(album, album_entry_event_cb_handler, LV_EVENT_CLICKED, NULL);
-
 
     /* 加载预览页面 */
     lv_scr_load(g_preview_page);
@@ -1193,7 +1195,22 @@ static void enter_album_from_preview(void)
 {
     MLOG_DBG("进入相册从AI预览\n");
     s_from_ai_preview = true;
-    cleanup_preview_page();
+
+    voice_arc_delete();
+    delete_zoombar_timer_handler();
+    set_zoom_level(1);
+    delete_viewfinder();
+    hide_zoom_bar();
+
+    /* 取消拍照按键处理回调函数 */
+    set_current_page_handler(NULL);
+
+    if(page_ai_camera_s != NULL && lv_obj_is_valid(page_ai_camera_s)) {
+        MLOG_DBG("删除拍照界面\n");
+        lv_obj_del(page_ai_camera_s);
+        page_ai_camera_s = NULL;
+    }
+
     // 设置相册标志
     extern void set_from_ai_preview(bool from_ai);
     set_from_ai_preview(true);

@@ -29,12 +29,12 @@ static uint8_t res_Current_Index_s = 0;
 
 /* 分辨率图标资源数组 */
 static const res_to_icon_t video_Res_Icons[] = {
-    {.w = 3840, .h = 2160, .icon_c = "4K.png"},
-    {.w = 2688, .h = 1520, .icon_c = "2.7K.png"},
-    {.w = 1920, .h = 1080, .icon_c = "FHD.png"},//有两个FHD，一个60fps，一个35fps
-    {.w = 1920, .h = 1080, .icon_c = "FHD.png"},
-    {.w = 1280, .h = 720, .icon_c = "HD.png"},
-    {.w = 640, .h = 480, .icon_c = "VGA.png"},
+    {.w = 3840, .h = 2160, .icon_c = "4K30FPS.png"},
+    {.w = 2688, .h = 1520, .icon_c = "2.7K30FPS.png"},
+    {.w = 1920, .h = 1080, .icon_c = "FHD60FPS.png"},//有两个FHD，一个60fps，一个35fps
+    {.w = 1920, .h = 1080, .icon_c = "FHD30FPS.png"},
+    // {.w = 1280, .h = 720, .icon_c = "HD.png"},
+    // {.w = 640, .h = 480, .icon_c = "VGA.png"},
 };
 
 uint8_t video_getRes_Index(void)
@@ -58,6 +58,41 @@ char* video_getRes_Label(void)
     return g_vediobtn_labelRes;
 }
 
+static void extract_fps(const char *full_str, char *desc_buf, size_t buf_size)
+{
+    if (!full_str || !desc_buf || buf_size == 0) {
+        return;
+    }
+
+    const char *space_pos = strchr(full_str, '@');
+    if (space_pos != NULL) {
+        /* 找到第一个@，跳过它，后面的就是显示名 */
+        strncpy(desc_buf, space_pos + 1, buf_size - 1);
+        desc_buf[buf_size - 1] = '\0';
+    } else {
+        /* 没有@，整个字符串就是显示名*/
+        strncpy(desc_buf, full_str, buf_size - 1);
+        desc_buf[buf_size - 1] = '\0';
+    }
+}
+
+static uint32_t get_shot_count_value(char *desc_buf)
+{
+    char *endptr;
+    unsigned long value = strtoul(desc_buf, &endptr, 10);
+
+    // 检查转换是否有效
+    if (*endptr != '\0' ||        // 存在非法字符
+        endptr == desc_buf || // 空字符串
+        value > UINT16_MAX)       // 超过uint16_t范围
+    {
+        // CVI_ERR("Invalid shot count: %s", desc_buf);
+        return 25; // 返回默认值
+    }
+
+    return (uint32_t)value;
+}
+
 char* video_getRes_Icon(void)
 {
     int32_t width = 0;
@@ -67,9 +102,11 @@ char* video_getRes_Icon(void)
     PARAM_MENU_S menu_param = {0};
     PARAM_GetMenuParam(&menu_param);
     index = video_getRes_Index();
-    if(index >= menu_param.VideoSize.ItemCnt){
+    if (index >= menu_param.VideoSize.ItemCnt) {
         MLOG_ERR("over\n");
         return NULL;
+    } else {
+        return video_Res_Icons[index].icon_c;
     }
     width = menu_param.VideoSize.Items[index].Value;
     icons_num = sizeof(video_Res_Icons) / sizeof(res_to_icon_t);
