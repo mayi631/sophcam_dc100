@@ -101,7 +101,7 @@ void create_zoom_bar(lv_obj_t *parent)
     lv_obj_set_size(zoom_bar.bar, 10, 180); // 宽度10，高度180（竖向）
     lv_bar_set_mode(zoom_bar.bar, LV_ARC_MODE_NORMAL); // 设置为垂直方向
     lv_obj_align(zoom_bar.bar, LV_ALIGN_CENTER, 0, 0); // 在容器中居中
-    lv_bar_set_range(zoom_bar.bar, 1, 16);
+    lv_bar_set_range(zoom_bar.bar, 1, 20);
     lv_bar_set_value(zoom_bar.bar, zoom_bar.level, LV_ANIM_OFF);
     lv_obj_set_style_bg_color(zoom_bar.bar, lv_color_hex(0x444444), LV_PART_MAIN);
     lv_obj_set_style_bg_color(zoom_bar.bar, lv_color_hex(0x0080FF), LV_PART_INDICATOR);

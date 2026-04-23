@@ -21,7 +21,7 @@ typedef struct _res_to_icon_t{
 }res_to_icon_t;
 
 // 最大16级zoom radio
-#define ZOOM_RADIO_MAX 16
+#define ZOOM_RADIO_MAX 20
 
 // 拍照后处理回调函数类型定义
 typedef void (*takephoto_callback_t)(void);

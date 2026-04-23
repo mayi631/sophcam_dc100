@@ -7,7 +7,8 @@
 #include "mapi.h"
 
 #define ZOOM_STEP_PER_RADIO 64
-#define ZOOM_MAX_RADIO 16
+#define ZOOM_MAX_RADIO 20
+#define ZOOM_MAX_RATIO 8.0f
 
 CVI_S32 ZOOMP_Init(RECT_S org_win);
 CVI_S32 ZOOMP_DeInit(CVI_VOID);
