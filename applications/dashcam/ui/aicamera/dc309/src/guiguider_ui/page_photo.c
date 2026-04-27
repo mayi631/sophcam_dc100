@@ -67,7 +67,7 @@ static lv_obj_t *img_effect_s = NULL;  //特效图标
 // i是否返回photo页面
 static bool is_photo_back = true;
 
-const char *batter_image_big[] = {"充电.png", "电池1.png", "电池2.png", "电池满.png"};
+const char *batter_image_big[] = {"充电.png", "电池0.png", "电池1.png", "电池2.png","电池满.png"};
 char *red_light_image_level[] = {"IR 1.png", "IR 2.png", "IR 3.png", "IR 4.png","IR 5.png", "IR 6.png", "IR 7.png"};
 
 // 光标图片数组 [光标类型][颜色: 0=Green, 1=Red, 2=Yellow]
@@ -181,28 +181,31 @@ const char *get_ai_process_result_img_data(bool is_aiprocess)
 }
 
 // 参数动态更新回调
-int32_t g_batter_image_index = 3;
+int32_t g_batter_image_index = 4;
 
 void set_batter_image_index(int32_t index)
 {
-    if(index < 0 || index > 3) {
-        g_batter_image_index = 3; // 默认满电
+    if(index < 0 || index > 4) {
+        g_batter_image_index = 4; // 默认满电
         return;
     }
 
     switch (index) {
     case 0:
-        g_batter_image_index = 3;
-        break; // 电量在70%以上
+        g_batter_image_index = 4;
+        break; // 电量满电
     case 1:
-        g_batter_image_index = 2;
-        break; // 电量在25%-70%
+        g_batter_image_index = 3;
+        break; // 电量2
     case 2:
-        g_batter_image_index = 1;
-        break; // 电量在0%-25%
+        g_batter_image_index = 2;
+        break; // 电量低电
     case 3:
-        g_batter_image_index = 0;
+        g_batter_image_index = 1;
         break; // 充电
+    case 4:
+        g_batter_image_index = 0;
+        break; 
     default:
         g_batter_image_index = 0;
         break;
@@ -776,15 +779,18 @@ void Home_Photo(lv_ui_t *ui)
     }
 
     // 菜单按钮
-    Home_Photo_Item->img_menu = lv_imagebutton_create(Home_Photo_Item->photoscr);
+    Home_Photo_Item->img_menu = lv_button_create(Home_Photo_Item->photoscr);
     lv_obj_align(Home_Photo_Item->img_menu, LV_ALIGN_BOTTOM_LEFT, 6, 0);
-    lv_obj_set_size(Home_Photo_Item->img_menu, 40, 40);
+    lv_obj_set_size(Home_Photo_Item->img_menu, 60, 60);
+    lv_obj_set_style_bg_opa(Home_Photo_Item->img_menu, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(Home_Photo_Item->img_menu, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(Home_Photo_Item->img_menu, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     show_image(Home_Photo_Item->img_menu, "menu.png");
 
     // 滤镜
     lv_obj_t *btn_effect = lv_button_create(Home_Photo_Item->photoscr);
     lv_obj_align(btn_effect, LV_ALIGN_BOTTOM_LEFT, 60,0);
-    lv_obj_set_size(btn_effect, 40, 40);
+    lv_obj_set_size(btn_effect, 60, 60);
     lv_obj_set_style_bg_opa(btn_effect, 0, LV_PART_MAIN | LV_STATE_DEFAULT); // 透明背景
     lv_obj_set_style_pad_all(btn_effect, 0, LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(btn_effect, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -817,15 +823,21 @@ void Home_Photo(lv_ui_t *ui)
 
 
     //相册
-    Home_Photo_Item->img_album = lv_imagebutton_create(Home_Photo_Item->photoscr);
+    Home_Photo_Item->img_album = lv_button_create(Home_Photo_Item->photoscr);
     lv_obj_align(Home_Photo_Item->img_album, LV_ALIGN_BOTTOM_RIGHT, -80, 0);
-    lv_obj_set_size(Home_Photo_Item->img_album, 40, 40);
+    lv_obj_set_size(Home_Photo_Item->img_album, 60, 60);
+    lv_obj_set_style_bg_opa(Home_Photo_Item->img_album, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(Home_Photo_Item->img_album, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(Home_Photo_Item->img_album, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     show_image(Home_Photo_Item->img_album, "photo_album.png");
 
     // 退出按钮
-    Home_Photo_Item->img_exit = lv_imagebutton_create(Home_Photo_Item->photoscr);
-    lv_obj_align(Home_Photo_Item->img_exit, LV_ALIGN_BOTTOM_RIGHT, -6, -6);
-    lv_obj_set_size(Home_Photo_Item->img_exit, 40, 40);
+    Home_Photo_Item->img_exit = lv_button_create(Home_Photo_Item->photoscr);
+    lv_obj_align(Home_Photo_Item->img_exit, LV_ALIGN_BOTTOM_RIGHT, -6, 0);
+    lv_obj_set_size(Home_Photo_Item->img_exit, 60, 60);
+    lv_obj_set_style_bg_opa(Home_Photo_Item->img_exit, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(Home_Photo_Item->img_exit, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(Home_Photo_Item->img_exit, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     show_image(Home_Photo_Item->img_exit, "exit.png");
 
     // 时间
@@ -1150,12 +1162,35 @@ static void icon_select_res_callback(lv_event_t *e)
 // 红外灯亮度选择项回调（内部）
 static void icon_select_redlight_on_select(uint32_t index, void *user_data)
 {
-    if (index >= 7) {  // 红光有7个档位
+    if (index >= 8) {  // 红光有8个选项(0-7)，0为关闭
         return;
     }
     
-    // 更新红光等级
-    brightness_level = index + 1;
+    // 如果要开启红外灯（亮度>0），检查电量
+    if (index > 0) {
+        // 检查是否低电量（电池图标索引为1表示低电量0%-25%）
+        if (g_batter_image_index == 1) {
+            MLOG_ERR("电量过低，无法开启红外灯\n");
+            return;
+        }
+    }
+    
+    // 更新红光等级 (0-7)
+    brightness_level = index;
+    
+    // 实际设置红外灯亮度
+    if (index == 0) {
+        led_off();
+        ircut_off();
+    } else {
+        // 根据电池电量限制最大亮度档位
+        int8_t max_level = get_max_red_light_level();
+        if (brightness_level > max_level) {
+            brightness_level = max_level;
+            MLOG_DBG("电池电量限制，红外灯亮度自动降档至 %d\n", brightness_level);
+        }
+        led_on_with_brightness(brightness_level);
+    }
     
     // 更新UI显示
     if (brightness_level > 0) {
@@ -1165,14 +1200,13 @@ static void icon_select_redlight_on_select(uint32_t index, void *user_data)
         } else {
             show_image(g_ui.page_photo.redlight_level, red_light_image_level[brightness_level - 1]);
         }
+        update_top_controls_simple();
     } else {
         lv_obj_add_flag(g_ui.page_photo.redlight_level, LV_OBJ_FLAG_HIDDEN);
+        update_top_controls_simple();
     }
     
-    // 应用红光设置
-    update_redlight_ui();
-    
-    MLOG_INFO("Red light level changed to: %d\n", brightness_level);
+    MLOG_INFO("拍照模式红光等级设置为: %d\n", brightness_level);
 }
 
 // 红外灯亮度选择弹窗事件

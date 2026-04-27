@@ -443,8 +443,8 @@ static void auto_poweroff_timer_cb(lv_timer_t *timer)
 
     // 当处于拍照模式或录像模式时，不进行自动关机
     int32_t WorkMode = MODEMNG_GetCurWorkMode();
-    if(WorkMode == WORK_MODE_PHOTO || WorkMode == WORK_MODE_MOVIE) {
-        MLOG_DBG("In photo or movie mode, skipping auto poweroff check\n");
+    extern uint8_t is_start_video;
+    if (WorkMode == WORK_MODE_MOVIE && is_start_video == 1) {
         return;
     }
 

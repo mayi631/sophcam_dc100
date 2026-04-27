@@ -179,10 +179,6 @@ void led_on(void)
     }
     event.arg2 = 8;
     MODEMNG_SendMessage(&event);
-
-    statusLight_is_on = getstalight_Index();
-    stlight_init_by_param(1);
-
 }
 
 /**
@@ -238,7 +234,6 @@ void led_off(void)
 {
     user_i2c0(0x01, 0x00);
     led_cleanup();
-    stlight_init_by_param(statusLight_is_on);
 
     //恢复原有特效
     extern bool is_video_mode;

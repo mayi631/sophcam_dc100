@@ -1474,7 +1474,7 @@ static void Home_Album_obj_Create(lv_ui_t *ui)
     btn_vialbum_s = lv_imagebutton_create(cont_top);
     lv_obj_align(btn_vialbum_s, LV_ALIGN_CENTER, 48, 0);
     lv_obj_set_size(btn_vialbum_s, 48, 48);
-    show_image(btn_vialbum_s, "视频_2.png");
+    show_image(btn_vialbum_s, "photo_video.png");
 
     // 设置默认状态下的边框样式（无边框）
     lv_obj_set_style_border_width(btn_vialbum_s, 0, LV_PART_MAIN | LV_STATE_DEFAULT);

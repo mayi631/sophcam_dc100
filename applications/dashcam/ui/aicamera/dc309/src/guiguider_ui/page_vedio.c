@@ -185,26 +185,52 @@ static void video_redlight_btn_click_cb(lv_event_t *e)
         return;
     }
     
-    // 构建红外灯亮度选项数组
-    static icon_select_item_t redlight_items[8];
-    static char redlight_labels[8][8];
+    // 根据电池电量获取最大允许的档位
+    int8_t max_level = get_max_red_light_level();
     
-    for (uint8_t i = 0; i < 8; i++) {
-        if (i == 0) {
-            redlight_items[i].icon = "guanbi.png";  // 关闭图标
-            snprintf(redlight_labels[i], sizeof(redlight_labels[i]), "关闭");
+    // 构建红外灯亮度选项数组（0=关闭，1-max_level=亮度档位）
+    // 选项数量 = 1（关闭选项）+ max_level（允许的最大档位）
+    int item_count = 1 + max_level;
+    if (item_count > 8) item_count = 8;  // 最多8个选项
+    
+    static icon_select_item_t redlight_items[8];
+    static char redlight_labels[8][16];
+    
+    // 第一个选项是关闭
+    redlight_items[0].icon = "guanbi.png";
+    snprintf(redlight_labels[0], sizeof(redlight_labels[0]), "关闭");
+    redlight_items[0].label = redlight_labels[0];
+    
+    // 后续选项是亮度档位
+    for (int i = 1; i < item_count; i++) {
+        int level_index = i - 1;  // 对应 red_light_image_level 数组索引
+        if (level_index < 7) {
+            redlight_items[i].icon = red_light_image_level[level_index];
         } else {
-            redlight_items[i].icon = (i > 6) ? red_light_image_level[6] : red_light_image_level[i - 1];
-            snprintf(redlight_labels[i], sizeof(redlight_labels[i]), "等级%d", i);
+            redlight_items[i].icon = red_light_image_level[6];
         }
+        snprintf(redlight_labels[i], sizeof(redlight_labels[i]), "等级%d", i);
         redlight_items[i].label = redlight_labels[i];
+    }
+    
+    // 计算当前选中的索引（根据当前亮度级别和最大档位限制）
+    uint32_t selected_index = 0;
+    if (brightness_level > 0) {
+        if (brightness_level > max_level) {
+            selected_index = max_level;  // 如果当前档位超出限制，选中最大档位
+        } else {
+            selected_index = brightness_level;
+        }
     }
     
     // 创建弹窗
     create_icon_select_popup(obj_vedio_s, ICON_SELECT_REDLIGHT,
-                              redlight_items, 8,
-                              brightness_level,
+                              redlight_items, item_count,
+                              selected_index,
                               icon_select_video_redlight_callback, NULL);
+    
+    MLOG_DBG("录像模式红外灯弹窗：最大档位=%d，选项数量=%d，当前选中=%d\n", 
+             max_level, item_count, selected_index);
 }
 
 // 屏幕亮度选择回调
@@ -796,16 +822,19 @@ void Home_Vedio(lv_ui_t *ui)
     }
 
     // menu
-    lv_obj_t *img_menu = lv_imagebutton_create(obj_vedio_s);
+    lv_obj_t *img_menu = lv_button_create(obj_vedio_s);
     lv_obj_align(img_menu, LV_ALIGN_BOTTOM_LEFT, 6, 0);
-    lv_obj_set_size(img_menu, 40, 40);
+    lv_obj_set_size(img_menu, 60, 60);
     show_image(img_menu, "menu.png");
+    lv_obj_set_style_bg_opa(img_menu, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(img_menu, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(img_menu, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_add_event_cb(img_menu, buttonVedio_All_event_handler, LV_EVENT_CLICKED, (void *)(intptr_t)1);
     
     // 滤镜
     lv_obj_t *btn_effect = lv_button_create(obj_vedio_s);
     lv_obj_align(btn_effect, LV_ALIGN_BOTTOM_LEFT, 60,0);
-    lv_obj_set_size(btn_effect, 40, 40);
+    lv_obj_set_size(btn_effect, 60, 60);
     lv_obj_set_style_bg_opa(btn_effect, 0, LV_PART_MAIN | LV_STATE_DEFAULT); // 透明背景
     lv_obj_set_style_pad_all(btn_effect, 0, LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(btn_effect, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -829,18 +858,24 @@ void Home_Vedio(lv_ui_t *ui)
         lv_obj_add_flag(label_Vedio_Durtime_s, LV_OBJ_FLAG_HIDDEN);
     }
 
-    lv_obj_t *album = lv_imagebutton_create(obj_vedio_s);
+    lv_obj_t *album = lv_button_create(obj_vedio_s);
     lv_obj_align(album, LV_ALIGN_BOTTOM_RIGHT, -80, 0);
-    lv_obj_set_size(album, 48, 48);
+    lv_obj_set_size(album, 60, 60);
+    lv_obj_set_style_bg_opa(album, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(album, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(album, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     show_image(album, "photo_album.png");
     lv_obj_add_event_cb(album, buttonVedio_All_event_handler, LV_EVENT_CLICKED, (void *)(intptr_t)4);
 
 
     // 退出按钮
-    lv_obj_t *img_exit = lv_imagebutton_create(obj_vedio_s);
-    lv_obj_align(img_exit, LV_ALIGN_BOTTOM_RIGHT, -6, -6);
-    lv_obj_set_size(img_exit, 40, 40);
+    lv_obj_t *img_exit = lv_button_create(obj_vedio_s);
+    lv_obj_align(img_exit, LV_ALIGN_BOTTOM_RIGHT, -6, 0);
+    lv_obj_set_size(img_exit, 60, 60);
     show_image(img_exit, "exit.png");
+    lv_obj_set_style_bg_opa(img_exit, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(img_exit, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(img_exit, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_add_event_cb(img_exit, buttonVedio_All_event_handler, LV_EVENT_CLICKED, (void *)(intptr_t)3);
     
     //创建缩放UI

@@ -48,6 +48,8 @@ void seteffect_index(uint8_t index)
 
 void reset_effect(void)
 {
+    extern uint32_t g_current_effect_index;
+    g_current_effect_index = 0;
     seteffect_index(0);
     strncpy(g_button_labelPho, str_language_normal[get_curr_language()], sizeof(g_button_labelPho));
 }
