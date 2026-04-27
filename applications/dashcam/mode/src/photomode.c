@@ -21,6 +21,15 @@ void smile_callback_fun(void);
 int32_t MODEMNG_ResetPhotoMode(PARAM_CFG_S *Param)
 {
     int32_t s32Ret = 0;
+    uint32_t old_sensor_type = 0;
+    uint32_t new_sensor_type = 0;
+    PARAM_MEDIA_SNS_ATTR_S cur_sns_attr = {0};
+    PARAM_MEDIA_VACP_ATTR_S cur_vcap_attr = {0};
+    PARAM_MEDIA_SPEC_S old_params = {0};
+    PARAM_MEDIA_SPEC_S new_params = {0};
+
+    PARAM_GetMediaMode(0, &old_params);
+    old_sensor_type = old_params.SnsAttr.SnsChnAttr.u32sensortype;
 
     #ifdef SERVICES_FACEP_ON
     FACEP_SERVICE_Pause();
@@ -48,8 +57,35 @@ int32_t MODEMNG_ResetPhotoMode(PARAM_CFG_S *Param)
     s32Ret = PARAM_SetParam(Param);
     MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "Setting video param");
 
-    s32Ret = MEDIA_SensorSwitchInit(NULL, NULL);
-    MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "VI Switch");
+    PARAM_GetMediaMode(0, &new_params);
+    new_sensor_type = new_params.SnsAttr.SnsChnAttr.u32sensortype;
+    PARAM_GetSensorParam(0, &cur_sns_attr);
+    PARAM_GetVcapParam(0, &cur_vcap_attr);
+
+    CVI_LOGI("Photo Sensor type change: 0x%08X -> 0x%08X", old_sensor_type, new_sensor_type);
+
+    if (old_sensor_type != new_sensor_type) {
+        CVI_LOGI("Photo Sensor type changed, reinitializing VI...");
+
+        s32Ret = MEDIA_SensorDeInit();
+        MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "Sensor deinit");
+
+        s32Ret = MEDIA_SensorSwitchInit(&cur_sns_attr, &cur_vcap_attr);
+        MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "VI Switch");
+
+        s32Ret = MEDIA_VI_VPSS_Mode_Init();
+        MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "VI VPSS mode init");
+
+        s32Ret = MEDIA_DISP_Pause();
+        MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "DISP pause");
+
+        s32Ret = MEDIA_SensorInit();
+        MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "Sensor init");
+    } else {
+        CVI_LOGI("Photo Sensor type unchanged, skip VI reinitialization");
+        s32Ret = MEDIA_SensorSwitchInit(&cur_sns_attr, &cur_vcap_attr);
+        MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "VI Switch");
+    }
 
     s32Ret = MEDIA_VideoInit();
     MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "Video init");
@@ -75,6 +111,12 @@ int32_t MODEMNG_ResetPhotoMode(PARAM_CFG_S *Param)
     FACEP_SERVICE_Resume();
     #endif
 
+    if (old_sensor_type != new_sensor_type) {
+        usleep(200 * 1000);
+    }
+    s32Ret = MEDIA_DISP_Resume();
+    MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "DISP resume");
+
     return s32Ret;
 }
 
@@ -83,26 +125,46 @@ int32_t MODEMNG_OpenPhotoMode(void)
 {
     int32_t s32Ret = 0;
     uint32_t is_mode_proc_with_sensor = 0;
+    uint32_t old_sensor_type = 0;
+    uint32_t new_sensor_type = 0;
+    PARAM_MEDIA_SNS_ATTR_S cur_sns_attr = {0};
+    PARAM_MEDIA_VACP_ATTR_S cur_vcap_attr = {0};
+    PARAM_MEDIA_SPEC_S old_params = {0};
+    PARAM_MEDIA_SPEC_S new_params = {0};
     MODEMNG_S* pstModeMngCtx = MODEMNG_GetModeCtx();
     pstModeMngCtx->CurWorkMode = WORK_MODE_PHOTO;
+
+    PARAM_GetMediaMode(0, &old_params);
+    old_sensor_type = old_params.SnsAttr.SnsChnAttr.u32sensortype;
 
     s32Ret = MODEMNG_SetCurModeMedia(WORK_MODE_PHOTO);
     MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "Set Cur Mode Media");
 
-    s32Ret = MEDIA_SensorSwitchInit(NULL, NULL);
+    PARAM_GetMediaMode(0, &new_params);
+    new_sensor_type = new_params.SnsAttr.SnsChnAttr.u32sensortype;
+
+    PARAM_GetSensorParam(0, &cur_sns_attr);
+    PARAM_GetVcapParam(0, &cur_vcap_attr);
+
+    s32Ret = MEDIA_SensorSwitchInit(&cur_sns_attr, &cur_vcap_attr);
     MODEMNG_CHECK_RET(s32Ret,MODE_EINVAL,"VI Switch");
 
     s32Ret = MEDIA_VI_VPSS_Mode_Init();
     MODEMNG_CHECK_RET(s32Ret,MODE_EINVAL,"VI VPSS mode init");
 
     MODEMNG_GetSensorState(&is_mode_proc_with_sensor);
+    if (old_sensor_type != new_sensor_type) {
+        is_mode_proc_with_sensor = 1;
+        MODEMNG_SetSensorState(is_mode_proc_with_sensor);
+    }
     if(is_mode_proc_with_sensor){
-        /* 不显示sensor重新初始化导致的反应帧 */
-        s32Ret = MEDIA_DISP_ClearBuf();
-        MODEMNG_CHECK_RET(s32Ret,MODE_EINVAL,"DISP clear");
-
         s32Ret = MEDIA_DISP_Pause();
         MODEMNG_CHECK_RET(s32Ret,MODE_EINVAL,"DISP pause");
+
+        if (old_sensor_type != new_sensor_type) {
+            s32Ret = MEDIA_SensorDeInit();
+            MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "VI deinit");
+        }
 
         s32Ret = MEDIA_SensorInit();
         MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "VI init");
@@ -145,9 +207,9 @@ int32_t MODEMNG_OpenPhotoMode(void)
     MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "Facep init");
     #endif
 
-    /* sensor重新初始化，延迟恢复DISP，去除反应帧 */
+    /* sensor重新初始化后，等待AE稳定再恢复显示，减少亮度突降可见帧 */
     if(is_mode_proc_with_sensor){
-        usleep(500 * 1000);
+        usleep(350 * 1000);
         s32Ret = MEDIA_DISP_Resume();
         MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "DISP resume");
     }
@@ -333,7 +395,8 @@ void MODEMNG_PhotoSetMediaSize(uint32_t CamID, int32_t value)
         return;
     }
 
-    int32_t media_mode = MEDIA_Size2PhotoMediaMode(param_ptr->Menu.PhotoSize.Items[value].Value, -1);
+    int32_t media_mode = MEDIA_Size2PhotoMediaMode(param_ptr->Menu.PhotoSize.Items[value].Value, -1,
+        param_ptr->Menu.PhotoSize.Items[value].Desc);
     if(media_mode < 0){
         CVI_LOGE("error media mode: %d with size(%d)", media_mode, param_ptr->Menu.PhotoSize.Items[value].Value);
         return;

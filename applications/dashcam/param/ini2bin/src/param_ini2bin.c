@@ -256,6 +256,8 @@ int32_t INI_PARAM_MediaString2Uint(uint32_t *MediaMode, char *String)
         *MediaMode = MEDIA_VIDEO_SIZE_1920X1080P25;
     } else if (strcmp(String, "record_1080p60") == 0) {
         *MediaMode = MEDIA_VIDEO_SIZE_1920X1080P60;
+    } else if (strcmp(String, "record_1080p_new") == 0) {
+        *MediaMode = MEDIA_VIDEO_SIZE_1920X1080_NEW;
     } else if (strcmp(String, "record_1512p25") == 0) {
         *MediaMode = MEDIA_VIDEO_SIZE_2688X1512P25;
     } else if (strcmp(String, "record_1520p25") == 0) {
@@ -290,6 +292,8 @@ int32_t INI_PARAM_MediaString2Uint(uint32_t *MediaMode, char *String)
         *MediaMode = MEDIA_PHOTO_SIZE_2560X1440P;
     } else if (strcmp(String, "photo_1080p") == 0) {
         *MediaMode = MEDIA_PHOTO_SIZE_1920X1080P;
+    } else if (strcmp(String, "photo_1080p_new") == 0) {
+        *MediaMode = MEDIA_PHOTO_SIZE_1920X1080P_NEW;
     } else if (strcmp(String, "photo_720p") == 0) {
         *MediaMode = MEDIA_PHOTO_SIZE_1280X720P;
     } else if (strcmp(String, "photo_480p") == 0) {

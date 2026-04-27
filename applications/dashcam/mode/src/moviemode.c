@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <unistd.h>
 
 #include "modeinner.h"
@@ -19,6 +20,16 @@
 int32_t MODEMNG_ResetMovieMode(PARAM_CFG_S *Param)
 {
     int32_t s32Ret = 0;
+    uint32_t old_sensor_type = 0;
+    uint32_t new_sensor_type = 0;
+    PARAM_MEDIA_SNS_ATTR_S cur_sns_attr = {0};
+    PARAM_MEDIA_VACP_ATTR_S cur_vcap_attr = {0};
+    PARAM_MEDIA_SPEC_S old_params = {0};
+    PARAM_MEDIA_SPEC_S new_params = {0};
+
+    PARAM_GetMediaMode(0, &old_params);
+    old_sensor_type = old_params.SnsAttr.SnsChnAttr.u32sensortype;
+
 #ifdef SERVICES_QRCODE_ON
     MEDIA_QRCodeDeInit();
 #endif
@@ -80,8 +91,32 @@ int32_t MODEMNG_ResetMovieMode(PARAM_CFG_S *Param)
     s32Ret = PARAM_SetParam(Param);
     MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "Setting video param");
 
-    s32Ret = MEDIA_SensorSwitchInit(NULL, NULL);
-    MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "VI Switch");
+    PARAM_GetMediaMode(0, &new_params);
+    new_sensor_type = new_params.SnsAttr.SnsChnAttr.u32sensortype;
+    PARAM_GetSensorParam(0, &cur_sns_attr);
+    PARAM_GetVcapParam(0, &cur_vcap_attr);
+
+    CVI_LOGI("Sensor type change: 0x%08X -> 0x%08X", old_sensor_type, new_sensor_type);
+
+    if (old_sensor_type != new_sensor_type) {
+        s32Ret = MEDIA_SensorDeInit();
+        MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "Sensor deinit");
+
+        s32Ret = MEDIA_SensorSwitchInit(&cur_sns_attr, &cur_vcap_attr);
+        MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "VI Switch");
+
+        s32Ret = MEDIA_VI_VPSS_Mode_Init();
+        MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "VI VPSS mode init");
+
+        s32Ret = MEDIA_DISP_Pause();
+        MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "DISP pause");
+
+        s32Ret = MEDIA_SensorInit();
+        MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "Sensor init");
+    } else {
+        s32Ret = MEDIA_SensorSwitchInit(&cur_sns_attr, &cur_vcap_attr);
+        MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "VI Switch");
+    }
 
     s32Ret = MEDIA_VideoInit();
     MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "Init video");
@@ -142,6 +177,13 @@ int32_t MODEMNG_ResetMovieMode(PARAM_CFG_S *Param)
     MEDIA_QRCodeInit();
 #endif
 
+    if (old_sensor_type != new_sensor_type) {
+        usleep(200 * 1000);
+    }
+
+    s32Ret = MEDIA_DISP_Resume();
+    MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "DISP resume");
+
     return s32Ret;
 }
 
@@ -150,27 +192,47 @@ int32_t MODEMNG_OpenMovieMode(void)
 {
     int32_t s32Ret = 0;
     uint32_t is_mode_proc_with_sensor = 0;
+    uint32_t old_sensor_type = 0;
+    uint32_t new_sensor_type = 0;
+    PARAM_MEDIA_SNS_ATTR_S cur_sns_attr = {0};
+    PARAM_MEDIA_VACP_ATTR_S cur_vcap_attr = {0};
+    PARAM_MEDIA_SPEC_S old_params = {0};
+    PARAM_MEDIA_SPEC_S new_params = {0};
 
     MODEMNG_S* pstModeMngCtx = MODEMNG_GetModeCtx();
     pstModeMngCtx->CurWorkMode = WORK_MODE_MOVIE;
 
+    PARAM_GetMediaMode(0, &old_params);
+    old_sensor_type = old_params.SnsAttr.SnsChnAttr.u32sensortype;
+
     s32Ret = MODEMNG_SetCurModeMedia(WORK_MODE_MOVIE);
     MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL,"Set Cur Mode Media");
 
-    s32Ret = MEDIA_SensorSwitchInit(NULL, NULL);
+    PARAM_GetMediaMode(0, &new_params);
+    new_sensor_type = new_params.SnsAttr.SnsChnAttr.u32sensortype;
+
+    PARAM_GetSensorParam(0, &cur_sns_attr);
+    PARAM_GetVcapParam(0, &cur_vcap_attr);
+
+    s32Ret = MEDIA_SensorSwitchInit(&cur_sns_attr, &cur_vcap_attr);
     MODEMNG_CHECK_RET(s32Ret,MODE_EINVAL,"VI Switch");
 
     s32Ret = MEDIA_VI_VPSS_Mode_Init();
     MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "VI VPSS mode init");
 
     MODEMNG_GetSensorState(&is_mode_proc_with_sensor);
+    if (old_sensor_type != new_sensor_type) {
+        is_mode_proc_with_sensor = 1;
+        MODEMNG_SetSensorState(is_mode_proc_with_sensor);
+    }
     if(is_mode_proc_with_sensor){
-        /* 不显示sensor重新初始化导致的反应帧 */
-        s32Ret = MEDIA_DISP_ClearBuf();
-        MODEMNG_CHECK_RET(s32Ret,MODE_EINVAL,"DISP clear");
-
         s32Ret = MEDIA_DISP_Pause();
         MODEMNG_CHECK_RET(s32Ret,MODE_EINVAL,"DISP pause");
+
+        if (old_sensor_type != new_sensor_type) {
+            s32Ret = MEDIA_SensorDeInit();
+            MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "VI deinit");
+        }
 
         s32Ret = MEDIA_SensorInit();
         MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "VI init");
@@ -228,7 +290,8 @@ int32_t MODEMNG_OpenMovieMode(void)
 #endif
 
     if(is_mode_proc_with_sensor){
-        usleep(500 * 1000);
+        /* Wait AE to settle before resuming display. */
+        usleep(350 * 1000);
     }
     is_mode_proc_with_sensor = 0;
     MODEMNG_SetSensorState(is_mode_proc_with_sensor);
@@ -582,18 +645,26 @@ static void MODEMNG_SetMediaVideoSize(uint32_t CamID, int32_t value)
 
     if((uint32_t)value < param_ptr->Menu.VideoSize.ItemCnt){
         CVI_LOGI("use item:%d", value);
-    }else{
+    } else {
         CVI_LOGE("error video size item: %d !", value);
+        free(param_ptr);
         return;
     }
 
     int32_t media_mode = MEDIA_Size2VideoMediaMode(param_ptr->Menu.VideoSize.Items[value].Value, -1,param_ptr->Menu.VideoSize.Items[value].Desc);
-    if(media_mode < 0){
+    if (media_mode < 0) {
         CVI_LOGE("error media mode: %d with size(%d)", media_mode, param_ptr->Menu.VideoSize.Items[value].Value);
+        free(param_ptr);
         return;
-    }else{
-        CVI_LOGI("switch to %d\n", media_mode);
     }
+    if (media_mode == 0 && param_ptr->Menu.VideoSize.Items[value].Value != 640) {
+        CVI_LOGE("invalid media mode 0 for item:%d desc:%s size:%d", value,
+            param_ptr->Menu.VideoSize.Items[value].Desc,
+            param_ptr->Menu.VideoSize.Items[value].Value);
+        free(param_ptr);
+        return;
+    }
+    CVI_LOGI("switch to %d\n", media_mode);
     param_ptr->CamCfg[CamID].CamMediaInfo.CurMediaMode = media_mode;
     param_ptr->WorkModeCfg.RecordMode.CamMediaInfo[CamID].CurMediaMode = media_mode;
     MODEMNG_ResetMovieMode(param_ptr);

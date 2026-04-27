@@ -168,7 +168,7 @@ int32_t MEDIA_PlayBackSerInit(void);
 int32_t MEDIA_PlayBackSerDeInit(void);
 uint32_t MEDIA_Res2RecordMediaMode(int32_t res);
 int32_t MEDIA_Res2PhotoMediaMode(int32_t res);
-int32_t MEDIA_Size2PhotoMediaMode(int32_t width, int32_t height);
+int32_t MEDIA_Size2PhotoMediaMode(int32_t width, int32_t height, const char *desc);
 int32_t MEDIA_Size2VideoMediaMode(int32_t width, int32_t height, char *str);
 uint32_t MEDIA_AhdResToRecordMediaSize(int32_t res);
 uint32_t MEDIA_AhdResToPhotoMediaSize(int32_t res);

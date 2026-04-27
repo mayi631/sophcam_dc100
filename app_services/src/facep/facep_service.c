@@ -169,7 +169,7 @@ static CVI_VOID facep_task_entry(CVI_VOID *arg){
             continue;
         }
 
-        image_handle = TDL_WrapFrame((void*)&in_frame, false);
+        image_handle = TDL_WrapFrame((void*)&in_frame, false, false);
         memset(&face_meta, 0, sizeof(TDLFace));
 
         if(fd_enable || fattr_enable){

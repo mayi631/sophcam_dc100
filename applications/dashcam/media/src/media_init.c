@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <signal.h>
 #include <pthread.h>
@@ -159,7 +160,7 @@ int32_t MEDIA_Res2PhotoMediaMode(int32_t res)
     return MediaSize;
 }
 
-int32_t MEDIA_Size2PhotoMediaMode(int32_t width, int32_t height)
+int32_t MEDIA_Size2PhotoMediaMode(int32_t width, int32_t height, const char *desc)
 {
     (void)height;
     int media_mode = 0;
@@ -186,7 +187,11 @@ int32_t MEDIA_Size2PhotoMediaMode(int32_t width, int32_t height)
     } else if (width == 2592) {
         media_mode = MEDIA_PHOTO_SIZE_2592X1944P;
     } else if (width == 1920) {
-        media_mode = MEDIA_PHOTO_SIZE_1920X1080P;
+        if (desc != NULL && (strstr(desc, "Crop-2M") != NULL)) {
+            media_mode = MEDIA_PHOTO_SIZE_1920X1080P_NEW;
+        } else {
+            media_mode = MEDIA_PHOTO_SIZE_1920X1080P;
+        }
     } else if (width == 640) {
         media_mode = MEDIA_PHOTO_SIZE_640X480P;
     }
@@ -241,9 +246,17 @@ int32_t MEDIA_Size2VideoMediaMode(int32_t width, int32_t height,char *str)
 	(void)height;
 	int media_mode = 0;
 	char item_fps[32] = {0};
+	uint32_t fps = 0;
+
+	/* Crop-2M (new sensor); keep legacy "1080P_NEW" strings working. */
+	if (str != NULL && width == 1920 &&
+	    (strstr(str, "Crop-2M") != NULL || strstr(str, "1080p_new") != NULL)) {
+		return MEDIA_VIDEO_SIZE_1920X1080_NEW;
+	}
+
 	extract_fps(str, item_fps, sizeof(item_fps));//分离帧率字符
 	// CVI_LOGI("bug调试 item_fps: %s\n", item_fps);
-	uint32_t fps = get_shot_count_value(item_fps);//将字符转换成数字
+	fps = get_shot_count_value(item_fps);//将字符转换成数字
 	// CVI_LOGI("bug调试 fps: %d\n", fps);
 
 	if (width == 3840) {
