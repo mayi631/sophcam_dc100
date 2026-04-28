@@ -583,6 +583,9 @@ int32_t MEDIA_SensorDeInit(void)
 			continue;
 		}
 #endif
+		if (Syshdl->sns[i] == NULL) {
+			continue;
+		}
 
 		s32Ret = MAPI_VCAP_GetISP(Syshdl->sns[i]);
 		MEDIA_CHECK_RET(s32Ret, APP_MEDIA_EINVAL, "MAPI_VCAP_GetISP fail");

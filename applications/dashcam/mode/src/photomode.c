@@ -125,6 +125,7 @@ int32_t MODEMNG_OpenPhotoMode(void)
 {
     int32_t s32Ret = 0;
     uint32_t is_mode_proc_with_sensor = 0;
+    uint32_t need_sensor_deinit_on_close = 0;
     uint32_t old_sensor_type = 0;
     uint32_t new_sensor_type = 0;
     PARAM_MEDIA_SNS_ATTR_S cur_sns_attr = {0};
@@ -152,11 +153,28 @@ int32_t MODEMNG_OpenPhotoMode(void)
     s32Ret = MEDIA_VI_VPSS_Mode_Init();
     MODEMNG_CHECK_RET(s32Ret,MODE_EINVAL,"VI VPSS mode init");
 
-    MODEMNG_GetSensorState(&is_mode_proc_with_sensor);
+    is_mode_proc_with_sensor = 0;
+    need_sensor_deinit_on_close = 0;
     if (old_sensor_type != new_sensor_type) {
         is_mode_proc_with_sensor = 1;
-        MODEMNG_SetSensorState(is_mode_proc_with_sensor);
+        need_sensor_deinit_on_close = 1;
     }
+    /* If prior close path deinit'd sensor, sns[] is NULL and we still need SensorInit. */
+    {
+        MEDIA_SYSHANDLE_S *sysh = &MEDIA_GetCtx()->SysHandle;
+        for (int32_t i = 0; i < MAX_CAMERA_INSTANCES; i++) {
+            if (!MEDIA_Is_CameraEnabled(i)) {
+                continue;
+            }
+            if (sysh->sns[i] == NULL) {
+                is_mode_proc_with_sensor = 1;
+                break;
+            }
+        }
+    }
+    /* Close path should deinit sensor only for real sensor-type switch.
+     * If we only recover from sns[] == NULL here, keep sensor resident for smooth switching. */
+    MODEMNG_SetSensorState(need_sensor_deinit_on_close);
     if(is_mode_proc_with_sensor){
         s32Ret = MEDIA_DISP_Pause();
         MODEMNG_CHECK_RET(s32Ret,MODE_EINVAL,"DISP pause");
@@ -208,13 +226,11 @@ int32_t MODEMNG_OpenPhotoMode(void)
     #endif
 
     /* sensor重新初始化后，等待AE稳定再恢复显示，减少亮度突降可见帧 */
-    if(is_mode_proc_with_sensor){
+    if (is_mode_proc_with_sensor) {
         usleep(350 * 1000);
         s32Ret = MEDIA_DISP_Resume();
         MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "DISP resume");
     }
-    is_mode_proc_with_sensor = 0;
-    MODEMNG_SetSensorState(is_mode_proc_with_sensor);
 
     /** open photo ui */
     EVENT_S stEvent;
@@ -251,6 +267,7 @@ int32_t MODEMNG_ClosePhotoMode(void)
     if(is_mode_proc_with_sensor){
         s32Ret = MEDIA_SensorDeInit();
         MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "VI deinit");
+        MODEMNG_SetSensorState(0);
     }
 
     s32Ret = MEDIA_VideoDeInit();

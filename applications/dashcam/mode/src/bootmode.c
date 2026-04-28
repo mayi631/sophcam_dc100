@@ -4,6 +4,7 @@
 
 #include "mode.h"
 #include "media_init.h"
+#include "media_disp.h"
 #include "modeinner.h"
 #include "ui_common.h"
 
@@ -16,6 +17,15 @@ int32_t MODE_OpenBootFirstMode(void)
     pstModeMngCtx->CurWorkMode = WORK_MODE_BOOT;
 
     CVI_LOGD("MODE_OpenBootFirstMode\n");
+
+    /* 仅回主界面时清屏：避免预览最后一帧残留；拍照/录像互切不在 Close* 里清，否则会闪黑 */
+    {
+        MEDIA_SYSHANDLE_S *sysh = &MEDIA_GetCtx()->SysHandle;
+        if (sysh->dispHdl != NULL) {
+            s32Ret = MEDIA_DISP_ClearBuf();
+            MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "DISP clear");
+        }
+    }
 
     s32Ret = UIAPP_Start();
     MODEMNG_CHECK_RET(s32Ret,MODE_EINVAL,"UIAPP_Start");
