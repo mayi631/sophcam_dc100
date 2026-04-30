@@ -277,4 +277,9 @@ extern const char* str_language_confirm_delete_all_videos[NUM_LANGUAGES];
 
 extern const char *ascii_strings[128]; // ASCII字符表
 
+/* 动物识别相关语言字符串 */
+extern const char *str_language_initializing_ai_model[NUM_LANGUAGES]; // 正在初始化AI模型
+extern const char *str_language_recognizing_animal[NUM_LANGUAGES]; // 正在识别动物
+extern const char *str_language_animal_recognition_result[NUM_LANGUAGES]; // 动物识别结果
+
 #endif // __MULTILANG_STRINGS_H__

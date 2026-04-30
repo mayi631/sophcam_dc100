@@ -50,6 +50,7 @@ static uint8_t curr_focus_index = 0;
 static lv_obj_t* focusable_objects[GRID_MAX_OBJECTS] = { NULL }; // 存储可聚焦的对象
 static bool is_first_init = true; // 是否是第一次初始化
 
+bool is_animal_recognition_page = false; // 是否是第一次初始化
 // #endregion
 // #############################################################################
 // ! #region 4. 内部工具函数（注意用static修饰）
@@ -134,6 +135,7 @@ static void home_click_callback(lv_obj_t* obj)
         switch (obj_index) {
         case 0: // 动物识别
         {
+            is_animal_recognition_page = true;
             ui_load_scr_animation(&g_ui, &g_ui.page_photo.photoscr, g_ui.screenHomePhoto_del, NULL, Home_Photo, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
             MESSAGE_S Msg = { 0 };
             Msg.topic = EVENT_MODEMNG_MODESWITCH;
@@ -148,6 +150,7 @@ static void home_click_callback(lv_obj_t* obj)
             Msg.topic     = EVENT_MODEMNG_MODESWITCH;
             Msg.arg1      = WORK_MODE_PHOTO;
             MODEMNG_SendMessage(&Msg);
+            is_animal_recognition_page = false;
             ui_load_scr_animation(&g_ui, &page_ai_camera_s,1, NULL, create_ai_camera_screen, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
             MLOG_DBG("进入AI识别页面\n");
             // 添加AI识别页面的跳转逻辑
@@ -155,6 +158,7 @@ static void home_click_callback(lv_obj_t* obj)
         case 2: // AI夜视仪
         {
             MLOG_DBG("进入AI夜视仪页面\n");
+            is_animal_recognition_page = false;
             ui_load_scr_animation(&g_ui, &g_ui.page_photo.photoscr, g_ui.screenHomePhoto_del, NULL, Home_Photo, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
             MESSAGE_S Msg = { 0 };
             Msg.topic = EVENT_MODEMNG_MODESWITCH;
@@ -168,21 +172,14 @@ static void home_click_callback(lv_obj_t* obj)
             Msg.topic = EVENT_MODEMNG_MODESWITCH;
             Msg.arg1 = WORK_MODE_PLAYBACK;
             MODEMNG_SendMessage(&Msg);
+            is_animal_recognition_page = false;
             ui_load_scr_animation(&g_ui, &obj_Aibum_s, 1, NULL, Home_Album, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
         } break;
         case 4: // 设置
         {
             MLOG_DBG("进入设置页面\n");
+            is_animal_recognition_page = false;
             ui_load_scr_animation(&g_ui, &obj_sysMenu_Setting_s, 1, NULL, sysMenu_Setting, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
-        } break;
-        case 5: // AI通用功能
-        {
-            MLOG_DBG("进入通用AI功能页面\n");
-            MESSAGE_S Msg = { 0 };
-            Msg.topic = EVENT_MODEMNG_MODESWITCH;
-            Msg.arg1 = WORK_MODE_PHOTO;
-            MODEMNG_SendMessage(&Msg);
-            ui_load_scr_animation(&g_ui, &page_ai_camera_s, 1, NULL, create_ai_camera_screen, LV_SCR_LOAD_ANIM_NONE, 20, 20, false, true);
         } break;
         }
     }

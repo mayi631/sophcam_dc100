@@ -4295,3 +4295,54 @@ const char *ascii_strings[128] = {
     "~",  // 126
     "",   // 127
 };
+
+/* 正在初始化AI模型 */
+const char *str_language_initializing_ai_model[NUM_LANGUAGES] = {
+    "正在初始化AI模型",         // 简体中文
+    "正在初始化AI模型",         // 繁体中文
+    "AIモデルを初期化中",        // 日语
+    "Initializing AI model",    // 英语
+    "Inicjowanie modelu AI",    // 波兰语
+    "AI-model initialiseren",  // 荷兰语
+    "KI-Modell wird initialisiert", // 德语
+    "Initialisation du modele IA", // 法语
+    "Inicializando modelo de IA", // 西班牙语
+    "Inizializzazione modello AI", // 意大利语
+    "AI modeli baslatiliyor",  // 土耳其语
+    "Inizializatsiya AI modeli", // 俄语
+    "Inicializando modelo de IA", // 葡萄牙语
+};
+
+/* 正在识别动物 */
+const char *str_language_recognizing_animal[NUM_LANGUAGES] = {
+    "正在识别动物",             // 简体中文
+    "正在識別動物",             // 繁体中文
+    "動物を識別中",             // 日语
+    "Recognizing animals",      // 英语
+    "Rozpoznawanie zwierzat",   // 波兰语
+    "Dieren herkennen",         // 荷兰语
+    "Tiere werden erkannt",     // 德语
+    "Reconnaissance des animaux", // 法语
+    "Reconociendo animales",    // 西班牙语
+    "Riconoscimento animali",   // 意大利语
+    "Hayvanlar taniniyor",     // 土耳其语
+    "Raspoznavanie zhivotnykh", // 俄语
+    "Reconhecendo animais",     // 葡萄牙语
+};
+
+/* 动物识别结果 */
+const char *str_language_animal_recognition_result[NUM_LANGUAGES] = {
+    "动物识别结果",             // 简体中文
+    "動物識別結果",             // 繁体中文
+    "動物識別結果",             // 日语
+    "Animal Recognition Result", // 英语
+    "Wynik rozpoznawania zwierzat", // 波兰语
+    "Dierherkenningsresultaat", // 荷兰语
+    "Tierrekognitionsergebnis", // 德语
+    "Resultat de reconnaissance animale", // 法语
+    "Resultado de reconocimiento animal", // 西班牙语
+    "Risultato riconoscimento animale", // 意大利语
+    "Hayvan tanima sonucu",    // 土耳其语
+    "Rezultat raspoznavaniya zhivotnykh", // 俄语
+    "Resultado do reconhecimento de animais", // 葡萄牙语
+};

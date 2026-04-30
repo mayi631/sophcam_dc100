@@ -1053,7 +1053,7 @@ static void aiphoto_result_key_handler(int key_code, int key_value)
         case KEY_ZOOMOUT: {
             do_zoomout(key_value);
         }; break;
-        case KEY_OK: {
+        case KEY_PLAY: {
             if (get_play_switch()) {
                 lv_obj_send_event(s_reread_btn, LV_EVENT_CLICKED, NULL);
             }
