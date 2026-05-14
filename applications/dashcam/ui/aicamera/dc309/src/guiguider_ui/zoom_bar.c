@@ -134,7 +134,9 @@ void update_zoom_bar(uint32_t level)
         zoom_bar.timer = NULL;
     }
     // 创建新的3秒定时器
-    zoom_bar.timer = lv_timer_create(zoom_hide_timer_cb, 3000, NULL);
+    if (zoom_bar.level == 1) {
+        zoom_bar.timer = lv_timer_create(zoom_hide_timer_cb, 3000, NULL);
+    }
 }
 
 void delete_zoom_bar(void)

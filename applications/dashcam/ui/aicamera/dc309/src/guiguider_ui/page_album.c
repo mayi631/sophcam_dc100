@@ -598,8 +598,8 @@ static void load_page(int page_index)
             // 设置容器样式
             lv_obj_set_style_bg_opa(img_container, LV_OPA_TRANSP, LV_PART_MAIN);
             lv_obj_set_style_border_color(img_container, lv_color_hex(0xCCCCCC), LV_PART_MAIN);
-            lv_obj_set_style_border_width(img_container, 1, LV_PART_MAIN);
-            lv_obj_set_style_border_width(img_container, 1, LV_PART_MAIN);
+            lv_obj_set_style_border_width(img_container, 0, LV_PART_MAIN);
+            lv_obj_set_style_border_width(img_container, 0, LV_PART_MAIN);
             lv_obj_set_style_pad_all(img_container, 0, LV_PART_MAIN);
             lv_obj_set_style_radius(img_container, 0, LV_PART_MAIN);
             if(i-start_index == g_album_focus_index)

@@ -137,15 +137,8 @@ static const char *get_month_options(void)
 
 static void time_Del_Complete_anim_cb(lv_anim_t *a)
 {
-    if(obj_sysMenu_Time_s != NULL) {
-        if(lv_obj_is_valid(obj_sysMenu_Time_s)) {
-            lv_obj_del(obj_sysMenu_Time_s);
-        } else {
-        }
-        obj_sysMenu_Time_s = NULL;
-        ui_load_scr_animation(&g_ui, &obj_sysMenu_Setting_s, 1, NULL, sysMenu_Setting, LV_SCR_LOAD_ANIM_NONE, 0, 0,
-                              false, true);
-    }
+    ui_load_scr_animation(&g_ui, &obj_sysMenu_Setting_s, 1, NULL, sysMenu_Setting, LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                            false, true);
 }
 
 //最底层窗口删除
@@ -586,7 +579,7 @@ static void sysMenu_TimeAndData_Setting_Create(void)
 
     lv_obj_t* flex_Float = lv_obj_create(setTimeAndDate_Win_s);
     lv_obj_remove_style_all(flex_Float);
-    lv_obj_set_size(flex_Float, H_RES, 300);
+    lv_obj_set_size(flex_Float, H_RES, 280);
     lv_obj_align(flex_Float, LV_ALIGN_DEFAULT, 0, 80);
     lv_obj_set_style_bg_color(flex_Float, lv_color_hex(0x020524), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(flex_Float, LV_OPA_100, LV_PART_MAIN);
