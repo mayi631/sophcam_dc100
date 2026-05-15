@@ -596,6 +596,11 @@ void takephoto_key_handler(int key_code, int key_value)
                 if(is_start_video > VEDIO_START) {
                     is_start_video = VEDIO_STOP;
                 }
+
+                if (g_ok_callback != NULL) {
+                    g_ok_callback();
+                }
+
                 // 调用录像逻辑
                 if(is_start_video == VEDIO_START) {
                     MLOG_DBG("VEDIO_START\n");

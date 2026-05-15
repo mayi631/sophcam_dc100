@@ -320,3 +320,13 @@ void auto_adjust_redlight_by_battery(void)
         }
     }
 }
+
+void close_irlight(void)
+{
+    //关闭红外参数
+    extern bool led_on_flag;
+    brightness_level = 0;
+    led_off();
+    ircut_off();
+    led_on_flag = false;
+}

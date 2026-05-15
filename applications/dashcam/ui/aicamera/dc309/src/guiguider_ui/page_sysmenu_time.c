@@ -357,8 +357,8 @@ static void sysMenu_TimeSetting_Select_OK_event_handler(lv_event_t *e)
 
             MLOG_DBG("执行命令: %s\n", cmd);
             system(cmd);
-            // // 将系统时间写入硬件时钟
-            // system("hwclock -w");
+            // 将系统时间写入硬件时钟（使用UTC模式存储，避免时区偏移问题）
+            system("hwclock -u -w");
 
         }; break;
         default: break;

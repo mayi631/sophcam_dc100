@@ -310,7 +310,7 @@ static void gesture_event_handler(lv_event_t *e)
  
      // Write codes title (标题)
      lv_obj_t* title = lv_label_create(cont_top);
-     lv_label_set_text(title, str_language_cursor[get_curr_cursor()]);
+     lv_label_set_text(title, str_language_cursor[get_curr_language()]);
      lv_label_set_long_mode(title, LV_LABEL_LONG_WRAP);
      lv_obj_set_style_text_font(title, get_usr_fonts(ALI_PUHUITI_FONTPATH, MENU_FONT_SIZE), LV_PART_MAIN | LV_STATE_DEFAULT);
      lv_obj_set_style_text_color(title, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);

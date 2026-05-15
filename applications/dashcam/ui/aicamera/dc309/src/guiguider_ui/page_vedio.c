@@ -28,6 +28,16 @@ lv_obj_t *img_batter_s = NULL;
 lv_obj_t *label_available_video_s = NULL;//剩余录像时长
 static lv_obj_t *img_effect_s = NULL;  //特效图标
 static uint8_t g_flash_led_index = 0;
+static bool g_video_power_key_count = false;  // 电源键隐藏图标状态
+
+// 按任意键恢复图标显示（如果之前被power键隐藏了）
+static void video_restore_icon_on_any_key(void)
+{
+    if (g_video_power_key_count) {
+        g_video_power_key_count = false;
+        restore_all_widgets();
+    }
+}
 
 // lv_obj_t *label_datatime_s = NULL;
 extern lv_style_t ttf_font_24;
@@ -640,18 +650,6 @@ static void vedioEffect_Select_event_cb(lv_event_t *e)
     }
 }
 
-// 菜单按键处理回调函数
-static void key_takephoto_menu_callback(void)
-{
-    MLOG_DBG("进入录像模式设置页面\n");
-
-    // 清理视频页面资源
-    cleanup_vedio_page_resources();
-
-    ui_load_scr_animation(&g_ui, &obj_vedioMenu_s, 1, NULL, vedioMenu_Setting, LV_SCR_LOAD_ANIM_NONE, 0, 0,
-        false, true);
-}
-
 // UP按键处理回调函数
 static void video_up_callback(void)
 {
@@ -664,61 +662,16 @@ static void video_up_callback(void)
 
 }
 
-// 模式切换按键处理回调函数
-static void key_takephoto_mode_callback(void)
-{
-    MLOG_DBG("模式切换，进入拍照模式\n");
-
-    // 清理视频页面资源
-    cleanup_vedio_page_resources();
-
-    MESSAGE_S Msg = {0};
-    Msg.topic = EVENT_MODEMNG_MODESWITCH;
-    Msg.arg1 = WORK_MODE_PHOTO;
-    MODEMNG_SendMessage(&Msg);
-    // 复位缩放
-    set_zoom_level(1);
-    // 使能对焦
-    enable_focus();
-    is_video_mode = false;
-    ui_load_scr_animation(&g_ui, &g_ui.page_photo.photoscr, g_ui.screenHomePhoto_del, NULL, Home_Photo, LV_SCR_LOAD_ANIM_NONE, 0, 0,
-                            false, true);
-}
-
 static void vieo_key_down_callback(void)
 {
-    create_simple_delete_dialog(NULL);//创建确认浮窗
+    video_restore_icon_on_any_key(); // 任意键恢复图标
 }
 
-// 长按菜单按键处理回调函数
-static void video_long_menu_callback(void)
-{
-    cleanup_vedio_page_resources();
-    MESSAGE_S Msg = {0};
-    takephoto_cancel_focus();
-    // 通知mode关闭时要关闭sensor
-    Msg.topic     = EVENT_MODEMNG_SENSOR_STATE;
-    Msg.arg1      = 1;
-    MODEMNG_SendMessage(&Msg);
-    memset(&Msg, 0, sizeof(MESSAGE_S));
-    // 进入BOOT模式
-    Msg.topic     = EVENT_MODEMNG_MODESWITCH;
-    Msg.arg1      = WORK_MODE_BOOT;
-    MODEMNG_SendMessage(&Msg);
-    // 复位缩放
-    set_zoom_level(1);
-    is_video_mode = false;
-    reset_effect();
-    ui_load_scr_animation(&g_ui, &obj_home_s, 1, NULL, setup_scr_home1, LV_SCR_LOAD_ANIM_NONE, 0, 0, false, true);
-}
 
 // ok按键处理回调函数
 static void key_takephoto_ok_callback(void)
 {
-    if(get_is_effect_exist() == false) {
-    } else {
-        set_effect_ok();
-    }
+    video_restore_icon_on_any_key(); // 任意键恢复图标
 }
 
 
@@ -762,6 +715,7 @@ static void gesture_event_handler(lv_event_t *e)
 
 static void video_redlight_callback(void)
 {
+    video_restore_icon_on_any_key(); // 任意键恢复图标
     // 调用通用的红光UI更新函数
     extern void update_redlight_ui(void);
     update_redlight_ui();
@@ -772,15 +726,11 @@ static void video_redlight_callback(void)
 static void key_takephoto_power_callback(void)
 {
     MLOG_DBG("key_takephoto_power_callback\n");
-    static bool power_key_count = false;
-    power_key_count = !power_key_count;
-    switch (power_key_count) {
-    case false:
-        restore_all_widgets();
-        break;
-    case true:
+    g_video_power_key_count = !g_video_power_key_count;
+    if (g_video_power_key_count) {
         hide_all_widgets(obj_vedio_s);
-        break;
+    } else {
+        restore_all_widgets();
     }
 }
 
@@ -978,6 +928,11 @@ static void video_stop_anip_service(void)
 /* AI按键回调 - 切换识别 */
 static void video_play_callback(void)
 {
+    video_restore_icon_on_any_key(); // 任意键恢复图标
+    extern bool is_animal_recognition_page;
+    if (!is_animal_recognition_page)
+        return;
+
     if (g_video_anip_enabled) {
         MLOG_INFO("[VANIP] Turning OFF\n");
         video_stop_anip_service();
@@ -1216,15 +1171,10 @@ void Home_Vedio(lv_ui_t *ui)
     set_current_page_handler(takephoto_key_handler);
     takephoto_register_up_callback(video_redlight_callback);
     takephoto_register_down_callback(video_redlight_callback);
-    takephoto_register_menu_callback(key_takephoto_menu_callback);
-    takephoto_register_mode_callback(key_takephoto_mode_callback);
     takephoto_register_ok_callback(key_takephoto_ok_callback);
-    takephoto_register_long_menu_callback(video_long_menu_callback);
     // takephoto_register_long_mode_callback(video_long_mode_callback);
     takephoto_register_zoomin_callback(video_zoomin_key_cb);
     takephoto_register_zoomout_callback(video_zoomout_key_cb);
-    takephoto_register_left_callback(video_left_callback);
-    takephoto_register_right_callback(video_right_callback);
     takephoto_register_play_callback(video_play_callback);
     takephoto_power_callback(key_takephoto_power_callback);
     //创建时间更新定时器
@@ -1240,6 +1190,7 @@ void Home_Vedio(lv_ui_t *ui)
 // 缩放按键事件处理
 static void video_zoomin_key_cb(void)
 {
+    video_restore_icon_on_any_key(); // 任意键恢复图标
     uint32_t new_level = get_zoom_level();
     // 设置放大比例
     MESSAGE_S Msg = {0};
@@ -1254,6 +1205,7 @@ static void video_zoomin_key_cb(void)
 // 缩放按键事件处理
 static void video_zoomout_key_cb(void)
 {
+    video_restore_icon_on_any_key(); // 任意键恢复图标
     uint32_t new_level = get_zoom_level();
     // 设置放大比例
     MESSAGE_S Msg = {0};
@@ -1263,22 +1215,6 @@ static void video_zoomout_key_cb(void)
     MODEMNG_SendMessage(&Msg);
     // 更新UI
     update_zoom_bar(new_level);
-}
-
-// left按键处理回调函数
-static void video_left_callback(void)
-{
-    if(get_is_effect_exist() == true) {
-        effect_Select_prev();
-    }
-}
-
-// right按键处理回调函数
-static void video_right_callback(void)
-{
-    if(get_is_effect_exist() == true) {
-        effect_AISelect_next();
-    }
 }
 
 // 长按定时器回调函数

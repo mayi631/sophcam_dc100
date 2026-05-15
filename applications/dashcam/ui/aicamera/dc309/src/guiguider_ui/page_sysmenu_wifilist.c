@@ -12,6 +12,7 @@
 #include "mlog.h"
 #include "page_all.h"
 #include "style_common.h"
+#include "ui_common.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -413,7 +414,7 @@ static void wifi_back_cb(lv_event_t* e)
 static void wifi_switch_event_cb(lv_event_t* e)
 {
     lv_obj_t* sw = lv_event_get_target(e);
-    // UNUSED(sw);
+    MESSAGE_S Msg = {0};
 
     if (lv_obj_has_state(sw, LV_STATE_CHECKED)) {
         MLOG_DBG("打开WiFi\n");
@@ -423,10 +424,11 @@ static void wifi_switch_event_cb(lv_event_t* e)
             return;
         }
 
-        // 先禁用所有网络，禁止自动连接
-        Hal_Wpa_DisableAllNetworks();
-        // 再打开WiFi
+        // 打开WiFi (ifconfig wlan0 up)
         Hal_Wpa_Up();
+        // 启用所有已保存的网络，让 wpa_supplicant 自动连接到信号最强的已保存网络
+        Hal_Wpa_EnableAllSavedNetworks();
+
         // 打开，显示str_language_my_network[get_curr_language()]标题和WiFi列表
         lv_label_set_text(label_notice, str_language_scanning_wifi[get_curr_language()]);
         lv_obj_clear_flag(label_notice, LV_OBJ_FLAG_HIDDEN);
@@ -446,6 +448,12 @@ static void wifi_switch_event_cb(lv_event_t* e)
         } else {
             MLOG_ERR("Failed to start WiFi scan\n");
         }
+
+        // 持久化保存WiFi状态为"开"，以便下次开机自动恢复
+        Msg.topic = EVENT_MODEMNG_SETTING;
+        Msg.arg1 = PARAM_MENU_WIFI_STATUS;
+        Msg.arg2 = 1; // ON
+        MODEMNG_SendMessage(&Msg);
     } else {
         MLOG_DBG("关闭WiFi\n");
         wifi_scan_count = 0;
@@ -455,6 +463,12 @@ static void wifi_switch_event_cb(lv_event_t* e)
         lv_obj_add_flag(label_refresh, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(wifi_list_s, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(label_notice, LV_OBJ_FLAG_HIDDEN);
+
+        // 持久化保存WiFi状态为"关"，以便下次开机自动恢复
+        Msg.topic = EVENT_MODEMNG_SETTING;
+        Msg.arg1 = PARAM_MENU_WIFI_STATUS;
+        Msg.arg2 = 0; // OFF
+        MODEMNG_SendMessage(&Msg);
     }
 }
 
@@ -640,8 +654,9 @@ void sysMenu_WifiList(lv_ui_t* ui)
     lv_obj_set_style_bg_color(wifi_switch, lv_color_hex(0xFFC107), LV_PART_INDICATOR | LV_STATE_CHECKED);
     lv_obj_add_event_cb(wifi_switch, wifi_switch_event_cb, LV_EVENT_VALUE_CHANGED, ui);
 
-    // 根据当前状态设置开关和列表显示
+    // 根据当前状态和持久化参数设置开关和列表显示
     if (Hal_Wifi_Is_Up() == 0) {
+        // WiFi接口已开启（可能是开机时由应用层恢复的）
         lv_obj_add_state(wifi_switch, LV_STATE_CHECKED);
         lv_obj_clear_flag(label_refresh, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(label_my_network_s, LV_OBJ_FLAG_HIDDEN);
@@ -657,11 +672,39 @@ void sysMenu_WifiList(lv_ui_t* ui)
             }
         }
     } else {
-        lv_obj_clear_state(wifi_switch, LV_STATE_CHECKED);
-        lv_obj_add_flag(label_refresh, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_add_flag(label_my_network_s, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_add_flag(wifi_list_s, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_add_flag(label_notice, LV_OBJ_FLAG_HIDDEN);
+        // WiFi接口未开启，检查持久化参数，判断是否应该自动开启
+        PARAM_WIFI_S WifiParam;
+        int ret = PARAM_GetWifiParam(&WifiParam);
+        if (ret == 0 && WifiParam.Enable == true) {
+            // 上次关机时WiFi是开启的，自动恢复WiFi并连接已保存的网络
+            MLOG_DBG("WiFi auto-start from saved param\n");
+
+            // 打开WiFi
+            Hal_Wpa_Up();
+            // 启用所有已保存的网络，让 wpa_supplicant 自动连接
+            Hal_Wpa_EnableAllSavedNetworks();
+
+            lv_obj_add_state(wifi_switch, LV_STATE_CHECKED);
+            lv_obj_clear_flag(label_refresh, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(label_my_network_s, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(wifi_list_s, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(label_notice, LV_OBJ_FLAG_HIDDEN);
+
+            // 启动WiFi扫描
+            ret = Hal_Wpa_Scan();
+            if (ret == 0) {
+                if (wifi_scan_timer == NULL) {
+                    wifi_scan_timer = lv_timer_create(wifi_scan_check_status, 200, NULL);
+                }
+            }
+        } else {
+            // WiFi处于关闭状态
+            lv_obj_clear_state(wifi_switch, LV_STATE_CHECKED);
+            lv_obj_add_flag(label_refresh, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(label_my_network_s, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(wifi_list_s, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(label_notice, LV_OBJ_FLAG_HIDDEN);
+        }
     }
 
     // 注册屏幕加载完成事件，滚动WiFi列表到顶部

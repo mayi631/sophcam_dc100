@@ -124,6 +124,13 @@ int Hal_Wifi_Is_Up(void);
 */
 int32_t Hal_Wpa_DisableAllNetworks(void);
 
+/*
+    @brief: 启用所有已保存的网络（允许自动连接）
+            wpa_supplicant 会自动扫描并连接到信号最强的已保存网络
+    @return: 0 成功，-1 失败
+*/
+int32_t Hal_Wpa_EnableAllSavedNetworks(void);
+
 #ifdef __cplusplus
 #if __cplusplus
 }

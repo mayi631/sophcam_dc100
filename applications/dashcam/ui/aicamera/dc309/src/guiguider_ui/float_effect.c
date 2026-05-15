@@ -125,6 +125,7 @@ static void effect_select_event_cb(lv_event_t *e)
 
             for(uint8_t i = 0; i < lv_obj_get_child_cnt(parent); i++) {
                 if(btn_clicked == lv_obj_get_child(parent, i)) {
+                    close_irlight();//关闭红外灯
                     MESSAGE_S event = {0};
                     event.topic     = EVENT_MODEMNG_SETTING;
                     if(is_video_mode == false) {
@@ -312,6 +313,7 @@ static void set_effect_currIndex_focus(int index)
 
 void set_effect_ok(void)
 {
+    close_irlight();//关闭红外灯    
     MESSAGE_S event = {0};
     event.topic     = EVENT_MODEMNG_SETTING;
     if(is_video_mode == false) {

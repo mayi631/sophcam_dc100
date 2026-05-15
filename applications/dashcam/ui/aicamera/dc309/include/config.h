@@ -43,7 +43,7 @@
 #define HIDDLE_THUMB_PATH "/mnt/sd/DCIM/.thumb/" /* 缩略图路径 */
 
 /************************** IMAGE_RECOGNIZE 配置  ************************************/
-#define IMAGE_RECOGNIZE_MODEL_NAME "Qwen2.5-VL-72B-Instruct"
+#define IMAGE_RECOGNIZE_MODEL_NAME "Qwen3-VL-235B-A22B-Instruct"
 #define IMAGE_RECOGNIZE_API_KEY "EIg_6FZelCDedHTE3U2mJM-gzOLSz0ZtTdzya1xh5BJH2QUWB_EV1I-efCRBWh5FV5Xm7OdpAuM_zygTQguWQQ"
 #define IMAGE_RECOGNIZE_BASE_URL "https://www.sophnet.com/api/open-apis/v1/chat/completions"
 

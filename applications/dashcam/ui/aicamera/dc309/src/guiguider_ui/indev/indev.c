@@ -345,12 +345,6 @@ void handle_grid_navigation(int key_code, int key_value)
                 }
             }
             break;
-        case KEY_POWER: // KEY_MENU
-            if (g_menu_callback) {
-                cleanup_focus_group();
-                g_menu_callback();
-            }
-            break;
         case KEY_PLAY: // KEY_MENU
             if(g_play_callback) {
                 cleanup_focus_group();

@@ -92,8 +92,9 @@ static lv_obj_t* create_function_block(lv_obj_t* parent, int index, const char* 
     lv_label_set_text(label, text);
     lv_obj_set_style_text_color(label, lv_color_white(), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_add_style(label, &ttf_font_20, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_align(label, LV_ALIGN_BOTTOM_MID, 0, -15);
+    lv_obj_set_width(label, icon_width - 10); // 显式限制宽度，小于文本宽度时触发滚动
     lv_label_set_long_mode(label, LV_LABEL_LONG_SCROLL);
+    lv_obj_align(label, LV_ALIGN_BOTTOM_MID, 0, -15); // 设置宽度再对齐
     
     return block;
 }

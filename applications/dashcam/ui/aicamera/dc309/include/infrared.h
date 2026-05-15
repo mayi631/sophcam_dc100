@@ -50,6 +50,9 @@ void auto_adjust_redlight_by_battery(void);
 
 int8_t get_max_red_light_level(void);
 
+//关闭红外参数
+void close_irlight(void);
+
 #ifdef __cplusplus
 }
 #endif

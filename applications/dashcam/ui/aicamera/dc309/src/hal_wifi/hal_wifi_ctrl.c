@@ -1050,6 +1050,43 @@ int Hal_Wifi_Is_Up(void)
 }
 
 /*
+ * @brief: 启用所有已保存的网络（允许自动连接）
+ *         wpa_supplicant 会自动扫描并连接到信号最强的已保存网络
+ * @return: 0 成功，-1 失败
+ */
+int32_t Hal_Wpa_EnableAllSavedNetworks(void)
+{
+    char buf[128], result[64];
+    size_t result_len = sizeof(result) - 1;
+    int32_t ret;
+
+    if (wpa_ctrl_handle_init() != 0) {
+        MLOG_ERR("wpa_ctrl_handle_init failed\n");
+        return -1;
+    }
+
+    snprintf(buf, sizeof(buf), "ENABLE_NETWORK all");
+    ret = wpa_ctrl_request(wpa_ctrl_handle, buf, strlen(buf), result, &result_len, NULL);
+    if (ret != 0) {
+        MLOG_ERR("ENABLE_NETWORK all failed: %d\n", ret);
+        return -1;
+    }
+    MLOG_DBG("ENABLE_NETWORK all success\n");
+
+    // 保存配置，确保下次启动时网络仍为启用状态
+    result_len = sizeof(result) - 1;
+    snprintf(buf, sizeof(buf), "SAVE_CONFIG");
+    ret = wpa_ctrl_request(wpa_ctrl_handle, buf, strlen(buf), result, &result_len, NULL);
+    if (ret != 0) {
+        MLOG_ERR("SAVE_CONFIG failed: %d\n", ret);
+        return -1;
+    }
+    MLOG_DBG("SAVE_CONFIG success\n");
+
+    return 0;
+}
+
+/*
  * @brief: 禁用所有保存的网络（禁止自动连接）
  * @return: 0 成功，-1 失败
  */

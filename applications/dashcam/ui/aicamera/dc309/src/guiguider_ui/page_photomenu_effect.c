@@ -18,7 +18,7 @@
 #include <stdio.h>
 
 #define GRID_COLS 1
-#define GRID_ROWS 15
+#define GRID_ROWS 8
 #define GRID_MAX_OBJECTS GRID_ROWS * GRID_COLS
 static lv_obj_t *focusable_objects[GRID_MAX_OBJECTS];
 
@@ -185,6 +185,7 @@ static void screen_SettingPhotoEffect_btn_event_handler(lv_event_t *e)
 
                         MLOG_DBG("switch to %d:%s\n", i, g_button_labelPho);
                         MESSAGE_S event = {0};
+                        close_irlight();
                         event.topic = EVENT_MODEMNG_SETTING;
                         if(is_video_mode == false) {
                             event.arg1 = PARAM_MENU_PHOTO_EFFECT;
@@ -228,6 +229,7 @@ static void photoEffect_click_callback(lv_obj_t *obj)
 
                 MLOG_DBG("switch to %d:%s\n", i, g_button_labelPho);
                 MESSAGE_S event = {0};
+                close_irlight();
                 event.topic = EVENT_MODEMNG_SETTING;
                 if(is_video_mode == false) {
                     event.arg1 = PARAM_MENU_PHOTO_EFFECT;
