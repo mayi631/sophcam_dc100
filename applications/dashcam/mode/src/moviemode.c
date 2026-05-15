@@ -17,6 +17,15 @@
 #include "zoomp.h"
 #include "media_disp.h"
 
+static int32_t MODEMNG_SetVideoEffect(uint32_t value);
+
+static int32_t MODEMNG_ReapplyCurrentIspEffect(void)
+{
+    PARAM_MENU_S menu_param = {0};
+    PARAM_GetMenuParam(&menu_param);
+    return MODEMNG_SetVideoEffect(menu_param.IspEffect.Current);
+}
+
 int32_t MODEMNG_ResetMovieMode(PARAM_CFG_S *Param)
 {
     int32_t s32Ret = 0;
@@ -113,6 +122,11 @@ int32_t MODEMNG_ResetMovieMode(PARAM_CFG_S *Param)
 
         s32Ret = MEDIA_SensorInit();
         MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "Sensor init");
+
+        s32Ret = MODEMNG_ReapplyCurrentIspEffect();
+        if (s32Ret != 0) {
+            CVI_LOGW("reapply isp effect failed after sensor init");
+        }
     } else {
         s32Ret = MEDIA_SensorSwitchInit(&cur_sns_attr, &cur_vcap_attr);
         MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "VI Switch");
@@ -193,6 +207,7 @@ int32_t MODEMNG_OpenMovieMode(void)
     int32_t s32Ret = 0;
     uint32_t is_mode_proc_with_sensor = 0;
     uint32_t need_sensor_deinit_on_close = 0;
+    bool is_new_pipeline = false;
     uint32_t old_sensor_type = 0;
     uint32_t new_sensor_type = 0;
     PARAM_MEDIA_SNS_ATTR_S cur_sns_attr = {0};
@@ -211,6 +226,7 @@ int32_t MODEMNG_OpenMovieMode(void)
 
     PARAM_GetMediaMode(0, &new_params);
     new_sensor_type = new_params.SnsAttr.SnsChnAttr.u32sensortype;
+    is_new_pipeline = (new_params.MediaMode == MEDIA_VIDEO_SIZE_1920X1080_NEW);
 
     PARAM_GetSensorParam(0, &cur_sns_attr);
     PARAM_GetVcapParam(0, &cur_vcap_attr);
@@ -224,6 +240,10 @@ int32_t MODEMNG_OpenMovieMode(void)
     is_mode_proc_with_sensor = 0;
     need_sensor_deinit_on_close = 0;
     if (old_sensor_type != new_sensor_type) {
+        is_mode_proc_with_sensor = 1;
+        need_sensor_deinit_on_close = 1;
+    }
+    if (is_new_pipeline) {
         is_mode_proc_with_sensor = 1;
         need_sensor_deinit_on_close = 1;
     }
@@ -248,13 +268,18 @@ int32_t MODEMNG_OpenMovieMode(void)
         s32Ret = MEDIA_DISP_Pause();
         MODEMNG_CHECK_RET(s32Ret,MODE_EINVAL,"DISP pause");
 
-        if (old_sensor_type != new_sensor_type) {
+        if (old_sensor_type != new_sensor_type || is_new_pipeline) {
             s32Ret = MEDIA_SensorDeInit();
             MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "VI deinit");
         }
 
         s32Ret = MEDIA_SensorInit();
         MODEMNG_CHECK_RET(s32Ret, MODE_EINVAL, "VI init");
+
+        s32Ret = MODEMNG_ReapplyCurrentIspEffect();
+        if (s32Ret != 0) {
+            CVI_LOGW("reapply isp effect failed after sensor init");
+        }
     } else {
         /* 不显示vpss重新初始化导致的异常帧 */
         s32Ret = MEDIA_DISP_Pause();
